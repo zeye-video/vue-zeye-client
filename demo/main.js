@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import App from './App.vue'
-import zeyeClient from './index'
+import App from './Demo.vue'
+import zeyeClient from '../src/index'
 
 
 Vue.use(Vuex)
