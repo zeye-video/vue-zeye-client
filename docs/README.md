@@ -9,4 +9,4 @@ Features include:
 - Okay, basically this is under the hood part of [mediasoip-nuxt-demo](https://github.com/stasoft91/mediasoup-nuxt-demo) with a lot of sugar on it
 - Also very WIP
 
-[Get started](./started) or play with the [demo](https://github.com/vue-zeye-client/tree/dev/demo) (see [`README.md`](https://github.com/vue-zeye-client/) to run them).
+[Get started](./started) or play with the [demo](https://github.com/vue-zeye-client/tree/dev/demo)

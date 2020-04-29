@@ -21,4 +21,4 @@ yarn lint
 ```
 
 ### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+See [Docs](https://stasoft91.github.io/vue-zeye-client/)
