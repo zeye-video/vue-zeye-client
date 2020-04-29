@@ -87,8 +87,9 @@ export default {
 
 ## For Nuxt
 1. Create empty zeyeClient.js in store
-2. Create plugins/vue-zye-client.js with code below and add it that plugin to plugins section in nuxt.config.js
+2. Create plugins/vue-zye-client.js with code below then mention it in plugins section in nuxt.config.js
 ```
+// plugins/vue-zeye-client.js
 import zeyeClient from 'vue-zeye-client'
 import Vue from 'vue'
 
