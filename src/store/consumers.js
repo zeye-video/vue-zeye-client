@@ -93,7 +93,9 @@ export const mutations = {
       (consumer) => consumer.id === consumerId
     )
 
-    Vue.set(consumer, 'score', score)
+    if (consumer) {
+      Vue.set(consumer, 'score', score)
+    }
   }
 }
 
