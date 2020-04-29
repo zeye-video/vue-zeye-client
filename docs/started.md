@@ -20,13 +20,13 @@ Everything under the hood work is in there, so installing vuex is mandatory.
 ## NPM
 
 ```sh
-npm install vue-zeye-client
+npm install stasoft91/vue-zeye-client
 ```
 
 ## Yarn
 
 ```sh
-yarn add vue-zeye-client
+yarn add stasoft91/vue-zeye-client
 ```
 
 ## JavaScript
