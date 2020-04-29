@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import App from './Demo.vue'
-import zeyeClient from '../src/index'
+import zeyeClient from '../src'
 
 
 Vue.use(Vuex)
