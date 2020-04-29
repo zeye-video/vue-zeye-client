@@ -1,7 +1,7 @@
 # Consumers functions
 #### this.$zeyeClient.getConsumers() :array
 Get connected consumers of your media 
-#
+
 #### this.$zeyeClient.getAudioConsumer(peerId) :object
 Get audio consumer by its peerId
 
@@ -23,7 +23,7 @@ Output example:
     type:"simple"
 }
 ```
-#
+
 #### this.$zeyeClient.getVideoConsumer(peerId) :object
 Get video consumer by its peerId
 

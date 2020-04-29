@@ -2,7 +2,7 @@
 
 #### this.$zeyeClient.getPeers() :array
 Get connected peers
-#
+
 
 #### this.$zeyeClient.getPeer(peerId) :object
 Get specific peer by it`s id

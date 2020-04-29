@@ -11,15 +11,15 @@ Parameters:
 - displayName [optional] - display name of current user, random pokemon name if not specified
 - forceH264 [optional]
 - forceVP9 [optional]
-#
+
 
 #### this.$zeyeClient.isConnected() :bool
 Is connected to server
-#
+
 
 #### this.$zeyeClient.getGlobalAudioMuted() :bool
 Is global audio mute enabled for current user
-#
+
 
 #### this.$zeyeClient.getVideoVisible() :bool
 Is global video visible (or hidden) for current user

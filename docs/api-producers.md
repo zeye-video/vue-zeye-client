@@ -2,7 +2,7 @@
 
 #### this.$zeyeClient.getProducers() :array
 Current user`s producers (usually there are two - audio from mic and video from webcam)
-#
+
 #### this.$zeyeClient.getAudioProducer() :object
 Current user`s audio producer
 
@@ -17,7 +17,7 @@ output example:
     track:MediaStreamTrack
 }
 ```
-#
+
 #### this.$zeyeClient.getVideoProducer() :object
 Current user`s video producer
 

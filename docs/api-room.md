@@ -12,14 +12,14 @@ example output:
 } 
 ```
 
-#
+
 #### this.$zeyeClient.amIActiveSpeaker() :bool
 Checks if current user is talking 
 
-#
+
 #### this.$zeyeClient.isSpeakerActive(peerId) :bool
 Checks if specified peer id is talking 
-#
+
 
 #### this.$zeyeClient.setRoomUrl(optionalRoomUrl?) :void
 Sets url of current room.
