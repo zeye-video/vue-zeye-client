@@ -43,7 +43,7 @@ const store = new Vuex.Store({
   modules: {
     /*
         this line us mandatory, because all zeyeClient vuex modules are designed 
-        to be nested under 'zeyeClient' to prevent any conflicts with existing stores
+        to be nested under 'zeyeClient' to prevent any conflicts with existing store
     */
     zeyeClient: { namespaced: true }
   }
