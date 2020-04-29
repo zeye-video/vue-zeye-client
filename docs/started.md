@@ -57,36 +57,42 @@ new Vue({ }).$mount('#app')
 
 Then somewhere in your `conference.vue`:
 ```html
-<template>
-  <div id="app">
+<div style="width:250px">
+    <zeye-peer-media  :show-volume-bar="true" :peer-id="$zeyeClient.getMe().id"></zeye-peer-media>
+</div>
 
-    <h1>Z<span>&#128065;</span> Client</h1>
-    <div style="width:250px">
-      <zeye-peer-media  :show-volume-bar="true" :peer-id="$zeyeClient.getMe().id"></zeye-peer-media>
-    </div>
-    <div style="width:250px" v-for="peer in $zeyeClient.getPeers()" :key="peer.id">
-      <zeye-peer-media  :show-volume-bar="true"  :peer-id="peer.id"></zeye-peer-media>
-    </div>
-  </div>
-</template>
+<div style="width:250px" v-for="peer in $zeyeClient.getPeers()" :key="peer.id">
+    <zeye-peer-media  :show-volume-bar="true"  :peer-id="peer.id"></zeye-peer-media>
+</div>
 ```
+And in script section:
 ```javascript
-<script>
-  export default {
+export default {
     mounted() {
-      this.$zeyeClient.setRoomUrl()
-
-      const roomId = 'example01'
-      const peerId = 'example' + Math.random()
-
-      this.$zeyeClient.setMe(peerId)
-
-      this.$zeyeClient.join({
-        roomId,
-        peerId,
-        displayName: this.$zeyeClient.getMe().displayName
-      })
+        this.$zeyeClient.setRoomUrl()
+        
+        const roomId = 'example01'
+        const peerId = 'example' + Math.random()
+        
+        this.$zeyeClient.setMe(peerId)
+        
+        this.$zeyeClient.join({
+            roomId,
+            peerId,
+            displayName: this.$zeyeClient.getMe().displayName
+        })
     }
-  }
-</script>
+}
+```
+
+## For Nuxt
+1. Create empty zeyeClient.js in store
+2. Create plugins/vue-zye-client.js with code below and add it that plugin to plugins section in nuxt.config.js
+```
+import zeyeClient from 'vue-zeye-client'
+import Vue from 'vue'
+
+export default ({ store }) => {
+  Vue.use(zeyeClient, store)
+}
 ```
