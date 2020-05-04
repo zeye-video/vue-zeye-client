@@ -10,14 +10,7 @@ export default function registerFunctions({ app, store }) {
    * @returns {Object}
    */
   app.$zeyeClient.getMe = () => store.state.zeyeClient.me
-
-  /**
-   * @method
-   * @name isPeerMe
-   * @returns {Object}
-   */
-  app.$zeyeClient.isPeerMe = (peerId) => store.state.zeyeClient.me.id === peerId
-
+  
   /**
    * @method
    * @param peerId?

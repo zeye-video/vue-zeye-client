@@ -39,7 +39,13 @@ export default {
   methods: {
     runAudio() {
       // for nonMe peers there should be a Consumer getter
-      const audioTrack = this.$zeyeClient.getAudioProducer().track
+      let audioTrack
+
+      if (this.$zeyeClient.getMe().id === this.peerId) {
+        audioTrack = this.$zeyeClient.getAudioProducer().track
+      } else {
+        audioTrack = this.$zeyeClient.getAudioConsumer(this.peerId).track
+      }
 
       if (audioTrack) {
         const {audioElem} = this.$refs
@@ -56,7 +62,13 @@ export default {
       }
     },
     runVideo() {
-      const videoTrack = this.$zeyeClient.getVideoProducer().track
+      let videoTrack
+
+      if (this.$zeyeClient.getMe().id === this.peerId) {
+        videoTrack =  this.$zeyeClient.getVideoProducer().track
+      } else {
+        videoTrack = this.$zeyeClient.getVideoConsumer(this.peerId).track
+      }
 
       if (videoTrack) {
 
