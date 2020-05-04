@@ -34,7 +34,7 @@ export default {
     }
   },
   mounted() {
-    this.waitForProducerAvailability()
+    this.waitForMediaAvailability()
   },
   methods: {
     runAudio() {
@@ -114,16 +114,30 @@ export default {
         }
       })
     },
-    waitForProducerAvailability() {
-      if (
-        this.$zeyeClient.getAudioProducer() &&
-        this.$zeyeClient.getVideoProducer()
-      ) {
-        this.runAudio()
-        this.runVideo()
+
+    waitForMediaAvailability() {
+      if (! this.peerId) {
+        if (
+                this.$zeyeClient.getAudioProducer() &&
+                this.$zeyeClient.getVideoProducer()
+        ) {
+          this.runAudio()
+          this.runVideo()
+        } else {
+          console.debug('Waiting for channels availability...')
+          setTimeout(this.waitForMediaAvailability, 100)
+        }
       } else {
-        console.debug('Waiting for channels availability')
-        setTimeout(this.waitForProducerAvailability, 200)
+        if (
+                this.$zeyeClient.getAudioConsumer(this.peerId) &&
+                this.$zeyeClient.getVideoConsumer(this.peerId)
+        ) {
+          this.runAudio()
+          this.runVideo()
+        } else {
+          console.debug('Waiting for channels availability...')
+          setTimeout(this.waitForMediaAvailability, 100)
+        }
       }
     }
   }
