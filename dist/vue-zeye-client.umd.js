@@ -15775,7 +15775,7 @@
         // for nonMe peers there should be a Consumer getter
         var audioTrack;
 
-        if (this.$zeyeClient.getMe().id === this.peerId) {
+        if (!this.peerId) {
           audioTrack = this.$zeyeClient.getAudioProducer().track;
         } else {
           audioTrack = this.$zeyeClient.getAudioConsumer(this.peerId).track;
@@ -15797,7 +15797,7 @@
       runVideo: function runVideo() {
         var videoTrack;
 
-        if (this.$zeyeClient.getMe().id === this.peerId) {
+        if (!this.peerId) {
           videoTrack = this.$zeyeClient.getVideoProducer().track;
         } else {
           videoTrack = this.$zeyeClient.getVideoConsumer(this.peerId).track;
@@ -16004,7 +16004,7 @@
     /* style */
     const __vue_inject_styles__ = function (inject) {
       if (!inject) return
-      inject("data-v-45783da3_0", { source: ".volume-container{position:absolute;top:0;bottom:0;width:10px;display:flex;-webkit-box-orient:vertical;flex-direction:column;-webkit-box-pack:center;justify-content:center;-webkit-box-align:center;align-items:center;pointer-events:none}.volume-container .bar{width:6px;border-radius:6px;transition:.1s ease-in 0s}.zeye-peer-media{position:relative;flex:100 100 auto;display:flex}.zeye-peer-media.active-speaker{box-shadow:0 0 5px #adff2f}", map: undefined, media: undefined });
+      inject("data-v-453e17a3_0", { source: ".volume-container{position:absolute;top:0;bottom:0;width:10px;display:flex;-webkit-box-orient:vertical;flex-direction:column;-webkit-box-pack:center;justify-content:center;-webkit-box-align:center;align-items:center;pointer-events:none}.volume-container .bar{width:6px;border-radius:6px;transition:.1s ease-in 0s}.zeye-peer-media{position:relative;flex:100 100 auto;display:flex}.zeye-peer-media.active-speaker{box-shadow:0 0 5px #adff2f}", map: undefined, media: undefined });
 
     };
     /* scoped */

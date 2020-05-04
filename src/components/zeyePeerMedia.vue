@@ -41,7 +41,7 @@ export default {
       // for nonMe peers there should be a Consumer getter
       let audioTrack
 
-      if (this.$zeyeClient.getMe().id === this.peerId) {
+      if (! this.peerId) {
         audioTrack = this.$zeyeClient.getAudioProducer().track
       } else {
         audioTrack = this.$zeyeClient.getAudioConsumer(this.peerId).track
@@ -64,7 +64,7 @@ export default {
     runVideo() {
       let videoTrack
 
-      if (this.$zeyeClient.getMe().id === this.peerId) {
+      if (! this.peerId) {
         videoTrack =  this.$zeyeClient.getVideoProducer().track
       } else {
         videoTrack = this.$zeyeClient.getVideoConsumer(this.peerId).track
