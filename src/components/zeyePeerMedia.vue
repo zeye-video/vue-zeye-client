@@ -38,6 +38,7 @@ export default {
   },
   methods: {
     runAudio() {
+      // for nonMe peers there should be a Consumer getter
       const audioTrack = this.$zeyeClient.getAudioProducer().track
 
       if (audioTrack) {
