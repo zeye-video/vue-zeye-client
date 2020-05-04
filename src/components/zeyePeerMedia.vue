@@ -129,6 +129,8 @@ export default {
         }
       } else {
         if (
+                this.$zeyeClient.getPeer(this.peerId) &&
+                this.$zeyeClient.getPeer(this.peerId).consumers &&
                 this.$zeyeClient.getAudioConsumer(this.peerId) &&
                 this.$zeyeClient.getVideoConsumer(this.peerId)
         ) {
