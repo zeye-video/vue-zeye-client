@@ -33,6 +33,11 @@ export default {
       audioVolume: 0, // Integer from 0 to 10
     }
   },
+  computed: {
+    isLocalMedia() {
+      return !this.peerId
+    }
+  },
   mounted() {
     this.waitForMediaAvailability()
   },
@@ -41,7 +46,7 @@ export default {
       // for nonMe peers there should be a Consumer getter
       let audioTrack
 
-      if (! this.peerId) {
+      if (this.isLocalMedia) {
         audioTrack = this.$zeyeClient.getAudioProducer().track
       } else {
         audioTrack = this.$zeyeClient.getAudioConsumer(this.peerId).track
@@ -50,7 +55,7 @@ export default {
       if (audioTrack) {
         const {audioElem} = this.$refs
 
-        audioElem.muted = true
+        audioElem.muted = this.isLocalMedia
 
         const audioStream = new MediaStream()
 
@@ -64,7 +69,7 @@ export default {
     runVideo() {
       let videoTrack
 
-      if (! this.peerId) {
+      if (this.isLocalMedia) {
         videoTrack =  this.$zeyeClient.getVideoProducer().track
       } else {
         videoTrack = this.$zeyeClient.getVideoConsumer(this.peerId).track
@@ -116,7 +121,7 @@ export default {
     },
 
     waitForMediaAvailability() {
-      if (! this.peerId) {
+      if (this.isLocalMedia) {
         if (
                 this.$zeyeClient.getAudioProducer() &&
                 this.$zeyeClient.getVideoProducer()

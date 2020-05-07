@@ -13089,18 +13089,18 @@ var ZeyeClient = /*#__PURE__*/function () {
 
                   window.DC = dataConsumer;
 
-                  _this.store.commit('zeyeClient/peers/addDataConsumer', {
-                    dataConsumer: {
-                      id: dataConsumer.id
-                    }
-                  });
-
                   _this.store.commit('zeyeClient/dataConsumers/addDataConsumer', {
                     dataConsumer: {
                       id: dataConsumer.id,
                       sctpStreamParameters: dataConsumer.sctpStreamParameters,
                       label: dataConsumer.label,
                       protocol: dataConsumer.protocol
+                    }
+                  });
+
+                  _this.store.commit('zeyeClient/peers/addDataConsumer', {
+                    dataConsumer: {
+                      id: dataConsumer.id
                     }
                   }); // We are ready. Answer the protoo request.
 
@@ -15773,6 +15773,11 @@ var script = {
 
     };
   },
+  computed: {
+    isLocalMedia: function isLocalMedia() {
+      return !this.peerId;
+    }
+  },
   mounted: function mounted() {
     this.waitForMediaAvailability();
   },
@@ -15781,7 +15786,7 @@ var script = {
       // for nonMe peers there should be a Consumer getter
       var audioTrack;
 
-      if (!this.peerId) {
+      if (this.isLocalMedia) {
         audioTrack = this.$zeyeClient.getAudioProducer().track;
       } else {
         audioTrack = this.$zeyeClient.getAudioConsumer(this.peerId).track;
@@ -15789,7 +15794,7 @@ var script = {
 
       if (audioTrack) {
         var audioElem = this.$refs.audioElem;
-        audioElem.muted = true;
+        audioElem.muted = this.isLocalMedia;
         var audioStream = new MediaStream();
         audioStream.addTrack(audioTrack);
         audioElem.srcObject = audioStream;
@@ -15803,7 +15808,7 @@ var script = {
     runVideo: function runVideo() {
       var videoTrack;
 
-      if (!this.peerId) {
+      if (this.isLocalMedia) {
         videoTrack = this.$zeyeClient.getVideoProducer().track;
       } else {
         videoTrack = this.$zeyeClient.getVideoConsumer(this.peerId).track;
@@ -15852,7 +15857,7 @@ var script = {
       });
     },
     waitForMediaAvailability: function waitForMediaAvailability() {
-      if (!this.peerId) {
+      if (this.isLocalMedia) {
         if (this.$zeyeClient.getAudioProducer() && this.$zeyeClient.getVideoProducer()) {
           this.runAudio();
           this.runVideo();
@@ -16020,7 +16025,7 @@ var __vue_staticRenderFns__ = [];
   /* style */
   const __vue_inject_styles__ = function (inject) {
     if (!inject) return
-    inject("data-v-5b204663_0", { source: ".volume-container{position:absolute;top:0;bottom:0;width:10px;display:flex;-webkit-box-orient:vertical;flex-direction:column;-webkit-box-pack:center;justify-content:center;-webkit-box-align:center;align-items:center;pointer-events:none}.volume-container .bar{width:6px;border-radius:6px;transition:.1s ease-in 0s}.zeye-peer-media{position:relative;flex:100 100 auto;display:flex}.zeye-peer-media.active-speaker{box-shadow:0 0 5px #adff2f}", map: undefined, media: undefined });
+    inject("data-v-1e8f15f6_0", { source: ".volume-container{position:absolute;top:0;bottom:0;width:10px;display:flex;-webkit-box-orient:vertical;flex-direction:column;-webkit-box-pack:center;justify-content:center;-webkit-box-align:center;align-items:center;pointer-events:none}.volume-container .bar{width:6px;border-radius:6px;transition:.1s ease-in 0s}.zeye-peer-media{position:relative;flex:100 100 auto;display:flex}.zeye-peer-media.active-speaker{box-shadow:0 0 5px #adff2f}", map: undefined, media: undefined });
 
   };
   /* scoped */

@@ -438,18 +438,18 @@ export default class ZeyeClient {
             // TODO: REMOVE
             window.DC = dataConsumer
 
-            this.store.commit('zeyeClient/peers/addDataConsumer', {
-              dataConsumer: {
-                id: dataConsumer.id
-              }
-            })
-
             this.store.commit('zeyeClient/dataConsumers/addDataConsumer', {
               dataConsumer: {
                 id: dataConsumer.id,
                 sctpStreamParameters: dataConsumer.sctpStreamParameters,
                 label: dataConsumer.label,
                 protocol: dataConsumer.protocol
+              }
+            })
+
+            this.store.commit('zeyeClient/peers/addDataConsumer', {
+              dataConsumer: {
+                id: dataConsumer.id
               }
             })
 
