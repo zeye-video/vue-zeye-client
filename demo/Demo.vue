@@ -3,7 +3,7 @@
 
     <h1>Z<span>&#128065;</span> Client</h1>
     <div style="width:250px">
-      <zeye-peer-media  :show-volume-bar="true" :peer-id="$zeyeClient.getMe().id"></zeye-peer-media>
+      <zeye-peer-media  :show-volume-bar="true" :peer-id="'me'"></zeye-peer-media>
     </div>
     <div style="width:250px" v-for="peer in $zeyeClient.getPeers()" :key="peer.id">
       <zeye-peer-media  :show-volume-bar="true"  :peer-id="peer.id"></zeye-peer-media>

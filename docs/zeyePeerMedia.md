@@ -1,7 +1,7 @@
 # Props
 
 #### :peerId="{string}"
-Either `:peerId="$zeyeClient.getMe().id"` or  
+Either `:peerId="me"` or  
 ```
 v-for="peer in $zeyeClient.getPeers()" :peerId="peer.id"
 ```
