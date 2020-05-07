@@ -1,5 +1,5 @@
 /*!
- * vue-zeye-client v0.1.0 
+ * vue-zeye-client v0.2.0 
  * (c) 2020 stasoft91@gmail.com
  * Released under the ISC License.
  */
