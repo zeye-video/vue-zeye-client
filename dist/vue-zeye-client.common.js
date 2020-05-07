@@ -8636,7 +8636,7 @@ var state = function state() {
 };
 var mutations = {
   setRoomState: function setRoomState(state, payload) {
-    if (payload.state === 'closed') {
+    if (payload.state === "closed") {
       state.consumers = [];
     }
   },
@@ -8656,10 +8656,10 @@ var mutations = {
       return consumer.id === consumerId;
     });
 
-    if (originator === 'local') {
-      Vue.set(consumer, 'locallyPaused', true);
+    if (originator === "local") {
+      Vue.set(consumer, "locallyPaused", true);
     } else {
-      Vue.set(consumer, 'remotelyPaused', true);
+      Vue.set(consumer, "remotelyPaused", true);
     }
   },
   setConsumerResumed: function setConsumerResumed(state, payload) {
@@ -8669,10 +8669,10 @@ var mutations = {
       return consumer.id === consumerId;
     });
 
-    if (originator === 'local') {
-      Vue.set(consumer, 'locallyPaused', false);
+    if (originator === "local") {
+      Vue.set(consumer, "locallyPaused", false);
     } else {
-      Vue.set(consumer, 'remotelyPaused', false);
+      Vue.set(consumer, "remotelyPaused", false);
     }
   },
   setConsumerCurrentLayers: function setConsumerCurrentLayers(state, payload) {
@@ -8682,8 +8682,8 @@ var mutations = {
     var consumer = state.consumers.find(function (consumer) {
       return consumer.id === consumerId;
     });
-    Vue.set(consumer, 'currentSpatialLayer', spatialLayer);
-    Vue.set(consumer, 'currentTemporalLayer', temporalLayer);
+    Vue.set(consumer, "currentSpatialLayer", spatialLayer);
+    Vue.set(consumer, "currentTemporalLayer", temporalLayer);
   },
   setConsumerPreferredLayers: function setConsumerPreferredLayers(state, payload) {
     var consumerId = payload.consumerId,
@@ -8692,8 +8692,8 @@ var mutations = {
     var consumer = state.consumers.find(function (consumer) {
       return consumer.id === consumerId;
     });
-    Vue.set(consumer, 'preferredSpatialLayer', spatialLayer);
-    Vue.set(consumer, 'preferredTemporalLayer', temporalLayer);
+    Vue.set(consumer, "preferredSpatialLayer", spatialLayer);
+    Vue.set(consumer, "preferredTemporalLayer", temporalLayer);
   },
   setConsumerPriority: function setConsumerPriority(state, payload) {
     var consumerId = payload.consumerId,
@@ -8701,7 +8701,7 @@ var mutations = {
     var consumer = state.consumers.find(function (consumer) {
       return consumer.id === consumerId;
     });
-    Vue.set(consumer, 'priority', priority);
+    Vue.set(consumer, "priority", priority);
   },
   setConsumerTrack: function setConsumerTrack(state, payload) {
     var consumerId = payload.consumerId,
@@ -8709,7 +8709,7 @@ var mutations = {
     var consumer = state.consumers.find(function (consumer) {
       return consumer.id === consumerId;
     });
-    Vue.set(consumer, 'track', track);
+    Vue.set(consumer, "track", track);
   },
   setConsumerScore: function setConsumerScore(state, payload) {
     var consumerId = payload.consumerId,
@@ -8719,7 +8719,7 @@ var mutations = {
     });
 
     if (consumer) {
-      Vue.set(consumer, 'score', score);
+      Vue.set(consumer, "score", score);
     }
   }
 };
@@ -8736,7 +8736,7 @@ var state$1 = function state() {
 };
 var mutations$1 = {
   setRoomState: function setRoomState(state, payload) {
-    if (payload.state === 'closed') {
+    if (payload.state === "closed") {
       state.dataConsumers = [];
     }
   },
@@ -8764,7 +8764,7 @@ var state$2 = function state() {
 };
 var mutations$2 = {
   setRoomState: function setRoomState(state, payload) {
-    if (payload.state === 'closed') {
+    if (payload.state === "closed") {
       state.dataProducers = [];
     }
   },
@@ -8786,8 +8786,8 @@ var module$3 = {
 };
 
 function randomString (length) {
-  var result = '';
-  var characters = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  var result = "";
+  var characters = "abcdefghijklmnopqrstuvwxyz0123456789";
   var charactersLength = characters.length;
 
   for (var i = 0; i < length; i++) {
@@ -8801,18 +8801,18 @@ var actions = {
   notify: function notify(_ref, _ref2) {
     var commit = _ref.commit;
     var _ref2$type = _ref2.type,
-        type = _ref2$type === void 0 ? 'info' : _ref2$type,
+        type = _ref2$type === void 0 ? "info" : _ref2$type,
         text = _ref2.text,
         title = _ref2.title,
         timeout = _ref2.timeout;
 
     if (!timeout) {
       switch (type) {
-        case 'info':
+        case "info":
           timeout = 3000;
           break;
 
-        case 'error':
+        case "error":
           timeout = 5000;
           break;
       }
@@ -8825,9 +8825,9 @@ var actions = {
       text: text,
       timeout: timeout
     };
-    commit('notifications/addNotification', notification);
+    commit("notifications/addNotification", notification);
     setTimeout(function () {
-      commit('notifications/removeNotification', {
+      commit("notifications/removeNotification", {
         notificationId: notification.id
       });
     }, timeout);
@@ -8839,12 +8839,12 @@ var module$4 = {
 
 var state$3 = function state() {
   return {
-    id: '',
-    displayName: '',
+    id: "",
+    displayName: "",
     device: {
-      flag: '',
-      name: '',
-      version: ''
+      flag: "",
+      name: "",
+      version: ""
     },
     canSendMic: true,
     canSendWebcam: true,
@@ -8859,7 +8859,7 @@ var state$3 = function state() {
 };
 var mutations$3 = {
   setRoomState: function setRoomState(state, payload) {
-    if (payload.state === 'closed') {
+    if (payload.state === "closed") {
       state.webcamInProgress = false;
       state.shareInProgress = false;
       state.audioOnly = false;
@@ -8956,7 +8956,7 @@ var state$5 = function state() {
 };
 var mutations$5 = {
   setRoomState: function setRoomState(state, payload) {
-    if (payload.state === 'closed') {
+    if (payload.state === "closed") {
       state.peers = [];
     }
   },
@@ -8978,7 +8978,7 @@ var mutations$5 = {
     });
 
     if (!peer) {
-      throw new Error('no Peer found');
+      throw new Error("no Peer found");
     }
 
     state.peer.displayName = displayName;
@@ -8991,7 +8991,7 @@ var mutations$5 = {
     });
 
     if (!peer) {
-      throw new Error('no Peer found for new Consumer');
+      throw new Error("no Peer found for new Consumer");
     }
 
     peer.consumers.push(consumer.id);
@@ -9024,7 +9024,7 @@ var mutations$5 = {
     });
 
     if (!peer) {
-      throw new Error('no Peer found for new DataConsumer');
+      throw new Error("no Peer found for new DataConsumer");
     }
 
     peer.dataConsumers.push(dataConsumer.id);
@@ -9063,7 +9063,7 @@ var state$6 = function state() {
 };
 var mutations$6 = {
   setRoomState: function setRoomState(state, payload) {
-    if (payload.state === 'closed') {
+    if (payload.state === "closed") {
       state.producers = [];
     }
   },
@@ -9116,10 +9116,10 @@ var module$8 = {
 
 var state$7 = function state() {
   return {
-    url: '',
-    state: '',
+    url: "",
+    state: "",
     // new/connecting/connected/closed
-    activeSpeakerId: '' // faceDetection: false
+    activeSpeakerId: "" // faceDetection: false
 
   };
 };
@@ -9130,7 +9130,7 @@ var mutations$7 = {
   setRoomState: function setRoomState(state, payload) {
     var roomState = payload.state;
 
-    if (roomState !== 'connected') {
+    if (roomState !== "connected") {
       state.state = roomState;
       state.activeSpeakerId = null;
       state.statsPeerId = null;
@@ -9206,14 +9206,14 @@ function registerFunctions(_ref) {
 
   app.$zeyeClient.setRoomUrl = function (optionalRoomUrl) {
     optionalRoomUrl = optionalRoomUrl !== undefined ? optionalRoomUrl : window.location.href;
-    store.commit('zeyeClient/room/setRoomUrl', {
+    store.commit("zeyeClient/room/setRoomUrl", {
       roomUrl: optionalRoomUrl
     });
   };
 }
 
-var USER_COOKIE = 'mediasoup-demo.user';
-var DEVICES_COOKIE = 'mediasoup-demo.devices';
+var USER_COOKIE = "mediasoup-demo.user";
+var DEVICES_COOKIE = "mediasoup-demo.devices";
 function setUser(_ref) {
   var displayName = _ref.displayName;
   jsCookie.set(USER_COOKIE, {
@@ -9231,7 +9231,7 @@ function setDevices(_ref2) {
 }
 
 function randomName () {
-  var lang = 'en';
+  var lang = "en";
   return pokemon.random(lang);
 }
 
@@ -11567,17 +11567,17 @@ function deviceInfo () {
   var browser = Bowser.getParser(ua);
   var flag;
   if (browser.satisfies({
-    chrome: '>=0',
-    chromium: '>=0'
-  })) flag = 'chrome';else if (browser.satisfies({
-    firefox: '>=0'
-  })) flag = 'firefox';else if (browser.satisfies({
-    safari: '>=0'
-  })) flag = 'safari';else if (browser.satisfies({
-    opera: '>=0'
-  })) flag = 'opera';else if (browser.satisfies({
-    'microsoft edge': '>=0'
-  })) flag = 'edge';else flag = 'unknown';
+    chrome: ">=0",
+    chromium: ">=0"
+  })) flag = "chrome";else if (browser.satisfies({
+    firefox: ">=0"
+  })) flag = "firefox";else if (browser.satisfies({
+    safari: ">=0"
+  })) flag = "safari";else if (browser.satisfies({
+    opera: ">=0"
+  })) flag = "opera";else if (browser.satisfies({
+    "microsoft edge": ">=0"
+  })) flag = "edge";else flag = "unknown";
   return {
     flag: flag,
     name: browser.getBrowserName(),
@@ -11608,7 +11608,7 @@ function registerFunctions$1(_ref) {
   app.$zeyeClient.setMe = function (peerId, displayName) {
     peerId = peerId !== undefined ? peerId : randomString(6);
     displayName = displayName !== undefined ? displayName : randomName();
-    store.commit('zeyeClient/me/setMe', {
+    store.commit("zeyeClient/me/setMe", {
       peerId: peerId,
       displayName: displayName,
       device: deviceInfo()
@@ -11625,11 +11625,11 @@ function registerFunctions$1(_ref) {
     var webcamState;
 
     if (!app.$zeyeClient.getMe().canSendWebcam) {
-      webcamState = 'unsupported';
-    } else if (app.$zeyeClient.getVideoProducer() && app.$zeyeClient.getVideoProducer().type !== 'share') {
-      webcamState = 'on';
+      webcamState = "unsupported";
+    } else if (app.$zeyeClient.getVideoProducer() && app.$zeyeClient.getVideoProducer().type !== "share") {
+      webcamState = "on";
     } else {
-      webcamState = 'off';
+      webcamState = "off";
     }
 
     return webcamState;
@@ -11642,7 +11642,7 @@ function registerFunctions$1(_ref) {
 
 
   app.$zeyeClient.canIChangeWebcam = function () {
-    return app.$zeyeClient.getVideoProducer() && app.$zeyeClient.getVideoProducer().type !== 'share' && app.$zeyeClient.getMe().canChangeWebcam;
+    return app.$zeyeClient.getVideoProducer() && app.$zeyeClient.getVideoProducer().type !== "share" && app.$zeyeClient.getMe().canChangeWebcam;
   };
   /**
    * @method
@@ -11652,7 +11652,7 @@ function registerFunctions$1(_ref) {
 
 
   app.$zeyeClient.getScreenShareState = function () {
-    return app.$zeyeClient.getVideoProducer() && app.$zeyeClient.getVideoProducer().type === 'share' ? 'on' : 'off';
+    return app.$zeyeClient.getVideoProducer() && app.$zeyeClient.getVideoProducer().type === "share" ? "on" : "off";
   };
   /**
    * @method
@@ -11665,13 +11665,13 @@ function registerFunctions$1(_ref) {
     var micState;
 
     if (!app.$zeyeClient.getMe().canSendMic) {
-      micState = 'unsupported';
+      micState = "unsupported";
     } else if (!app.$zeyeClient.getAudioProducer()) {
-      micState = 'unsupported';
+      micState = "unsupported";
     } else if (!app.$zeyeClient.getAudioProducer().paused) {
-      micState = 'on';
+      micState = "on";
     } else {
-      micState = 'off';
+      micState = "off";
     }
 
     return micState;
@@ -11683,7 +11683,7 @@ function registerFunctions$1(_ref) {
 
 
   app.$zeyeClient.toggleWebcam = function () {
-    if (app.$zeyeClient.getWebcamState() === 'on') {
+    if (app.$zeyeClient.getWebcamState() === "on") {
       setDevices({
         webcamEnabled: false
       });
@@ -11702,7 +11702,7 @@ function registerFunctions$1(_ref) {
 
 
   app.$zeyeClient.toggleShare = function () {
-    if (app.$zeyeClient.getScreenShareState() === 'on') {
+    if (app.$zeyeClient.getScreenShareState() === "on") {
       app.$zeyeClient.disableShare();
     } else {
       app.$zeyeClient.enableShare();
@@ -11715,7 +11715,7 @@ function registerFunctions$1(_ref) {
 
 
   app.$zeyeClient.toggleMicState = function () {
-    app.$zeyeClient.getMicState() === 'on' ? app.$zeyeClient.muteMic() : app.$zeyeClient.unmuteMic();
+    app.$zeyeClient.getMicState() === "on" ? app.$zeyeClient.muteMic() : app.$zeyeClient.unmuteMic();
   };
 }
 
@@ -11729,7 +11729,7 @@ function registerFunctions$2(_ref) {
    * @returns {string}
    */
   app.$zeyeClient.isConnected = function () {
-    return store.state.zeyeClient.room.state === 'connected';
+    return store.state.zeyeClient.room.state === "connected";
   };
   /**
    * @method
@@ -11774,7 +11774,7 @@ function registerFunctions$3(_ref) {
 
   app.$zeyeClient.getAudioProducer = function () {
     return app.$zeyeClient.getProducers().find(function (producer) {
-      return producer.track.kind === 'audio';
+      return producer.track.kind === "audio";
     });
   };
   /**
@@ -11786,7 +11786,7 @@ function registerFunctions$3(_ref) {
 
   app.$zeyeClient.getVideoProducer = function () {
     return app.$zeyeClient.getProducers().find(function (producer) {
-      return producer.track.kind === 'video';
+      return producer.track.kind === "video";
     });
   };
 }
@@ -11846,7 +11846,7 @@ function registerFunctions$5(_ref) {
     return consumersArray.filter(function (consumer) {
       return !!consumer;
     }).find(function (consumer) {
-      return consumer.track.kind === 'audio';
+      return consumer.track.kind === "audio";
     });
   };
   /**
@@ -11865,7 +11865,7 @@ function registerFunctions$5(_ref) {
     return consumersArray.filter(function (consumer) {
       return !!consumer;
     }).find(function (consumer) {
-      return consumer.track.kind === 'video';
+      return consumer.track.kind === "video";
     });
   };
 }
@@ -12635,8 +12635,8 @@ function getProtooUrl(_ref) {
       forceVP9 = _ref.forceVP9,
       hostname = _ref.hostname,
       protooPort = _ref.protooPort;
-  hostname = hostname !== undefined ? hostname : 'localhost';
-  protooPort = protooPort !== undefined ? protooPort : '4443';
+  hostname = hostname !== undefined ? hostname : "localhost";
+  protooPort = protooPort !== undefined ? protooPort : "4443";
   var url = "wss://".concat(hostname, ":").concat(protooPort, "/?roomId=").concat(roomId, "&peerId=").concat(peerId);
   if (forceH264) url = "".concat(url, "&forceH264=true");else if (forceVP9) url = "".concat(url, "&forceVP9=true");
   return url;
@@ -12682,11 +12682,11 @@ var VIDEO_SIMULCAST_ENCODINGS = [{
 }]; // Used for VP9 webcam video.
 
 var VIDEO_KSVC_ENCODINGS = [{
-  scalabilityMode: 'S3T3_KEY'
+  scalabilityMode: "S3T3_KEY"
 }]; // Used for VP9 desktop sharing.
 
 var VIDEO_SVC_ENCODINGS = [{
-  scalabilityMode: 'S3T3',
+  scalabilityMode: "S3T3",
   dtx: true
 }];
 
@@ -12764,7 +12764,7 @@ var ZeyeClient = /*#__PURE__*/function () {
 
     this._webcam = {
       device: null,
-      resolution: 'hd'
+      resolution: "hd"
     };
   }
 
@@ -12773,15 +12773,15 @@ var ZeyeClient = /*#__PURE__*/function () {
     value: function close() {
       if (this._closed) return;
       this._closed = true;
-      console.debug('close()'); // Close protoo Peer
+      console.debug("close()"); // Close protoo Peer
 
       this._protoo.close(); // Close mediasoup Transports.
 
 
       if (this._sendTransport) this._sendTransport.close();
       if (this._recvTransport) this._recvTransport.close();
-      this.store.commit('zeyeClient/room/setRoomState', {
-        state: 'closed'
+      this.store.commit("zeyeClient/room/setRoomState", {
+        state: "closed"
       });
     }
     /**
@@ -12822,25 +12822,25 @@ var ZeyeClient = /*#__PURE__*/function () {
       });
       var protooTransport = new protooClient.WebSocketTransport(this._protooUrl);
       this._protoo = new protooClient.Peer(protooTransport);
-      this.store.commit('zeyeClient/room/setRoomState', {
-        state: 'connecting'
+      this.store.commit("zeyeClient/room/setRoomState", {
+        state: "connecting"
       });
 
-      this._protoo.on('open', function () {
+      this._protoo.on("open", function () {
         return _this._joinRoom();
       });
 
-      this._protoo.on('failed', function () {
-        _this.store.dispatch('zeyeClient/notify', {
-          type: 'error',
-          text: 'WebSocket connection failed'
+      this._protoo.on("failed", function () {
+        _this.store.dispatch("zeyeClient/notify", {
+          type: "error",
+          text: "WebSocket connection failed"
         });
       });
 
-      this._protoo.on('disconnected', function () {
-        _this.store.dispatch('zeyeClient/notify', {
-          type: 'error',
-          text: 'WebSocket disconnected'
+      this._protoo.on("disconnected", function () {
+        _this.store.dispatch("zeyeClient/notify", {
+          type: "error",
+          text: "WebSocket disconnected"
         }); // Close mediasoup Transports.
 
 
@@ -12856,19 +12856,19 @@ var ZeyeClient = /*#__PURE__*/function () {
           _this._recvTransport = null;
         }
 
-        _this.store.commit('zeyeClient/room/setRoomState', {
-          state: 'closed'
+        _this.store.commit("zeyeClient/room/setRoomState", {
+          state: "closed"
         });
       });
 
-      this._protoo.on('close', function () {
+      this._protoo.on("close", function () {
         if (_this._closed) return;
 
         _this.close();
       }); // eslint-disable-next-line no-unused-vars
 
 
-      this._protoo.on('request', /*#__PURE__*/function () {
+      this._protoo.on("request", /*#__PURE__*/function () {
         var _ref3 = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee(request, accept, reject) {
           var _request$data, _peerId2, producerId, id, kind, rtpParameters, type, appData, producerPaused, consumer, _mediasoupClient$pars, spatialLayers, temporalLayers, _request$data2, _peerId3, dataProducerId, _id, sctpStreamParameters, label, protocol, _appData, dataConsumer;
 
@@ -12878,7 +12878,7 @@ var ZeyeClient = /*#__PURE__*/function () {
                 case 0:
                   console.debug('proto "request" event [method:%s, data:%o]', request.method, request.data);
                   _context.t0 = request.method;
-                  _context.next = _context.t0 === 'newConsumer' ? 4 : _context.t0 === 'newDataConsumer' ? 27 : 56;
+                  _context.next = _context.t0 === "newConsumer" ? 4 : _context.t0 === "newDataConsumer" ? 27 : 56;
                   break;
 
                 case 4:
@@ -12887,7 +12887,7 @@ var ZeyeClient = /*#__PURE__*/function () {
                     break;
                   }
 
-                  reject(403, 'I do not want to consume');
+                  reject(403, "I do not want to consume");
                   return _context.abrupt("break", 56);
 
                 case 7:
@@ -12911,12 +12911,12 @@ var ZeyeClient = /*#__PURE__*/function () {
                   // Store in the map.
                   _this._consumers.set(consumer.id, consumer);
 
-                  consumer.on('transportclose', function () {
+                  consumer.on("transportclose", function () {
                     _this._consumers.delete(consumer.id);
                   });
                   _mediasoupClient$pars = mediasoupClient.parseScalabilityMode(consumer.rtpParameters.encodings[0].scalabilityMode), spatialLayers = _mediasoupClient$pars.spatialLayers, temporalLayers = _mediasoupClient$pars.temporalLayers;
 
-                  _this.store.commit('zeyeClient/consumers/addConsumer', {
+                  _this.store.commit("zeyeClient/consumers/addConsumer", {
                     consumer: {
                       id: consumer.id,
                       type: type,
@@ -12928,12 +12928,12 @@ var ZeyeClient = /*#__PURE__*/function () {
                       preferredSpatialLayer: spatialLayers - 1,
                       preferredTemporalLayer: temporalLayers - 1,
                       priority: 1,
-                      codec: consumer.rtpParameters.codecs[0].mimeType.split('/')[1],
+                      codec: consumer.rtpParameters.codecs[0].mimeType.split("/")[1],
                       track: consumer.track
                     }
                   });
 
-                  _this.store.commit('zeyeClient/peers/addConsumer', {
+                  _this.store.commit("zeyeClient/peers/addConsumer", {
                     consumer: {
                       id: consumer.id
                     },
@@ -12944,7 +12944,7 @@ var ZeyeClient = /*#__PURE__*/function () {
 
                   accept(); // If audio-only mode is enabled, pause it.
 
-                  if (consumer.kind === 'video' && _this.store.state.zeyeClient.me.audioOnly) _this._pauseConsumer(consumer);
+                  if (consumer.kind === "video" && _this.store.state.zeyeClient.me.audioOnly) _this._pauseConsumer(consumer);
                   _context.next = 26;
                   break;
 
@@ -12953,8 +12953,8 @@ var ZeyeClient = /*#__PURE__*/function () {
                   _context.t1 = _context["catch"](8);
                   console.error('"newConsumer" request failed:%o', _context.t1);
 
-                  _this.store.dispatch('zeyeClient/notify', {
-                    type: 'error',
+                  _this.store.dispatch("zeyeClient/notify", {
+                    type: "error",
                     text: "Error creating a Consumer: ".concat(_context.t1)
                   });
 
@@ -12969,7 +12969,7 @@ var ZeyeClient = /*#__PURE__*/function () {
                     break;
                   }
 
-                  reject(403, 'I do not want to data consume');
+                  reject(403, "I do not want to data consume");
                   return _context.abrupt("break", 56);
 
                 case 30:
@@ -12978,7 +12978,7 @@ var ZeyeClient = /*#__PURE__*/function () {
                     break;
                   }
 
-                  reject(403, 'I do not want DataChannels');
+                  reject(403, "I do not want DataChannels");
                   return _context.abrupt("break", 56);
 
                 case 33:
@@ -13003,31 +13003,31 @@ var ZeyeClient = /*#__PURE__*/function () {
                   // Store in the map.
                   _this._dataConsumers.set(dataConsumer.id, dataConsumer);
 
-                  dataConsumer.on('transportclose', function () {
+                  dataConsumer.on("transportclose", function () {
                     _this._dataConsumers.delete(dataConsumer.id);
                   });
-                  dataConsumer.on('open', function () {
+                  dataConsumer.on("open", function () {
                     console.debug('DataConsumer "open" event');
                   });
-                  dataConsumer.on('close', function () {
+                  dataConsumer.on("close", function () {
                     console.warn('DataConsumer "close" event');
 
                     _this._dataConsumers.delete(dataConsumer.id);
 
-                    _this.store.dispatch('zeyeClient/notify', {
-                      type: 'error',
-                      text: 'DataConsumer closed'
+                    _this.store.dispatch("zeyeClient/notify", {
+                      type: "error",
+                      text: "DataConsumer closed"
                     });
                   });
-                  dataConsumer.on('error', function (error) {
+                  dataConsumer.on("error", function (error) {
                     console.error('DataConsumer "error" event:%o', error);
 
-                    _this.store.dispatch('zeyeClient/notify', {
-                      type: 'error',
+                    _this.store.dispatch("zeyeClient/notify", {
+                      type: "error",
                       text: "DataConsumer error: ".concat(error)
                     });
                   });
-                  dataConsumer.on('message', function (message) {
+                  dataConsumer.on("message", function (message) {
                     console.debug('DataConsumer "message" event [streamId:%d]', dataConsumer.sctpStreamParameters.streamId); // TODO: For debugging.
 
                     window.DC_MESSAGE = message;
@@ -13037,24 +13037,24 @@ var ZeyeClient = /*#__PURE__*/function () {
                       var number = view.getUint32();
 
                       if (number === Math.pow(2, 32) - 1) {
-                        console.warn('dataChannelTest finished!');
+                        console.warn("dataChannelTest finished!");
                         _this._nextDataChannelTestNumber = 0;
                         return;
                       }
 
                       if (number > _this._nextDataChannelTestNumber) {
-                        console.warn('dataChannelTest: %s packets missing', number - _this._nextDataChannelTestNumber);
+                        console.warn("dataChannelTest: %s packets missing", number - _this._nextDataChannelTestNumber);
                       }
 
                       _this._nextDataChannelTestNumber = number + 1;
                       return;
-                    } else if (typeof message !== 'string') {
+                    } else if (typeof message !== "string") {
                       console.warn('ignoring DataConsumer "message" (not a string)');
                       return;
                     }
 
                     switch (dataConsumer.label) {
-                      case 'chat':
+                      case "chat":
                         {
                           var peers = _this.store.state.peers;
                           var peersArray = Object.keys(peers).map(function (_peerId) {
@@ -13069,7 +13069,7 @@ var ZeyeClient = /*#__PURE__*/function () {
                             break;
                           }
 
-                          _this.store.dispatch('zeyeClient/notify', {
+                          _this.store.dispatch("zeyeClient/notify", {
                             title: "".concat(sendingPeer.displayName, " says:"),
                             text: message,
                             timeout: 5000
@@ -13078,10 +13078,10 @@ var ZeyeClient = /*#__PURE__*/function () {
                           break;
                         }
 
-                      case 'bot':
+                      case "bot":
                         {
-                          _this.store.dispatch('zeyeClient/notify', {
-                            title: 'Message from Bot:',
+                          _this.store.dispatch("zeyeClient/notify", {
+                            title: "Message from Bot:",
                             text: message,
                             timeout: 5000
                           });
@@ -13093,7 +13093,7 @@ var ZeyeClient = /*#__PURE__*/function () {
 
                   window.DC = dataConsumer;
 
-                  _this.store.commit('zeyeClient/dataConsumers/addDataConsumer', {
+                  _this.store.commit("zeyeClient/dataConsumers/addDataConsumer", {
                     dataConsumer: {
                       id: dataConsumer.id,
                       sctpStreamParameters: dataConsumer.sctpStreamParameters,
@@ -13102,7 +13102,7 @@ var ZeyeClient = /*#__PURE__*/function () {
                     }
                   });
 
-                  _this.store.commit('zeyeClient/peers/addDataConsumer', {
+                  _this.store.commit("zeyeClient/peers/addDataConsumer", {
                     dataConsumer: {
                       id: dataConsumer.id
                     }
@@ -13118,8 +13118,8 @@ var ZeyeClient = /*#__PURE__*/function () {
                   _context.t2 = _context["catch"](34);
                   console.error('"newDataConsumer" request failed:%o', _context.t2);
 
-                  _this.store.dispatch('zeyeClient/notify', {
-                    type: 'error',
+                  _this.store.dispatch("zeyeClient/notify", {
+                    type: "error",
                     text: "Error creating a DataConsumer: ".concat(_context.t2)
                   });
 
@@ -13141,17 +13141,17 @@ var ZeyeClient = /*#__PURE__*/function () {
         };
       }());
 
-      this._protoo.on('notification', function (notification) {
+      this._protoo.on("notification", function (notification) {
         console.debug('proto "notification" event [method:%s, data:%o]', notification.method, notification.data);
 
         switch (notification.method) {
-          case 'producerScore':
+          case "producerScore":
             {
               var _notification$data = notification.data,
                   producerId = _notification$data.producerId,
                   score = _notification$data.score;
 
-              _this.store.commit('zeyeClient/producers/setProducerScore', {
+              _this.store.commit("zeyeClient/producers/setProducerScore", {
                 producerId: producerId,
                 score: score
               });
@@ -13159,55 +13159,55 @@ var ZeyeClient = /*#__PURE__*/function () {
               break;
             }
 
-          case 'newPeer':
+          case "newPeer":
             {
               var peer = notification.data;
 
-              _this.store.commit('zeyeClient/peers/addPeer', {
+              _this.store.commit("zeyeClient/peers/addPeer", {
                 peer: _objectSpread2({}, peer, {
                   consumers: [],
                   dataConsumers: []
                 })
               });
 
-              _this.store.dispatch('zeyeClient/notify', {
+              _this.store.dispatch("zeyeClient/notify", {
                 text: "".concat(peer.displayName, " has joined the room")
               });
 
               break;
             }
 
-          case 'peerClosed':
+          case "peerClosed":
             {
               var _peerId4 = notification.data.peerId;
 
-              _this.store.commit('zeyeClient/peers/removePeer', {
+              _this.store.commit("zeyeClient/peers/removePeer", {
                 peerId: _peerId4
               });
 
               break;
             }
 
-          case 'peerDisplayNameChanged':
+          case "peerDisplayNameChanged":
             {
               var _notification$data2 = notification.data,
                   _peerId5 = _notification$data2.peerId,
                   _displayName = _notification$data2.displayName,
                   oldDisplayName = _notification$data2.oldDisplayName;
 
-              _this.store.commit('zeyeClient/peers/setPeerDisplayName', {
+              _this.store.commit("zeyeClient/peers/setPeerDisplayName", {
                 displayName: _displayName,
                 peerId: _peerId5
               });
 
-              _this.store.dispatch('zeyeClient/notify', {
+              _this.store.dispatch("zeyeClient/notify", {
                 text: "".concat(oldDisplayName, " is now ").concat(_displayName)
               });
 
               break;
             }
 
-          case 'consumerClosed':
+          case "consumerClosed":
             {
               var consumerId = notification.data.consumerId;
 
@@ -13220,12 +13220,12 @@ var ZeyeClient = /*#__PURE__*/function () {
 
               var _peerId6 = consumer.appData.peerId; // TODO: probably move peer removers\adders into consumer removers\adders
 
-              _this.store.commit('zeyeClient/peers/removeConsumer', {
+              _this.store.commit("zeyeClient/peers/removeConsumer", {
                 consumerId: consumerId,
                 peerId: _peerId6
               });
 
-              _this.store.commit('zeyeClient/consumers/removeConsumer', {
+              _this.store.commit("zeyeClient/consumers/removeConsumer", {
                 consumerId: consumerId,
                 peerId: _peerId6
               });
@@ -13233,7 +13233,7 @@ var ZeyeClient = /*#__PURE__*/function () {
               break;
             }
 
-          case 'consumerPaused':
+          case "consumerPaused":
             {
               var _consumerId = notification.data.consumerId;
 
@@ -13241,15 +13241,15 @@ var ZeyeClient = /*#__PURE__*/function () {
 
               if (!_consumer) break;
 
-              _this.store.commit('zeyeClient/consumers/setConsumerPaused', {
+              _this.store.commit("zeyeClient/consumers/setConsumerPaused", {
                 consumerId: _consumerId,
-                originator: 'remote'
+                originator: "remote"
               });
 
               break;
             }
 
-          case 'consumerResumed':
+          case "consumerResumed":
             {
               var _consumerId2 = notification.data.consumerId;
 
@@ -13257,15 +13257,15 @@ var ZeyeClient = /*#__PURE__*/function () {
 
               if (!_consumer2) break;
 
-              _this.store.commit('zeyeClient/consumers/setConsumerResumed', {
+              _this.store.commit("zeyeClient/consumers/setConsumerResumed", {
                 consumerId: _consumerId2,
-                originator: 'remote'
+                originator: "remote"
               });
 
               break;
             }
 
-          case 'consumerLayersChanged':
+          case "consumerLayersChanged":
             {
               var _notification$data3 = notification.data,
                   _consumerId3 = _notification$data3.consumerId,
@@ -13276,7 +13276,7 @@ var ZeyeClient = /*#__PURE__*/function () {
 
               if (!_consumer3) break;
 
-              _this.store.commit('zeyeClient/consumers/setConsumerCurrentLayers', {
+              _this.store.commit("zeyeClient/consumers/setConsumerCurrentLayers", {
                 consumerId: _consumerId3,
                 spatialLayer: spatialLayer,
                 temporalLayer: temporalLayer
@@ -13285,13 +13285,13 @@ var ZeyeClient = /*#__PURE__*/function () {
               break;
             }
 
-          case 'consumerScore':
+          case "consumerScore":
             {
               var _notification$data4 = notification.data,
                   _consumerId4 = _notification$data4.consumerId,
                   _score = _notification$data4.score;
 
-              _this.store.commit('zeyeClient/consumers/setConsumerScore', {
+              _this.store.commit("zeyeClient/consumers/setConsumerScore", {
                 consumerId: _consumerId4,
                 score: _score
               });
@@ -13299,7 +13299,7 @@ var ZeyeClient = /*#__PURE__*/function () {
               break;
             }
 
-          case 'dataConsumerClosed':
+          case "dataConsumerClosed":
             {
               var dataConsumerId = notification.data.dataConsumerId;
 
@@ -13312,7 +13312,7 @@ var ZeyeClient = /*#__PURE__*/function () {
 
               var _peerId7 = dataConsumer.appData.peerId;
 
-              _this.store.commit('zeyeClient/dataConsumers/removeDataConsumer', {
+              _this.store.commit("zeyeClient/dataConsumers/removeDataConsumer", {
                 dataConsumerId: dataConsumerId,
                 peerId: _peerId7
               });
@@ -13320,11 +13320,11 @@ var ZeyeClient = /*#__PURE__*/function () {
               break;
             }
 
-          case 'activeSpeaker':
+          case "activeSpeaker":
             {
               var _peerId8 = notification.data.peerId;
 
-              _this.store.commit('zeyeClient/room/setRoomActiveSpeaker', {
+              _this.store.commit("zeyeClient/room/setRoomActiveSpeaker", {
                 peerId: _peerId8
               });
 
@@ -13352,7 +13352,7 @@ var ZeyeClient = /*#__PURE__*/function () {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                console.debug('enableMic()');
+                console.debug("enableMic()");
 
                 if (!this._micProducer) {
                   _context2.next = 3;
@@ -13362,12 +13362,12 @@ var ZeyeClient = /*#__PURE__*/function () {
                 return _context2.abrupt("return");
 
               case 3:
-                if (this._mediasoupDevice.canProduce('audio')) {
+                if (this._mediasoupDevice.canProduce("audio")) {
                   _context2.next = 6;
                   break;
                 }
 
-                console.error('enableMic() | cannot produce audio');
+                console.error("enableMic() | cannot produce audio");
                 return _context2.abrupt("return");
 
               case 6:
@@ -13378,7 +13378,7 @@ var ZeyeClient = /*#__PURE__*/function () {
                   break;
                 }
 
-                console.debug('enableMic() | calling getUserMedia()');
+                console.debug("enableMic() | calling getUserMedia()");
                 _context2.next = 11;
                 return navigator.mediaDevices.getUserMedia({
                   audio: true
@@ -13413,24 +13413,24 @@ var ZeyeClient = /*#__PURE__*/function () {
 
               case 21:
                 this._micProducer = _context2.sent;
-                this.store.commit('zeyeClient/producers/addProducer', {
+                this.store.commit("zeyeClient/producers/addProducer", {
                   producer: {
                     id: this._micProducer.id,
                     paused: this._micProducer.paused,
                     track: this._micProducer.track,
                     rtpParameters: this._micProducer.rtpParameters,
-                    codec: this._micProducer.rtpParameters.codecs[0].mimeType.split('/')[1]
+                    codec: this._micProducer.rtpParameters.codecs[0].mimeType.split("/")[1]
                   }
                 });
 
-                this._micProducer.on('transportclose', function () {
+                this._micProducer.on("transportclose", function () {
                   _this2._micProducer = null;
                 });
 
-                this._micProducer.on('trackended', function () {
-                  _this2.store.dispatch('zeyeClient/notify', {
-                    type: 'error',
-                    text: 'Microphone disconnected!'
+                this._micProducer.on("trackended", function () {
+                  _this2.store.dispatch("zeyeClient/notify", {
+                    type: "error",
+                    text: "Microphone disconnected!"
                   });
 
                   _this2.disableMic().catch(function () {});
@@ -13442,9 +13442,9 @@ var ZeyeClient = /*#__PURE__*/function () {
               case 27:
                 _context2.prev = 27;
                 _context2.t0 = _context2["catch"](6);
-                console.error('enableMic() | failed:%o', _context2.t0);
-                this.store.dispatch('zeyeClient/notify', {
-                  type: 'error',
+                console.error("enableMic() | failed:%o", _context2.t0);
+                this.store.dispatch("zeyeClient/notify", {
+                  type: "error",
                   text: "Error enabling microphone: ".concat(_context2.t0)
                 });
                 if (track) track.stop();
@@ -13471,7 +13471,7 @@ var ZeyeClient = /*#__PURE__*/function () {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                console.debug('disableMic()');
+                console.debug("disableMic()");
 
                 if (this._micProducer) {
                   _context3.next = 3;
@@ -13483,12 +13483,12 @@ var ZeyeClient = /*#__PURE__*/function () {
               case 3:
                 this._micProducer.close();
 
-                this.store.commit('zeyeClient/producers/removeProducer', {
+                this.store.commit("zeyeClient/producers/removeProducer", {
                   producerId: this._micProducer.id
                 });
                 _context3.prev = 5;
                 _context3.next = 8;
-                return this._protoo.request('closeProducer', {
+                return this._protoo.request("closeProducer", {
                   producerId: this._micProducer.id
                 });
 
@@ -13499,8 +13499,8 @@ var ZeyeClient = /*#__PURE__*/function () {
               case 10:
                 _context3.prev = 10;
                 _context3.t0 = _context3["catch"](5);
-                this.store.dispatch('zeyeClient/notify', {
-                  type: 'error',
+                this.store.dispatch("zeyeClient/notify", {
+                  type: "error",
                   text: "Error closing server-side mic Producer: ".concat(_context3.t0)
                 });
 
@@ -13529,18 +13529,18 @@ var ZeyeClient = /*#__PURE__*/function () {
           while (1) {
             switch (_context4.prev = _context4.next) {
               case 0:
-                console.debug('muteMic()');
+                console.debug("muteMic()");
 
                 this._micProducer.pause();
 
                 _context4.prev = 2;
                 _context4.next = 5;
-                return this._protoo.request('pauseProducer', {
+                return this._protoo.request("pauseProducer", {
                   producerId: this._micProducer.id
                 });
 
               case 5:
-                this.store.commit('zeyeClient/producers/setProducerPaused', {
+                this.store.commit("zeyeClient/producers/setProducerPaused", {
                   producerId: this._micProducer.id
                 });
                 _context4.next = 12;
@@ -13549,9 +13549,9 @@ var ZeyeClient = /*#__PURE__*/function () {
               case 8:
                 _context4.prev = 8;
                 _context4.t0 = _context4["catch"](2);
-                console.error('muteMic() | failed: %o', _context4.t0);
-                this.store.dispatch('zeyeClient/notify', {
-                  type: 'error',
+                console.error("muteMic() | failed: %o", _context4.t0);
+                this.store.dispatch("zeyeClient/notify", {
+                  type: "error",
                   text: "Error pausing server-side mic Producer: ".concat(_context4.t0)
                 });
 
@@ -13577,18 +13577,18 @@ var ZeyeClient = /*#__PURE__*/function () {
           while (1) {
             switch (_context5.prev = _context5.next) {
               case 0:
-                console.debug('unmuteMic()');
+                console.debug("unmuteMic()");
 
                 this._micProducer.resume();
 
                 _context5.prev = 2;
                 _context5.next = 5;
-                return this._protoo.request('resumeProducer', {
+                return this._protoo.request("resumeProducer", {
                   producerId: this._micProducer.id
                 });
 
               case 5:
-                this.store.commit('zeyeClient/producers/setProducerResumed', {
+                this.store.commit("zeyeClient/producers/setProducerResumed", {
                   producerId: this._micProducer.id
                 });
                 _context5.next = 12;
@@ -13597,9 +13597,9 @@ var ZeyeClient = /*#__PURE__*/function () {
               case 8:
                 _context5.prev = 8;
                 _context5.t0 = _context5["catch"](2);
-                console.error('unmuteMic() | failed: %o', _context5.t0);
-                this.store.dispatch('zeyeClient/notify', {
-                  type: 'error',
+                console.error("unmuteMic() | failed: %o", _context5.t0);
+                this.store.dispatch("zeyeClient/notify", {
+                  type: "error",
                   text: "Error resuming server-side mic Producer: ".concat(_context5.t0)
                 });
 
@@ -13629,7 +13629,7 @@ var ZeyeClient = /*#__PURE__*/function () {
           while (1) {
             switch (_context6.prev = _context6.next) {
               case 0:
-                console.debug('enableWebcam()');
+                console.debug("enableWebcam()");
 
                 if (!this._webcamProducer) {
                   _context6.next = 5;
@@ -13648,16 +13648,16 @@ var ZeyeClient = /*#__PURE__*/function () {
                 return this.disableShare();
 
               case 8:
-                if (this._mediasoupDevice.canProduce('video')) {
+                if (this._mediasoupDevice.canProduce("video")) {
                   _context6.next = 11;
                   break;
                 }
 
-                console.error('enableWebcam() | cannot produce video');
+                console.error("enableWebcam() | cannot produce video");
                 return _context6.abrupt("return");
 
               case 11:
-                this.store.commit('zeyeClient/me/setWebcamInProgress', {
+                this.store.commit("zeyeClient/me/setWebcamInProgress", {
                   flag: true
                 });
                 _context6.prev = 12;
@@ -13679,10 +13679,10 @@ var ZeyeClient = /*#__PURE__*/function () {
                   break;
                 }
 
-                throw new Error('no webcam devices');
+                throw new Error("no webcam devices");
 
               case 20:
-                console.debug('enableWebcam() | calling getUserMedia()');
+                console.debug("enableWebcam() | calling getUserMedia()");
                 _context6.next = 23;
                 return navigator.mediaDevices.getUserMedia({
                   video: _objectSpread2({
@@ -13700,7 +13700,7 @@ var ZeyeClient = /*#__PURE__*/function () {
 
               case 27:
                 device = {
-                  label: 'external video'
+                  label: "external video"
                 };
                 _context6.next = 30;
                 return this._getExternalVideoStream();
@@ -13717,9 +13717,9 @@ var ZeyeClient = /*#__PURE__*/function () {
 
                 // If VP9 is the only available video codec then use SVC.
                 firstVideoCodec = this._mediasoupDevice.rtpCapabilities.codecs.find(function (c) {
-                  return c.kind === 'video';
+                  return c.kind === "video";
                 });
-                if (firstVideoCodec.mimeType.toLowerCase() === 'video/vp9') encodings = VIDEO_KSVC_ENCODINGS;else encodings = VIDEO_SIMULCAST_ENCODINGS;
+                if (firstVideoCodec.mimeType.toLowerCase() === "video/vp9") encodings = VIDEO_KSVC_ENCODINGS;else encodings = VIDEO_SIMULCAST_ENCODINGS;
                 _context6.next = 37;
                 return this._sendTransport.produce({
                   track: track,
@@ -13747,7 +13747,7 @@ var ZeyeClient = /*#__PURE__*/function () {
                 this._webcamProducer = _context6.sent;
 
               case 43:
-                this.store.commit('zeyeClient/producers/addProducer', {
+                this.store.commit("zeyeClient/producers/addProducer", {
                   producer: {
                     id: this._webcamProducer.id,
                     deviceLabel: device.label,
@@ -13755,18 +13755,18 @@ var ZeyeClient = /*#__PURE__*/function () {
                     paused: this._webcamProducer.paused,
                     track: this._webcamProducer.track,
                     rtpParameters: this._webcamProducer.rtpParameters,
-                    codec: this._webcamProducer.rtpParameters.codecs[0].mimeType.split('/')[1]
+                    codec: this._webcamProducer.rtpParameters.codecs[0].mimeType.split("/")[1]
                   }
                 });
 
-                this._webcamProducer.on('transportclose', function () {
+                this._webcamProducer.on("transportclose", function () {
                   _this3._webcamProducer = null;
                 });
 
-                this._webcamProducer.on('trackended', function () {
-                  _this3.store.dispatch('zeyeClient/notify', {
-                    type: 'error',
-                    text: 'Webcam disconnected!'
+                this._webcamProducer.on("trackended", function () {
+                  _this3.store.dispatch("zeyeClient/notify", {
+                    type: "error",
+                    text: "Webcam disconnected!"
                   });
 
                   _this3.disableWebcam().catch(function () {});
@@ -13778,15 +13778,15 @@ var ZeyeClient = /*#__PURE__*/function () {
               case 48:
                 _context6.prev = 48;
                 _context6.t0 = _context6["catch"](12);
-                console.error('enableWebcam() | failed:%o', _context6.t0);
-                this.store.dispatch('zeyeClient/notify', {
-                  type: 'error',
+                console.error("enableWebcam() | failed:%o", _context6.t0);
+                this.store.dispatch("zeyeClient/notify", {
+                  type: "error",
                   text: "Error enabling webcam: ".concat(_context6.t0)
                 });
                 if (track) track.stop();
 
               case 53:
-                this.store.commit('zeyeClient/me/setWebcamInProgress', {
+                this.store.commit("zeyeClient/me/setWebcamInProgress", {
                   flag: false
                 });
 
@@ -13812,7 +13812,7 @@ var ZeyeClient = /*#__PURE__*/function () {
           while (1) {
             switch (_context7.prev = _context7.next) {
               case 0:
-                console.debug('disableWebcam()');
+                console.debug("disableWebcam()");
 
                 if (this._webcamProducer) {
                   _context7.next = 3;
@@ -13824,12 +13824,12 @@ var ZeyeClient = /*#__PURE__*/function () {
               case 3:
                 this._webcamProducer.close();
 
-                this.store.commit('zeyeClient/producers/removeProducer', {
+                this.store.commit("zeyeClient/producers/removeProducer", {
                   producerId: this._webcamProducer.id
                 });
                 _context7.prev = 5;
                 _context7.next = 8;
-                return this._protoo.request('closeProducer', {
+                return this._protoo.request("closeProducer", {
                   producerId: this._webcamProducer.id
                 });
 
@@ -13840,8 +13840,8 @@ var ZeyeClient = /*#__PURE__*/function () {
               case 10:
                 _context7.prev = 10;
                 _context7.t0 = _context7["catch"](5);
-                this.store.dispatch('zeyeClient/notify', {
-                  type: 'error',
+                this.store.dispatch("zeyeClient/notify", {
+                  type: "error",
                   text: "Error closing server-side webcam Producer: ".concat(_context7.t0)
                 });
 
@@ -13871,8 +13871,8 @@ var ZeyeClient = /*#__PURE__*/function () {
           while (1) {
             switch (_context8.prev = _context8.next) {
               case 0:
-                console.debug('changeWebcam()');
-                this.store.commit('zeyeClient/me/setWebcamInProgress', {
+                console.debug("changeWebcam()");
+                this.store.commit("zeyeClient/me/setWebcamInProgress", {
                   flag: true
                 });
                 _context8.prev = 2;
@@ -13886,23 +13886,23 @@ var ZeyeClient = /*#__PURE__*/function () {
                 idx = array.indexOf(deviceId);
                 if (idx < len - 1) idx++;else idx = 0;
                 this._webcam.device = this._webcams.get(array[idx]);
-                console.debug('changeWebcam() | new selected webcam [device:%o]', this._webcam.device); // Reset video resolution to HD.
+                console.debug("changeWebcam() | new selected webcam [device:%o]", this._webcam.device); // Reset video resolution to HD.
 
-                this._webcam.resolution = 'hd';
+                this._webcam.resolution = "hd";
 
                 if (this._webcam.device) {
                   _context8.next = 15;
                   break;
                 }
 
-                throw new Error('no webcam devices');
+                throw new Error("no webcam devices");
 
               case 15:
                 // Closing the current video track before asking for a new one (mobiles do not like
                 // having both front/back cameras open at the same time).
                 this._webcamProducer.track.stop();
 
-                console.debug('changeWebcam() | calling getUserMedia()');
+                console.debug("changeWebcam() | calling getUserMedia()");
                 _context8.next = 19;
                 return navigator.mediaDevices.getUserMedia({
                   video: _objectSpread2({
@@ -13921,7 +13921,7 @@ var ZeyeClient = /*#__PURE__*/function () {
                 });
 
               case 23:
-                this.store.commit('zeyeClient/producers/setProducerTrack', {
+                this.store.commit("zeyeClient/producers/setProducerTrack", {
                   producerId: this._webcamProducer.id,
                   track: track
                 });
@@ -13931,14 +13931,14 @@ var ZeyeClient = /*#__PURE__*/function () {
               case 26:
                 _context8.prev = 26;
                 _context8.t0 = _context8["catch"](2);
-                console.error('changeWebcam() | failed: %o', _context8.t0);
-                this.store.dispatch('zeyeClient/notify', {
-                  type: 'error',
+                console.error("changeWebcam() | failed: %o", _context8.t0);
+                this.store.dispatch("zeyeClient/notify", {
+                  type: "error",
                   text: "Could not change webcam: ".concat(_context8.t0)
                 });
 
               case 30:
-                this.store.commit('zeyeClient/me/setWebcamInProgress', {
+                this.store.commit("zeyeClient/me/setWebcamInProgress", {
                   flag: false
                 });
 
@@ -13965,32 +13965,32 @@ var ZeyeClient = /*#__PURE__*/function () {
           while (1) {
             switch (_context9.prev = _context9.next) {
               case 0:
-                console.debug('changeWebcamResolution()');
-                this.store.commit('zeyeClient/me/setWebcamInProgress', {
+                console.debug("changeWebcamResolution()");
+                this.store.commit("zeyeClient/me/setWebcamInProgress", {
                   flag: true
                 });
                 _context9.prev = 2;
                 _context9.t0 = this._webcam.resolution;
-                _context9.next = _context9.t0 === 'qvga' ? 6 : _context9.t0 === 'vga' ? 8 : _context9.t0 === 'hd' ? 10 : 12;
+                _context9.next = _context9.t0 === "qvga" ? 6 : _context9.t0 === "vga" ? 8 : _context9.t0 === "hd" ? 10 : 12;
                 break;
 
               case 6:
-                this._webcam.resolution = 'vga';
+                this._webcam.resolution = "vga";
                 return _context9.abrupt("break", 13);
 
               case 8:
-                this._webcam.resolution = 'hd';
+                this._webcam.resolution = "hd";
                 return _context9.abrupt("break", 13);
 
               case 10:
-                this._webcam.resolution = 'qvga';
+                this._webcam.resolution = "qvga";
                 return _context9.abrupt("break", 13);
 
               case 12:
-                this._webcam.resolution = 'hd';
+                this._webcam.resolution = "hd";
 
               case 13:
-                console.debug('changeWebcamResolution() | calling getUserMedia()');
+                console.debug("changeWebcamResolution() | calling getUserMedia()");
                 _context9.next = 16;
                 return navigator.mediaDevices.getUserMedia({
                   video: _objectSpread2({
@@ -14009,7 +14009,7 @@ var ZeyeClient = /*#__PURE__*/function () {
                 });
 
               case 20:
-                this.store.commit('zeyeClient/producers/setProducerTrack', {
+                this.store.commit("zeyeClient/producers/setProducerTrack", {
                   producerId: this._webcamProducer.id,
                   track: track
                 });
@@ -14019,14 +14019,14 @@ var ZeyeClient = /*#__PURE__*/function () {
               case 23:
                 _context9.prev = 23;
                 _context9.t1 = _context9["catch"](2);
-                console.error('changeWebcamResolution() | failed: %o', _context9.t1);
-                this.store.dispatch('zeyeClient/notify', {
-                  type: 'error',
+                console.error("changeWebcamResolution() | failed: %o", _context9.t1);
+                this.store.dispatch("zeyeClient/notify", {
+                  type: "error",
                   text: "Could not change webcam resolution: ".concat(_context9.t1)
                 });
 
               case 27:
-                this.store.commit('zeyeClient/me/setWebcamInProgress', {
+                this.store.commit("zeyeClient/me/setWebcamInProgress", {
                   flag: false
                 });
 
@@ -14055,7 +14055,7 @@ var ZeyeClient = /*#__PURE__*/function () {
           while (1) {
             switch (_context10.prev = _context10.next) {
               case 0:
-                console.debug('enableShare()');
+                console.debug("enableShare()");
 
                 if (!this._shareProducer) {
                   _context10.next = 5;
@@ -14074,25 +14074,25 @@ var ZeyeClient = /*#__PURE__*/function () {
                 return this.disableWebcam();
 
               case 8:
-                if (this._mediasoupDevice.canProduce('video')) {
+                if (this._mediasoupDevice.canProduce("video")) {
                   _context10.next = 11;
                   break;
                 }
 
-                console.error('enableShare() | cannot produce video');
+                console.error("enableShare() | cannot produce video");
                 return _context10.abrupt("return");
 
               case 11:
-                this.store.commit('zeyeClient/me/setShareInProgress', {
+                this.store.commit("zeyeClient/me/setShareInProgress", {
                   flag: true
                 });
                 _context10.prev = 12;
-                console.debug('enableShare() | calling getUserMedia()');
+                console.debug("enableShare() | calling getUserMedia()");
                 _context10.next = 16;
                 return navigator.mediaDevices.getDisplayMedia({
                   audio: false,
                   video: {
-                    displaySurface: 'monitor',
+                    displaySurface: "monitor",
                     logicalSurface: true,
                     cursor: true,
                     width: {
@@ -14115,7 +14115,7 @@ var ZeyeClient = /*#__PURE__*/function () {
                   break;
                 }
 
-                this.store.commit('zeyeClient/me/setShareInProgress', {
+                this.store.commit("zeyeClient/me/setShareInProgress", {
                   flag: true
                 });
                 return _context10.abrupt("return");
@@ -14130,10 +14130,10 @@ var ZeyeClient = /*#__PURE__*/function () {
 
                 // If VP9 is the only available video codec then use SVC.
                 firstVideoCodec = this._mediasoupDevice.rtpCapabilities.codecs.find(function (c) {
-                  return c.kind === 'video';
+                  return c.kind === "video";
                 });
 
-                if (firstVideoCodec.mimeType.toLowerCase() === 'video/vp9') {
+                if (firstVideoCodec.mimeType.toLowerCase() === "video/vp9") {
                   encodings = VIDEO_SVC_ENCODINGS;
                 } else {
                   encodings = VIDEO_SIMULCAST_ENCODINGS.map(function (encoding) {
@@ -14170,25 +14170,25 @@ var ZeyeClient = /*#__PURE__*/function () {
                 this._shareProducer = _context10.sent;
 
               case 32:
-                this.store.commit('zeyeClient/producers/addProducer', {
+                this.store.commit("zeyeClient/producers/addProducer", {
                   producer: {
                     id: this._shareProducer.id,
-                    type: 'share',
+                    type: "share",
                     paused: this._shareProducer.paused,
                     track: this._shareProducer.track,
                     rtpParameters: this._shareProducer.rtpParameters,
-                    codec: this._shareProducer.rtpParameters.codecs[0].mimeType.split('/')[1]
+                    codec: this._shareProducer.rtpParameters.codecs[0].mimeType.split("/")[1]
                   }
                 });
 
-                this._shareProducer.on('transportclose', function () {
+                this._shareProducer.on("transportclose", function () {
                   _this4._shareProducer = null;
                 });
 
-                this._shareProducer.on('trackended', function () {
-                  _this4.store.dispatch('zeyeClient/notify', {
-                    type: 'error',
-                    text: 'Share disconnected!'
+                this._shareProducer.on("trackended", function () {
+                  _this4.store.dispatch("zeyeClient/notify", {
+                    type: "error",
+                    text: "Share disconnected!"
                   });
 
                   _this4.disableShare().catch(function () {});
@@ -14200,11 +14200,11 @@ var ZeyeClient = /*#__PURE__*/function () {
               case 37:
                 _context10.prev = 37;
                 _context10.t0 = _context10["catch"](12);
-                console.error('enableShare() | failed:%o', _context10.t0);
+                console.error("enableShare() | failed:%o", _context10.t0);
 
-                if (_context10.t0.name !== 'NotAllowedError') {
-                  this.store.dispatch('zeyeClient/notify', {
-                    type: 'error',
+                if (_context10.t0.name !== "NotAllowedError") {
+                  this.store.dispatch("zeyeClient/notify", {
+                    type: "error",
                     text: "Error sharing: ".concat(_context10.t0)
                   });
                 }
@@ -14212,7 +14212,7 @@ var ZeyeClient = /*#__PURE__*/function () {
                 if (track) track.stop();
 
               case 42:
-                this.store.commit('zeyeClient/me/setShareInProgress', {
+                this.store.commit("zeyeClient/me/setShareInProgress", {
                   flag: false
                 });
 
@@ -14238,7 +14238,7 @@ var ZeyeClient = /*#__PURE__*/function () {
           while (1) {
             switch (_context11.prev = _context11.next) {
               case 0:
-                console.debug('disableShare()');
+                console.debug("disableShare()");
 
                 if (this._shareProducer) {
                   _context11.next = 3;
@@ -14250,12 +14250,12 @@ var ZeyeClient = /*#__PURE__*/function () {
               case 3:
                 this._shareProducer.close();
 
-                this.store.commit('zeyeClient/producers/removeProducer', {
+                this.store.commit("zeyeClient/producers/removeProducer", {
                   producerId: this._shareProducer.id
                 });
                 _context11.prev = 5;
                 _context11.next = 8;
-                return this._protoo.request('closeProducer', {
+                return this._protoo.request("closeProducer", {
                   producerId: this._shareProducer.id
                 });
 
@@ -14266,8 +14266,8 @@ var ZeyeClient = /*#__PURE__*/function () {
               case 10:
                 _context11.prev = 10;
                 _context11.t0 = _context11["catch"](5);
-                this.store.dispatch('zeyeClient/notify', {
-                  type: 'error',
+                this.store.dispatch("zeyeClient/notify", {
+                  type: "error",
                   text: "Error closing server-side share Producer: ".concat(_context11.t0)
                 });
 
@@ -14291,8 +14291,8 @@ var ZeyeClient = /*#__PURE__*/function () {
   }, {
     key: "enableAudioOnly",
     value: function enableAudioOnly() {
-      console.debug('enableAudioOnly()');
-      this.store.commit('zeyeClient/me/setAudioOnlyInProgress', {
+      console.debug("enableAudioOnly()");
+      this.store.commit("zeyeClient/me/setAudioOnlyInProgress", {
         flag: true
       });
       this.disableWebcam();
@@ -14303,7 +14303,7 @@ var ZeyeClient = /*#__PURE__*/function () {
       try {
         for (_iterator.s(); !(_step = _iterator.n()).done;) {
           var consumer = _step.value;
-          if (consumer.kind !== 'video') continue;
+          if (consumer.kind !== "video") continue;
 
           this._pauseConsumer(consumer);
         }
@@ -14313,18 +14313,18 @@ var ZeyeClient = /*#__PURE__*/function () {
         _iterator.f();
       }
 
-      this.store.commit('zeyeClient/me/setAudioOnlyState', {
+      this.store.commit("zeyeClient/me/setAudioOnlyState", {
         enabled: true
       });
-      this.store.commit('zeyeClient/me/setAudioOnlyInProgress', {
+      this.store.commit("zeyeClient/me/setAudioOnlyInProgress", {
         flag: false
       });
     }
   }, {
     key: "disableAudioOnly",
     value: function disableAudioOnly() {
-      console.debug('disableAudioOnly()');
-      this.store.commit('zeyeClient/me/setAudioOnlyInProgress', {
+      console.debug("disableAudioOnly()");
+      this.store.commit("zeyeClient/me/setAudioOnlyInProgress", {
         flag: true
       });
 
@@ -14338,7 +14338,7 @@ var ZeyeClient = /*#__PURE__*/function () {
       try {
         for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
           var consumer = _step2.value;
-          if (consumer.kind !== 'video') continue;
+          if (consumer.kind !== "video") continue;
 
           this._resumeConsumer(consumer);
         }
@@ -14348,26 +14348,26 @@ var ZeyeClient = /*#__PURE__*/function () {
         _iterator2.f();
       }
 
-      this.store.commit('zeyeClient/me/setAudioOnlyState', {
+      this.store.commit("zeyeClient/me/setAudioOnlyState", {
         enabled: false
       });
-      this.store.commit('zeyeClient/me/setAudioOnlyInProgress', {
+      this.store.commit("zeyeClient/me/setAudioOnlyInProgress", {
         flag: false
       });
     }
   }, {
     key: "muteAudio",
     value: function muteAudio() {
-      console.debug('muteAudio()');
-      this.store.commit('zeyeClient/me/setAudioMutedState', {
+      console.debug("muteAudio()");
+      this.store.commit("zeyeClient/me/setAudioMutedState", {
         flag: true
       });
     }
   }, {
     key: "unmuteAudio",
     value: function unmuteAudio() {
-      console.debug('unmuteAudio()');
-      this.store.commit('zeyeClient/me/setAudioMutedState', {
+      console.debug("unmuteAudio()");
+      this.store.commit("zeyeClient/me/setAudioMutedState", {
         flag: false
       });
     }
@@ -14381,8 +14381,8 @@ var ZeyeClient = /*#__PURE__*/function () {
           while (1) {
             switch (_context12.prev = _context12.next) {
               case 0:
-                console.debug('restartIce()');
-                this.store.commit('zeyeClient/me/setRestartIceInProgress', {
+                console.debug("restartIce()");
+                this.store.commit("zeyeClient/me/setRestartIceInProgress", {
                   flag: true
                 });
                 _context12.prev = 2;
@@ -14393,7 +14393,7 @@ var ZeyeClient = /*#__PURE__*/function () {
                 }
 
                 _context12.next = 6;
-                return this._protoo.request('restartIce', {
+                return this._protoo.request("restartIce", {
                   transportId: this._sendTransport.id
                 });
 
@@ -14411,7 +14411,7 @@ var ZeyeClient = /*#__PURE__*/function () {
                 }
 
                 _context12.next = 12;
-                return this._protoo.request('restartIce', {
+                return this._protoo.request("restartIce", {
                   transportId: this._recvTransport.id
                 });
 
@@ -14423,8 +14423,8 @@ var ZeyeClient = /*#__PURE__*/function () {
                 });
 
               case 15:
-                this.store.dispatch('zeyeClient/notify', {
-                  text: 'ICE restarted'
+                this.store.dispatch("zeyeClient/notify", {
+                  text: "ICE restarted"
                 });
                 _context12.next = 22;
                 break;
@@ -14432,14 +14432,14 @@ var ZeyeClient = /*#__PURE__*/function () {
               case 18:
                 _context12.prev = 18;
                 _context12.t0 = _context12["catch"](2);
-                console.error('restartIce() | failed:%o', _context12.t0);
-                this.store.dispatch('zeyeClient/notify', {
-                  type: 'error',
+                console.error("restartIce() | failed:%o", _context12.t0);
+                this.store.dispatch("zeyeClient/notify", {
+                  type: "error",
                   text: "ICE restart failed: ".concat(_context12.t0)
                 });
 
               case 22:
-                this.store.commit('zeyeClient/me/setRestartIceInProgress', {
+                this.store.commit("zeyeClient/me/setRestartIceInProgress", {
                   flag: false
                 });
 
@@ -14465,7 +14465,7 @@ var ZeyeClient = /*#__PURE__*/function () {
           while (1) {
             switch (_context13.prev = _context13.next) {
               case 0:
-                console.debug('setMaxSendingSpatialLayer() [spatialLayer:%s]', spatialLayer);
+                console.debug("setMaxSendingSpatialLayer() [spatialLayer:%s]", spatialLayer);
                 _context13.prev = 1;
 
                 if (!this._webcamProducer) {
@@ -14496,9 +14496,9 @@ var ZeyeClient = /*#__PURE__*/function () {
               case 12:
                 _context13.prev = 12;
                 _context13.t0 = _context13["catch"](1);
-                console.error('setMaxSendingSpatialLayer() | failed:%o', _context13.t0);
-                this.store.dispatch('zeyeClient/notify', {
-                  type: 'error',
+                console.error("setMaxSendingSpatialLayer() | failed:%o", _context13.t0);
+                this.store.dispatch("zeyeClient/notify", {
+                  type: "error",
                   text: "Error setting max sending video spatial layer: ".concat(_context13.t0)
                 });
 
@@ -14524,17 +14524,17 @@ var ZeyeClient = /*#__PURE__*/function () {
           while (1) {
             switch (_context14.prev = _context14.next) {
               case 0:
-                console.debug('setConsumerPreferredLayers() [consumerId:%s, spatialLayer:%s, temporalLayer:%s]', consumerId, spatialLayer, temporalLayer);
+                console.debug("setConsumerPreferredLayers() [consumerId:%s, spatialLayer:%s, temporalLayer:%s]", consumerId, spatialLayer, temporalLayer);
                 _context14.prev = 1;
                 _context14.next = 4;
-                return this._protoo.request('setConsumerPreferredLayers', {
+                return this._protoo.request("setConsumerPreferredLayers", {
                   consumerId: consumerId,
                   spatialLayer: spatialLayer,
                   temporalLayer: temporalLayer
                 });
 
               case 4:
-                this.store.commit('zeyeClient/consumers/setConsumerPreferredLayers', {
+                this.store.commit("zeyeClient/consumers/setConsumerPreferredLayers", {
                   consumerId: consumerId,
                   spatialLayer: spatialLayer,
                   temporalLayer: temporalLayer
@@ -14545,9 +14545,9 @@ var ZeyeClient = /*#__PURE__*/function () {
               case 7:
                 _context14.prev = 7;
                 _context14.t0 = _context14["catch"](1);
-                console.error('setConsumerPreferredLayers() | failed:%o', _context14.t0);
-                this.store.dispatch('zeyeClient/notify', {
-                  type: 'error',
+                console.error("setConsumerPreferredLayers() | failed:%o", _context14.t0);
+                this.store.dispatch("zeyeClient/notify", {
+                  type: "error",
                   text: "Error setting Consumer preferred layers: ".concat(_context14.t0)
                 });
 
@@ -14573,16 +14573,16 @@ var ZeyeClient = /*#__PURE__*/function () {
           while (1) {
             switch (_context15.prev = _context15.next) {
               case 0:
-                console.debug('setConsumerPriority() [consumerId:%s, priority:%d]', consumerId, priority);
+                console.debug("setConsumerPriority() [consumerId:%s, priority:%d]", consumerId, priority);
                 _context15.prev = 1;
                 _context15.next = 4;
-                return this._protoo.request('setConsumerPriority', {
+                return this._protoo.request("setConsumerPriority", {
                   consumerId: consumerId,
                   priority: priority
                 });
 
               case 4:
-                this.store.commit('zeyeClient/consumers/setConsumerPriority', {
+                this.store.commit("zeyeClient/consumers/setConsumerPriority", {
                   consumerId: consumerId,
                   priority: priority
                 });
@@ -14592,9 +14592,9 @@ var ZeyeClient = /*#__PURE__*/function () {
               case 7:
                 _context15.prev = 7;
                 _context15.t0 = _context15["catch"](1);
-                console.error('setConsumerPriority() | failed:%o', _context15.t0);
-                this.store.dispatch('zeyeClient/notify', {
-                  type: 'error',
+                console.error("setConsumerPriority() | failed:%o", _context15.t0);
+                this.store.dispatch("zeyeClient/notify", {
+                  type: "error",
                   text: "Error setting Consumer priority: ".concat(_context15.t0)
                 });
 
@@ -14620,16 +14620,16 @@ var ZeyeClient = /*#__PURE__*/function () {
           while (1) {
             switch (_context16.prev = _context16.next) {
               case 0:
-                console.debug('requestConsumerKeyFrame() [consumerId:%s]', consumerId);
+                console.debug("requestConsumerKeyFrame() [consumerId:%s]", consumerId);
                 _context16.prev = 1;
                 _context16.next = 4;
-                return this._protoo.request('requestConsumerKeyFrame', {
+                return this._protoo.request("requestConsumerKeyFrame", {
                   consumerId: consumerId
                 });
 
               case 4:
-                this.store.dispatch('zeyeClient/notify', {
-                  text: 'Keyframe requested for video consumer'
+                this.store.dispatch("zeyeClient/notify", {
+                  text: "Keyframe requested for video consumer"
                 });
                 _context16.next = 11;
                 break;
@@ -14637,9 +14637,9 @@ var ZeyeClient = /*#__PURE__*/function () {
               case 7:
                 _context16.prev = 7;
                 _context16.t0 = _context16["catch"](1);
-                console.error('requestConsumerKeyFrame() | failed:%o', _context16.t0);
-                this.store.dispatch('zeyeClient/notify', {
-                  type: 'error',
+                console.error("requestConsumerKeyFrame() | failed:%o", _context16.t0);
+                this.store.dispatch("zeyeClient/notify", {
+                  type: "error",
                   text: "Error requesting key frame for Consumer: ".concat(_context16.t0)
                 });
 
@@ -14667,7 +14667,7 @@ var ZeyeClient = /*#__PURE__*/function () {
           while (1) {
             switch (_context17.prev = _context17.next) {
               case 0:
-                console.debug('enableChatDataProducer()');
+                console.debug("enableChatDataProducer()");
 
                 if (this._useDataChannel) {
                   _context17.next = 3;
@@ -14682,16 +14682,16 @@ var ZeyeClient = /*#__PURE__*/function () {
                 return this._sendTransport.produceData({
                   ordered: false,
                   maxRetransmits: 1,
-                  label: 'chat',
-                  priority: 'medium',
+                  label: "chat",
+                  priority: "medium",
                   appData: {
-                    info: 'my-chat-DataProducer'
+                    info: "my-chat-DataProducer"
                   }
                 });
 
               case 6:
                 this._chatDataProducer = _context17.sent;
-                this.store.commit('zeyeClient/dataProducers/addDataProducer', {
+                this.store.commit("zeyeClient/dataProducers/addDataProducer", {
                   dataProducer: {
                     id: this._chatDataProducer.id,
                     sctpStreamParameters: this._chatDataProducer.sctpStreamParameters,
@@ -14700,34 +14700,34 @@ var ZeyeClient = /*#__PURE__*/function () {
                   }
                 });
 
-                this._chatDataProducer.on('transportclose', function () {
+                this._chatDataProducer.on("transportclose", function () {
                   _this5._chatDataProducer = null;
                 });
 
-                this._chatDataProducer.on('open', function () {
+                this._chatDataProducer.on("open", function () {
                   console.debug('chat DataProducer "open" event');
                 });
 
-                this._chatDataProducer.on('close', function () {
+                this._chatDataProducer.on("close", function () {
                   console.error('chat DataProducer "close" event');
                   _this5._chatDataProducer = null;
 
-                  _this5.store.dispatch('zeyeClient/notify', {
-                    type: 'error',
-                    text: 'Chat DataProducer closed'
+                  _this5.store.dispatch("zeyeClient/notify", {
+                    type: "error",
+                    text: "Chat DataProducer closed"
                   });
                 });
 
-                this._chatDataProducer.on('error', function (error) {
+                this._chatDataProducer.on("error", function (error) {
                   console.error('chat DataProducer "error" event:%o', error);
 
-                  _this5.store.dispatch('zeyeClient/notify', {
-                    type: 'error',
+                  _this5.store.dispatch("zeyeClient/notify", {
+                    type: "error",
                     text: "Chat DataProducer error: ".concat(error)
                   });
                 });
 
-                this._chatDataProducer.on('bufferedamountlow', function () {
+                this._chatDataProducer.on("bufferedamountlow", function () {
                   console.debug('chat DataProducer "bufferedamountlow" event');
                 });
 
@@ -14737,9 +14737,9 @@ var ZeyeClient = /*#__PURE__*/function () {
               case 15:
                 _context17.prev = 15;
                 _context17.t0 = _context17["catch"](3);
-                console.error('enableChatDataProducer() | failed:%o', _context17.t0);
-                this.store.dispatch('zeyeClient/notify', {
-                  type: 'error',
+                console.error("enableChatDataProducer() | failed:%o", _context17.t0);
+                this.store.dispatch("zeyeClient/notify", {
+                  type: "error",
                   text: "Error enabling chat DataProducer: ".concat(_context17.t0)
                 });
                 throw _context17.t0;
@@ -14768,7 +14768,7 @@ var ZeyeClient = /*#__PURE__*/function () {
           while (1) {
             switch (_context18.prev = _context18.next) {
               case 0:
-                console.debug('enableBotDataProducer()');
+                console.debug("enableBotDataProducer()");
 
                 if (this._useDataChannel) {
                   _context18.next = 3;
@@ -14783,16 +14783,16 @@ var ZeyeClient = /*#__PURE__*/function () {
                 return this._sendTransport.produceData({
                   ordered: false,
                   maxPacketLifeTime: 2000,
-                  label: 'bot',
-                  priority: 'medium',
+                  label: "bot",
+                  priority: "medium",
                   appData: {
-                    info: 'my-bot-DataProducer'
+                    info: "my-bot-DataProducer"
                   }
                 });
 
               case 6:
                 this._botDataProducer = _context18.sent;
-                this.store.commit('zeyeClient/dataProducers/addDataProducer', {
+                this.store.commit("zeyeClient/dataProducers/addDataProducer", {
                   dataProducer: {
                     id: this._botDataProducer.id,
                     sctpStreamParameters: this._botDataProducer.sctpStreamParameters,
@@ -14801,34 +14801,34 @@ var ZeyeClient = /*#__PURE__*/function () {
                   }
                 });
 
-                this._botDataProducer.on('transportclose', function () {
+                this._botDataProducer.on("transportclose", function () {
                   _this6._botDataProducer = null;
                 });
 
-                this._botDataProducer.on('open', function () {
+                this._botDataProducer.on("open", function () {
                   console.debug('bot DataProducer "open" event');
                 });
 
-                this._botDataProducer.on('close', function () {
+                this._botDataProducer.on("close", function () {
                   console.error('bot DataProducer "close" event');
                   _this6._botDataProducer = null;
 
-                  _this6.store.dispatch('zeyeClient/notify', {
-                    type: 'error',
-                    text: 'Bot DataProducer closed'
+                  _this6.store.dispatch("zeyeClient/notify", {
+                    type: "error",
+                    text: "Bot DataProducer closed"
                   });
                 });
 
-                this._botDataProducer.on('error', function (error) {
+                this._botDataProducer.on("error", function (error) {
                   console.error('bot DataProducer "error" event:%o', error);
 
-                  _this6.store.dispatch('zeyeClient/notify', {
-                    type: 'error',
+                  _this6.store.dispatch("zeyeClient/notify", {
+                    type: "error",
                     text: "Bot DataProducer error: ".concat(error)
                   });
                 });
 
-                this._botDataProducer.on('bufferedamountlow', function () {
+                this._botDataProducer.on("bufferedamountlow", function () {
                   console.debug('bot DataProducer "bufferedamountlow" event');
                 });
 
@@ -14838,9 +14838,9 @@ var ZeyeClient = /*#__PURE__*/function () {
               case 15:
                 _context18.prev = 15;
                 _context18.t0 = _context18["catch"](3);
-                console.error('enableBotDataProducer() | failed:%o', _context18.t0);
-                this.store.dispatch('zeyeClient/notify', {
-                  type: 'error',
+                console.error("enableBotDataProducer() | failed:%o", _context18.t0);
+                this.store.dispatch("zeyeClient/notify", {
+                  type: "error",
                   text: "Error enabling bot DataProducer: ".concat(_context18.t0)
                 });
                 throw _context18.t0;
@@ -14865,9 +14865,9 @@ var ZeyeClient = /*#__PURE__*/function () {
       console.debug('sendChatMessage() [text:"%s]', text);
 
       if (!this._chatDataProducer) {
-        this.store.dispatch('zeyeClient/notify', {
-          type: 'error',
-          text: 'No chat DataProducer'
+        this.store.dispatch("zeyeClient/notify", {
+          type: "error",
+          text: "No chat DataProducer"
         });
         return;
       }
@@ -14875,9 +14875,9 @@ var ZeyeClient = /*#__PURE__*/function () {
       try {
         this._chatDataProducer.send(text);
       } catch (error) {
-        console.error('chat DataProducer.send() failed:%o', error);
-        this.store.dispatch('zeyeClient/notify', {
-          type: 'error',
+        console.error("chat DataProducer.send() failed:%o", error);
+        this.store.dispatch("zeyeClient/notify", {
+          type: "error",
           text: "chat DataProducer.send() failed: ".concat(error)
         });
       }
@@ -14888,9 +14888,9 @@ var ZeyeClient = /*#__PURE__*/function () {
       console.debug('sendBotMessage() [text:"%s]', text);
 
       if (!this._botDataProducer) {
-        this.store.dispatch('zeyeClient/notify', {
-          type: 'error',
-          text: 'No bot DataProducer'
+        this.store.dispatch("zeyeClient/notify", {
+          type: "error",
+          text: "No bot DataProducer"
         });
         return;
       }
@@ -14898,9 +14898,9 @@ var ZeyeClient = /*#__PURE__*/function () {
       try {
         this._botDataProducer.send(text);
       } catch (error) {
-        console.error('bot DataProducer.send() failed:%o', error);
-        this.store.dispatch('zeyeClient/notify', {
-          type: 'error',
+        console.error("bot DataProducer.send() failed:%o", error);
+        this.store.dispatch("zeyeClient/notify", {
+          type: "error",
           text: "bot DataProducer.send() failed: ".concat(error)
         });
       }
@@ -14920,17 +14920,17 @@ var ZeyeClient = /*#__PURE__*/function () {
                 });
                 _context19.prev = 2;
                 _context19.next = 5;
-                return this._protoo.request('changeDisplayName', {
+                return this._protoo.request("changeDisplayName", {
                   displayName: displayName
                 });
 
               case 5:
                 this._displayName = displayName;
-                this.store.commit('zeyeClient/me/setDisplayName', {
+                this.store.commit("zeyeClient/me/setDisplayName", {
                   displayName: displayName
                 });
-                this.store.dispatch('zeyeClient/notify', {
-                  text: 'Display name changed'
+                this.store.dispatch("zeyeClient/notify", {
+                  text: "Display name changed"
                 });
                 _context19.next = 15;
                 break;
@@ -14938,14 +14938,14 @@ var ZeyeClient = /*#__PURE__*/function () {
               case 10:
                 _context19.prev = 10;
                 _context19.t0 = _context19["catch"](2);
-                console.error('changeDisplayName() | failed: %o', _context19.t0);
-                this.store.dispatch('zeyeClient/notify', {
-                  type: 'error',
+                console.error("changeDisplayName() | failed: %o", _context19.t0);
+                this.store.dispatch("zeyeClient/notify", {
+                  type: "error",
                   text: "Could not change display name: ".concat(_context19.t0)
                 }); // We need to refresh the component for it to render the previous
                 // displayName again.
 
-                this.store.commit('zeyeClient/me/setDisplayName', {
+                this.store.commit("zeyeClient/me/setDisplayName", {
                   displayName: false
                 });
 
@@ -14966,109 +14966,109 @@ var ZeyeClient = /*#__PURE__*/function () {
   }, {
     key: "getSendTransportRemoteStats",
     value: function getSendTransportRemoteStats() {
-      console.debug('getSendTransportRemoteStats()');
+      console.debug("getSendTransportRemoteStats()");
       if (!this._sendTransport) return;
-      return this._protoo.request('getTransportStats', {
+      return this._protoo.request("getTransportStats", {
         transportId: this._sendTransport.id
       });
     }
   }, {
     key: "getRecvTransportRemoteStats",
     value: function getRecvTransportRemoteStats() {
-      console.debug('getRecvTransportRemoteStats()');
+      console.debug("getRecvTransportRemoteStats()");
       if (!this._recvTransport) return;
-      return this._protoo.request('getTransportStats', {
+      return this._protoo.request("getTransportStats", {
         transportId: this._recvTransport.id
       });
     }
   }, {
     key: "getAudioRemoteStats",
     value: function getAudioRemoteStats() {
-      console.debug('getAudioRemoteStats()');
+      console.debug("getAudioRemoteStats()");
       if (!this._micProducer) return;
-      return this._protoo.request('getProducerStats', {
+      return this._protoo.request("getProducerStats", {
         producerId: this._micProducer.id
       });
     }
   }, {
     key: "getVideoRemoteStats",
     value: function getVideoRemoteStats() {
-      console.debug('getVideoRemoteStats()');
+      console.debug("getVideoRemoteStats()");
       var producer = this._webcamProducer || this._shareProducer;
       if (!producer) return;
-      return this._protoo.request('getProducerStats', {
+      return this._protoo.request("getProducerStats", {
         producerId: producer.id
       });
     }
   }, {
     key: "getConsumerRemoteStats",
     value: function getConsumerRemoteStats(consumerId) {
-      console.debug('getConsumerRemoteStats()');
+      console.debug("getConsumerRemoteStats()");
 
       var consumer = this._consumers.get(consumerId);
 
       if (!consumer) return;
-      return this._protoo.request('getConsumerStats', {
+      return this._protoo.request("getConsumerStats", {
         consumerId: consumerId
       });
     }
   }, {
     key: "getChatDataProducerRemoteStats",
     value: function getChatDataProducerRemoteStats() {
-      console.debug('getChatDataProducerRemoteStats()');
+      console.debug("getChatDataProducerRemoteStats()");
       var dataProducer = this._chatDataProducer;
       if (!dataProducer) return;
-      return this._protoo.request('getDataProducerStats', {
+      return this._protoo.request("getDataProducerStats", {
         dataProducerId: dataProducer.id
       });
     }
   }, {
     key: "getBotDataProducerRemoteStats",
     value: function getBotDataProducerRemoteStats() {
-      console.debug('getBotDataProducerRemoteStats()');
+      console.debug("getBotDataProducerRemoteStats()");
       var dataProducer = this._botDataProducer;
       if (!dataProducer) return;
-      return this._protoo.request('getDataProducerStats', {
+      return this._protoo.request("getDataProducerStats", {
         dataProducerId: dataProducer.id
       });
     }
   }, {
     key: "getDataConsumerRemoteStats",
     value: function getDataConsumerRemoteStats(dataConsumerId) {
-      console.debug('getDataConsumerRemoteStats()');
+      console.debug("getDataConsumerRemoteStats()");
 
       var dataConsumer = this._dataConsumers.get(dataConsumerId);
 
       if (!dataConsumer) return;
-      return this._protoo.request('getDataConsumerStats', {
+      return this._protoo.request("getDataConsumerStats", {
         dataConsumerId: dataConsumerId
       });
     }
   }, {
     key: "getSendTransportLocalStats",
     value: function getSendTransportLocalStats() {
-      console.debug('getSendTransportLocalStats()');
+      console.debug("getSendTransportLocalStats()");
       if (!this._sendTransport) return;
       return this._sendTransport.getStats();
     }
   }, {
     key: "getRecvTransportLocalStats",
     value: function getRecvTransportLocalStats() {
-      console.debug('getRecvTransportLocalStats()');
+      console.debug("getRecvTransportLocalStats()");
       if (!this._recvTransport) return;
       return this._recvTransport.getStats();
     }
   }, {
     key: "getAudioLocalStats",
     value: function getAudioLocalStats() {
-      console.debug('getAudioLocalStats()');
+      console.debug("getAudioLocalStats()");
       if (!this._micProducer) return;
       return this._micProducer.getStats();
     }
   }, {
     key: "getVideoLocalStats",
     value: function getVideoLocalStats() {
-      console.debug('getVideoLocalStats()');
+      console.debug("getVideoLocalStats()");
       var producer = this._webcamProducer || this._shareProducer;
       if (!producer) return;
       return producer.getStats();
@@ -15091,10 +15091,10 @@ var ZeyeClient = /*#__PURE__*/function () {
             switch (_context20.prev = _context20.next) {
               case 0:
                 uplink = _ref4.uplink, downlink = _ref4.downlink, rtt = _ref4.rtt, secret = _ref4.secret;
-                console.debug('applyNetworkThrottle() [uplink:%s, downlink:%s, rtt:%s]', uplink, downlink, rtt);
+                console.debug("applyNetworkThrottle() [uplink:%s, downlink:%s, rtt:%s]", uplink, downlink, rtt);
                 _context20.prev = 2;
                 _context20.next = 5;
-                return this._protoo.request('applyNetworkThrottle', {
+                return this._protoo.request("applyNetworkThrottle", {
                   uplink: uplink,
                   downlink: downlink,
                   rtt: rtt,
@@ -15108,9 +15108,9 @@ var ZeyeClient = /*#__PURE__*/function () {
               case 7:
                 _context20.prev = 7;
                 _context20.t0 = _context20["catch"](2);
-                console.error('applyNetworkThrottle() | failed:%o', _context20.t0);
-                this.store.dispatch('zeyeClient/notify', {
-                  type: 'error',
+                console.error("applyNetworkThrottle() | failed:%o", _context20.t0);
+                this.store.dispatch("zeyeClient/notify", {
+                  type: "error",
                   text: "Error applying network throttle: ".concat(_context20.t0)
                 });
 
@@ -15139,10 +15139,10 @@ var ZeyeClient = /*#__PURE__*/function () {
             switch (_context21.prev = _context21.next) {
               case 0:
                 _ref5$silent = _ref5.silent, silent = _ref5$silent === void 0 ? false : _ref5$silent, secret = _ref5.secret;
-                console.debug('resetNetworkThrottle()');
+                console.debug("resetNetworkThrottle()");
                 _context21.prev = 2;
                 _context21.next = 5;
-                return this._protoo.request('resetNetworkThrottle', {
+                return this._protoo.request("resetNetworkThrottle", {
                   secret: secret
                 });
 
@@ -15155,9 +15155,9 @@ var ZeyeClient = /*#__PURE__*/function () {
                 _context21.t0 = _context21["catch"](2);
 
                 if (!silent) {
-                  console.error('resetNetworkThrottle() | failed:%o', _context21.t0);
-                  this.store.dispatch('zeyeClient/notify', {
-                    type: 'error',
+                  console.error("resetNetworkThrottle() | failed:%o", _context21.t0);
+                  this.store.dispatch("zeyeClient/notify", {
+                    type: "error",
                     text: "Error resetting network throttle: ".concat(_context21.t0)
                   });
                 }
@@ -15188,13 +15188,13 @@ var ZeyeClient = /*#__PURE__*/function () {
           while (1) {
             switch (_context24.prev = _context24.next) {
               case 0:
-                console.debug('_joinRoom()');
+                console.debug("_joinRoom()");
                 _context24.prev = 1;
                 this._mediasoupDevice = new mediasoupClient.Device({
                   handlerName: this._handlerName
                 });
                 _context24.next = 5;
-                return this._protoo.request('getRouterRtpCapabilities');
+                return this._protoo.request("getRouterRtpCapabilities");
 
               case 5:
                 routerRtpCapabilities = _context24.sent;
@@ -15223,7 +15223,7 @@ var ZeyeClient = /*#__PURE__*/function () {
                 }
 
                 _context24.next = 17;
-                return this._protoo.request('createWebRtcTransport', {
+                return this._protoo.request("createWebRtcTransport", {
                   forceTcp: this._forceTcp,
                   producing: true,
                   consuming: false,
@@ -15243,17 +15243,17 @@ var ZeyeClient = /*#__PURE__*/function () {
                   proprietaryConstraints: PC_PROPRIETARY_CONSTRAINTS
                 });
 
-                this._sendTransport.on('connect', function (_ref6, callback, errback // eslint-disable-line no-shadow
+                this._sendTransport.on("connect", function (_ref6, callback, errback // eslint-disable-line no-shadow
                 ) {
                   var dtlsParameters = _ref6.dtlsParameters;
 
-                  _this7._protoo.request('connectWebRtcTransport', {
+                  _this7._protoo.request("connectWebRtcTransport", {
                     transportId: _this7._sendTransport.id,
                     dtlsParameters: dtlsParameters
                   }).then(callback).catch(errback);
                 });
 
-                this._sendTransport.on('produce', /*#__PURE__*/function () {
+                this._sendTransport.on("produce", /*#__PURE__*/function () {
                   var _ref8 = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee22(_ref7, callbackfunc, errback) {
                     var kind, rtpParameters, appData, _yield$_this7$_protoo, _id2;
 
@@ -15264,7 +15264,7 @@ var ZeyeClient = /*#__PURE__*/function () {
                             kind = _ref7.kind, rtpParameters = _ref7.rtpParameters, appData = _ref7.appData;
                             _context22.prev = 1;
                             _context22.next = 4;
-                            return _this7._protoo.request('produce', {
+                            return _this7._protoo.request("produce", {
                               transportId: _this7._sendTransport.id,
                               kind: kind,
                               rtpParameters: rtpParameters,
@@ -15298,7 +15298,7 @@ var ZeyeClient = /*#__PURE__*/function () {
                   };
                 }());
 
-                this._sendTransport.on('producedata', /*#__PURE__*/function () {
+                this._sendTransport.on("producedata", /*#__PURE__*/function () {
                   var _ref10 = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee23(_ref9, callbackfunc, errback) {
                     var sctpStreamParameters, label, protocol, appData, _yield$_this7$_protoo2, _id3;
 
@@ -15310,7 +15310,7 @@ var ZeyeClient = /*#__PURE__*/function () {
                             console.debug('"producedata" event: [sctpStreamParameters:%o, appData:%o]', sctpStreamParameters, appData);
                             _context23.prev = 2;
                             _context23.next = 5;
-                            return _this7._protoo.request('produceData', {
+                            return _this7._protoo.request("produceData", {
                               transportId: _this7._sendTransport.id,
                               sctpStreamParameters: sctpStreamParameters,
                               label: label,
@@ -15352,7 +15352,7 @@ var ZeyeClient = /*#__PURE__*/function () {
                 }
 
                 _context24.next = 26;
-                return this._protoo.request('createWebRtcTransport', {
+                return this._protoo.request("createWebRtcTransport", {
                   forceTcp: this._forceTcp,
                   producing: false,
                   consuming: true,
@@ -15371,11 +15371,11 @@ var ZeyeClient = /*#__PURE__*/function () {
                   iceServers: []
                 });
 
-                this._recvTransport.on('connect', function (_ref11, callback, errback // eslint-disable-line no-shadow
+                this._recvTransport.on("connect", function (_ref11, callback, errback // eslint-disable-line no-shadow
                 ) {
                   var dtlsParameters = _ref11.dtlsParameters;
 
-                  _this7._protoo.request('connectWebRtcTransport', {
+                  _this7._protoo.request("connectWebRtcTransport", {
                     transportId: _this7._recvTransport.id,
                     dtlsParameters: dtlsParameters
                   }).then(callback).catch(errback);
@@ -15383,7 +15383,7 @@ var ZeyeClient = /*#__PURE__*/function () {
 
               case 30:
                 _context24.next = 32;
-                return this._protoo.request('join', {
+                return this._protoo.request("join", {
                   displayName: this._displayName,
                   device: this._device,
                   rtpCapabilities: this._consume ? this._mediasoupDevice.rtpCapabilities : undefined,
@@ -15393,13 +15393,13 @@ var ZeyeClient = /*#__PURE__*/function () {
               case 32:
                 _yield$this$_protoo$r = _context24.sent;
                 peers = _yield$this$_protoo$r.peers;
-                this.store.commit('zeyeClient/room/setRoomState', {
-                  state: 'connected'
+                this.store.commit("zeyeClient/room/setRoomState", {
+                  state: "connected"
                 }); // Clean all the existing notifcations.
 
-                this.store.commit('zeyeClient/notifications/removeAllNotifications');
-                this.store.dispatch('zeyeClient/notify', {
-                  text: 'You are in the room!',
+                this.store.commit("zeyeClient/notifications/removeAllNotifications");
+                this.store.dispatch("zeyeClient/notify", {
+                  text: "You are in the room!",
                   timeout: 3000
                 });
                 _iterator3 = _createForOfIteratorHelper(peers);
@@ -15407,7 +15407,7 @@ var ZeyeClient = /*#__PURE__*/function () {
                 try {
                   for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
                     peer = _step3.value;
-                    this.store.commit('zeyeClient/peers/addPeer', {
+                    this.store.commit("zeyeClient/peers/addPeer", {
                       peer: _objectSpread2({}, peer, {
                         consumers: [],
                         dataConsumers: []
@@ -15423,16 +15423,16 @@ var ZeyeClient = /*#__PURE__*/function () {
 
                 if (this._produce) {
                   // Set our media capabilities.
-                  this.store.commit('zeyeClient/me/setMediaCapabilities', {
-                    canSendMic: this._mediasoupDevice.canProduce('audio'),
-                    canSendWebcam: this._mediasoupDevice.canProduce('video')
+                  this.store.commit("zeyeClient/me/setMediaCapabilities", {
+                    canSendMic: this._mediasoupDevice.canProduce("audio"),
+                    canSendWebcam: this._mediasoupDevice.canProduce("video")
                   });
                   this.enableMic();
                   devicesCookie = getDevices();
                   if (!devicesCookie || devicesCookie.webcamEnabled || this._externalVideo) this.enableWebcam();
 
-                  this._sendTransport.on('connectionstatechange', function (connectionState) {
-                    if (connectionState === 'connected') {
+                  this._sendTransport.on("connectionstatechange", function (connectionState) {
+                    if (connectionState === "connected") {
                       _this7.enableChatDataProducer();
 
                       _this7.enableBotDataProducer();
@@ -15443,7 +15443,7 @@ var ZeyeClient = /*#__PURE__*/function () {
 
                 if (window.SHOW_INFO) {
                   me = this.store.state.me;
-                  this.store.commit('zeyeClient/room/setRoomStatsPeerId', {
+                  this.store.commit("zeyeClient/room/setRoomStatsPeerId", {
                     peerId: me.id
                   });
                 }
@@ -15454,9 +15454,9 @@ var ZeyeClient = /*#__PURE__*/function () {
               case 43:
                 _context24.prev = 43;
                 _context24.t0 = _context24["catch"](1);
-                console.error('_joinRoom() failed:%o', _context24.t0);
-                this.store.dispatch('zeyeClient/notify', {
-                  type: 'error',
+                console.error("_joinRoom() failed:%o", _context24.t0);
+                this.store.dispatch("zeyeClient/notify", {
+                  type: "error",
                   text: "Could not join the room: ".concat(_context24.t0)
                 });
                 this.close();
@@ -15485,10 +15485,10 @@ var ZeyeClient = /*#__PURE__*/function () {
           while (1) {
             switch (_context25.prev = _context25.next) {
               case 0:
-                console.debug('_updateWebcams()'); // Reset the list.
+                console.debug("_updateWebcams()"); // Reset the list.
 
                 this._webcams = new Map();
-                console.debug('_updateWebcams() | calling enumerateDevices()');
+                console.debug("_updateWebcams() | calling enumerateDevices()");
                 _context25.next = 5;
                 return navigator.mediaDevices.enumerateDevices();
 
@@ -15507,7 +15507,7 @@ var ZeyeClient = /*#__PURE__*/function () {
 
                 device = _step4.value;
 
-                if (!(device.kind !== 'videoinput')) {
+                if (!(device.kind !== "videoinput")) {
                   _context25.next = 13;
                   break;
                 }
@@ -15542,9 +15542,9 @@ var ZeyeClient = /*#__PURE__*/function () {
                 array = Array.from(this._webcams.values());
                 len = array.length;
                 currentWebcamId = this._webcam.device ? this._webcam.device.deviceId : undefined;
-                console.debug('_updateWebcams() [webcams:%o]', array);
+                console.debug("_updateWebcams() [webcams:%o]", array);
                 if (len === 0) this._webcam.device = null;else if (!this._webcams.has(currentWebcamId)) this._webcam.device = array[0];
-                this.store.commit('zeyeClient/me/setCanChangeWebcam', {
+                this.store.commit("zeyeClient/me/setCanChangeWebcam", {
                   flag: this._webcams.size > 1
                 });
 
@@ -15566,11 +15566,11 @@ var ZeyeClient = /*#__PURE__*/function () {
     key: "_getWebcamType",
     value: function _getWebcamType(device) {
       if (/(back|rear)/i.test(device.label)) {
-        console.debug('_getWebcamType() | it seems to be a back camera');
-        return 'back';
+        console.debug("_getWebcamType() | it seems to be a back camera");
+        return "back";
       } else {
-        console.debug('_getWebcamType() | it seems to be a front camera');
-        return 'front';
+        console.debug("_getWebcamType() | it seems to be a front camera");
+        return "front";
       }
     }
   }, {
@@ -15591,15 +15591,15 @@ var ZeyeClient = /*#__PURE__*/function () {
               case 2:
                 _context26.prev = 2;
                 _context26.next = 5;
-                return this._protoo.request('pauseConsumer', {
+                return this._protoo.request("pauseConsumer", {
                   consumerId: consumer.id
                 });
 
               case 5:
                 consumer.pause();
-                this.store.commit('zeyeClient/consumers/setConsumerPaused', {
+                this.store.commit("zeyeClient/consumers/setConsumerPaused", {
                   consumerId: consumer.id,
-                  originator: 'local'
+                  originator: "local"
                 });
                 _context26.next = 13;
                 break;
@@ -15607,9 +15607,9 @@ var ZeyeClient = /*#__PURE__*/function () {
               case 9:
                 _context26.prev = 9;
                 _context26.t0 = _context26["catch"](2);
-                console.error('_pauseConsumer() | failed:%o', _context26.t0);
-                this.store.dispatch('zeyeClient/notify', {
-                  type: 'error',
+                console.error("_pauseConsumer() | failed:%o", _context26.t0);
+                this.store.dispatch("zeyeClient/notify", {
+                  type: "error",
                   text: "Error pausing Consumer: ".concat(_context26.t0)
                 });
 
@@ -15645,15 +15645,15 @@ var ZeyeClient = /*#__PURE__*/function () {
               case 2:
                 _context27.prev = 2;
                 _context27.next = 5;
-                return this._protoo.request('resumeConsumer', {
+                return this._protoo.request("resumeConsumer", {
                   consumerId: consumer.id
                 });
 
               case 5:
                 consumer.resume();
-                this.store.commit('zeyeClient/consumers/setConsumerResumed', {
+                this.store.commit("zeyeClient/consumers/setConsumerResumed", {
                   consumerId: consumer.id,
-                  originator: 'local'
+                  originator: "local"
                 });
                 _context27.next = 13;
                 break;
@@ -15661,9 +15661,9 @@ var ZeyeClient = /*#__PURE__*/function () {
               case 9:
                 _context27.prev = 9;
                 _context27.t0 = _context27["catch"](2);
-                console.error('_resumeConsumer() | failed:%o', _context27.t0);
-                this.store.dispatch('zeyeClient/notify', {
-                  type: 'error',
+                console.error("_resumeConsumer() | failed:%o", _context27.t0);
+                this.store.dispatch("zeyeClient/notify", {
+                  type: "error",
                   text: "Error resuming Consumer: ".concat(_context27.t0)
                 });
 
@@ -15706,7 +15706,7 @@ var ZeyeClient = /*#__PURE__*/function () {
 
                 _context28.next = 5;
                 return new Promise(function (resolve) {
-                  return _this8._externalVideo.addEventListener('canplay', resolve);
+                  return _this8._externalVideo.addEventListener("canplay", resolve);
                 });
 
               case 5:
@@ -15730,7 +15730,7 @@ var ZeyeClient = /*#__PURE__*/function () {
                 break;
 
               case 13:
-                throw new Error('video.captureStream() not supported');
+                throw new Error("video.captureStream() not supported");
 
               case 14:
                 return _context28.abrupt("return", this._externalVideoStream);
@@ -15767,7 +15767,7 @@ var script = {
     },
     volumeBarColor: {
       type: String,
-      default: 'greenyellow'
+      default: "greenyellow"
     }
   },
   data: function data() {
@@ -15803,7 +15803,7 @@ var script = {
         audioStream.addTrack(audioTrack);
         audioElem.srcObject = audioStream;
         audioElem.play().catch(function (error) {
-          return console.warn('audioElem.play() failed:%o', error);
+          return console.warn("audioElem.play() failed:%o", error);
         });
 
         this._runHark(audioStream);
@@ -15829,7 +15829,7 @@ var script = {
 
         videoElem.onplay = function () {
           audioElem.play().catch(function (error) {
-            return console.warn('audioElem.play() failed:%o', error);
+            return console.warn("audioElem.play() failed:%o", error);
           });
         };
 
@@ -15839,12 +15839,12 @@ var script = {
     _runHark: function _runHark(stream) {
       var _this = this;
 
-      if (!stream.getAudioTracks()[0]) throw new Error('_runHark() | given stream has no audio track');
+      if (!stream.getAudioTracks()[0]) throw new Error("_runHark() | given stream has no audio track");
       this.hark = hark(stream, {
         play: false
       }); // eslint-disable-next-line no-unused-vars
 
-      this.hark.on('volume_change', function (dBs, threshold) {
+      this.hark.on("volume_change", function (dBs, threshold) {
         // The exact formula to convert from dBs (-100..0) to linear (0..1) is:
         //   Math.pow(10, dBs / 20)
         // However it does not produce a visually useful output, so let exagerate
@@ -15859,22 +15859,12 @@ var script = {
       });
     },
     waitForMediaAvailability: function waitForMediaAvailability() {
-      if (this.isLocalMedia) {
-        if (this.$zeyeClient.getAudioProducer() && this.$zeyeClient.getVideoProducer()) {
-          this.runAudio();
-          this.runVideo();
-        } else {
-          console.debug('Waiting for channels availability...');
-          setTimeout(this.waitForMediaAvailability, 100);
-        }
+      if (this.isLocalMedia && this.$zeyeClient.getAudioProducer() && this.$zeyeClient.getVideoProducer() || !this.isLocalMedia && this.$zeyeClient.getPeer(this.peerId) && this.$zeyeClient.getPeer(this.peerId).consumers && this.$zeyeClient.getAudioConsumer(this.peerId) && this.$zeyeClient.getVideoConsumer(this.peerId)) {
+        this.runAudio();
+        this.runVideo();
       } else {
-        if (this.$zeyeClient.getPeer(this.peerId) && this.$zeyeClient.getPeer(this.peerId).consumers && this.$zeyeClient.getAudioConsumer(this.peerId) && this.$zeyeClient.getVideoConsumer(this.peerId)) {
-          this.runAudio();
-          this.runVideo();
-        } else {
-          console.debug('Waiting for channels availability...');
-          setTimeout(this.waitForMediaAvailability, 100);
-        }
+        console.debug("Waiting for channels availability...");
+        setTimeout(this.waitForMediaAvailability, 100);
       }
     }
   }
@@ -16021,13 +16011,16 @@ var browser = createInjector;
 const __vue_script__ = script;
 
 /* template */
-var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"zeye-peer-media",class:{'active-speaker':_vm.$zeyeClient.isSpeakerActive(_vm.peerId)}},[_c('video',{ref:"videoElem",staticStyle:{"width":"100%"},attrs:{"autoPlay":"","muted":"","controls":false},domProps:{"muted":true}}),_vm._v(" "),_c('audio',{ref:"audioElem",staticStyle:{"width":"100%"},attrs:{"autoPlay":"","muted":"","controls":false}}),_vm._v(" "),(_vm.showVolumeBar)?_c('div',{staticClass:"volume-container"},[_c('div',{staticClass:"bar",style:({height: _vm.audioVolume*10 + '%', backgroundColor: _vm.volumeBarColor})})]):_vm._e()])};
+var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"zeye-peer-media",class:{ 'active-speaker': _vm.$zeyeClient.isSpeakerActive(_vm.peerId) }},[_c('video',{ref:"videoElem",staticStyle:{"width":"100%"},attrs:{"autoPlay":"","muted":"","controls":false},domProps:{"muted":true}}),_vm._v(" "),_c('audio',{ref:"audioElem",staticStyle:{"width":"100%"},attrs:{"autoPlay":"","muted":"","controls":false}}),_vm._v(" "),(_vm.showVolumeBar)?_c('div',{staticClass:"volume-container"},[_c('div',{staticClass:"bar",style:({
+        height: _vm.audioVolume * 10 + '%',
+        backgroundColor: _vm.volumeBarColor
+      })})]):_vm._e()])};
 var __vue_staticRenderFns__ = [];
 
   /* style */
   const __vue_inject_styles__ = function (inject) {
     if (!inject) return
-    inject("data-v-49e0d5c7_0", { source: ".volume-container{position:absolute;top:0;bottom:0;width:10px;display:flex;-webkit-box-orient:vertical;flex-direction:column;-webkit-box-pack:center;justify-content:center;-webkit-box-align:center;align-items:center;pointer-events:none}.volume-container .bar{width:6px;border-radius:6px;transition:.1s ease-in 0s}.zeye-peer-media{position:relative;flex:100 100 auto;display:flex}.zeye-peer-media.active-speaker{box-shadow:0 0 5px #adff2f}", map: undefined, media: undefined });
+    inject("data-v-3af9dfac_0", { source: ".volume-container{position:absolute;top:0;bottom:0;width:10px;display:flex;-webkit-box-orient:vertical;flex-direction:column;-webkit-box-pack:center;justify-content:center;-webkit-box-align:center;align-items:center;pointer-events:none}.volume-container .bar{width:6px;border-radius:6px;transition:.1s ease-in 0s}.zeye-peer-media{position:relative;flex:100 100 auto;display:flex}.zeye-peer-media.active-speaker{box-shadow:0 0 5px #adff2f}", map: undefined, media: undefined });
 
   };
   /* scoped */
@@ -16053,15 +16046,15 @@ var __vue_staticRenderFns__ = [];
 
 var zeyeClient = {
   install: function install(Vue, store) {
-    store.registerModule(['zeyeClient', 'consumers'], module$1);
-    store.registerModule(['zeyeClient', 'dataConsumers'], module$2);
-    store.registerModule(['zeyeClient', 'dataProducers'], module$3);
-    store.registerModule(['zeyeClient', 'index'], module$4);
-    store.registerModule(['zeyeClient', 'me'], module$5);
-    store.registerModule(['zeyeClient', 'notifications'], module$6);
-    store.registerModule(['zeyeClient', 'peers'], module$7);
-    store.registerModule(['zeyeClient', 'producers'], module$8);
-    store.registerModule(['zeyeClient', 'room'], room);
+    store.registerModule(["zeyeClient", "consumers"], module$1);
+    store.registerModule(["zeyeClient", "dataConsumers"], module$2);
+    store.registerModule(["zeyeClient", "dataProducers"], module$3);
+    store.registerModule(["zeyeClient", "index"], module$4);
+    store.registerModule(["zeyeClient", "me"], module$5);
+    store.registerModule(["zeyeClient", "notifications"], module$6);
+    store.registerModule(["zeyeClient", "peers"], module$7);
+    store.registerModule(["zeyeClient", "producers"], module$8);
+    store.registerModule(["zeyeClient", "room"], room);
     /**
      * @type {ZeyeClient}
      */
@@ -16071,7 +16064,7 @@ var zeyeClient = {
     });
     Vue.prototype.$zeyeClient = this.$zeyeClient;
     Vue.$zeyeClient = this.$zeyeClient;
-    Vue.component('zeye-peer-media', zeyePeerMedia);
+    Vue.component("zeye-peer-media", zeyePeerMedia);
     registerFunctions$6({
       app: this,
       store: store
@@ -16079,7 +16072,7 @@ var zeyeClient = {
   }
 };
 
-if (typeof window !== 'undefined' && window.Vue) {
+if (typeof window !== "undefined" && window.Vue) {
   window.Vue.use(zeyeClient);
 }
 

@@ -4,7 +4,7 @@ export default function registerFunctions({ app, store }) {
    * @name getPeers
    * @returns {Array}
    */
-  app.$zeyeClient.getPeers = () => store.state.zeyeClient.peers.peers
+  app.$zeyeClient.getPeers = () => store.state.zeyeClient.peers.peers;
 
   /**
    * @method
@@ -12,6 +12,6 @@ export default function registerFunctions({ app, store }) {
    * @param peerId
    * @returns {Array}
    */
-  app.$zeyeClient.getPeer = (peerId) =>
-    store.state.zeyeClient.peers.peers.find((peer) => peer.id === peerId)
+  app.$zeyeClient.getPeer = peerId =>
+    store.state.zeyeClient.peers.peers.find(peer => peer.id === peerId);
 }

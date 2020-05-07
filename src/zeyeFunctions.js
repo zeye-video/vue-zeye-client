@@ -1,17 +1,17 @@
-import registerRoomFunctions from './functions/room'
-import registerMeFunctions from './functions/me'
-import registerCommonFunctions from './functions/common'
-import registerProducersFunctions from './functions/producers'
-import registerPeersFunctions from './functions/peers'
-import registerConsumersFunctions from './functions/consumers'
+import registerRoomFunctions from "./functions/room";
+import registerMeFunctions from "./functions/me";
+import registerCommonFunctions from "./functions/common";
+import registerProducersFunctions from "./functions/producers";
+import registerPeersFunctions from "./functions/peers";
+import registerConsumersFunctions from "./functions/consumers";
 
 export default function registerFunctions({ app, store }) {
-  registerRoomFunctions({ app, store })
-  registerMeFunctions({ app, store })
-  registerCommonFunctions({ app, store })
-  registerProducersFunctions({ app, store })
-  registerConsumersFunctions({ app, store })
-  registerPeersFunctions({ app, store })
+  registerRoomFunctions({ app, store });
+  registerMeFunctions({ app, store });
+  registerCommonFunctions({ app, store });
+  registerProducersFunctions({ app, store });
+  registerConsumersFunctions({ app, store });
+  registerPeersFunctions({ app, store });
 }
 
 /**

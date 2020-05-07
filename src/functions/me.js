@@ -1,7 +1,7 @@
-import * as cookiesManager from '../utils/cookiesManager'
-import randomName from '../utils/randomName'
-import deviceInfo from '../utils/deviceInfo'
-import randomString from '../utils/randomString'
+import * as cookiesManager from "../utils/cookiesManager";
+import randomName from "../utils/randomName";
+import deviceInfo from "../utils/deviceInfo";
+import randomString from "../utils/randomString";
 
 export default function registerFunctions({ app, store }) {
   /**
@@ -9,8 +9,8 @@ export default function registerFunctions({ app, store }) {
    * @name getMe
    * @returns {Object}
    */
-  app.$zeyeClient.getMe = () => store.state.zeyeClient.me
-  
+  app.$zeyeClient.getMe = () => store.state.zeyeClient.me;
+
   /**
    * @method
    * @param peerId?
@@ -18,15 +18,15 @@ export default function registerFunctions({ app, store }) {
    * @returns {void}
    */
   app.$zeyeClient.setMe = (peerId, displayName) => {
-    peerId = peerId !== undefined ? peerId : randomString(6)
-    displayName = displayName !== undefined ? displayName : randomName()
+    peerId = peerId !== undefined ? peerId : randomString(6);
+    displayName = displayName !== undefined ? displayName : randomName();
 
-    store.commit('zeyeClient/me/setMe', {
+    store.commit("zeyeClient/me/setMe", {
       peerId,
       displayName,
       device: deviceInfo()
-    })
-  }
+    });
+  };
 
   /**
    * @method
@@ -34,21 +34,21 @@ export default function registerFunctions({ app, store }) {
    * @returns {string}
    */
   app.$zeyeClient.getWebcamState = () => {
-    let webcamState
+    let webcamState;
 
     if (!app.$zeyeClient.getMe().canSendWebcam) {
-      webcamState = 'unsupported'
+      webcamState = "unsupported";
     } else if (
       app.$zeyeClient.getVideoProducer() &&
-      app.$zeyeClient.getVideoProducer().type !== 'share'
+      app.$zeyeClient.getVideoProducer().type !== "share"
     ) {
-      webcamState = 'on'
+      webcamState = "on";
     } else {
-      webcamState = 'off'
+      webcamState = "off";
     }
 
-    return webcamState
-  }
+    return webcamState;
+  };
 
   /**
    * @method
@@ -57,8 +57,8 @@ export default function registerFunctions({ app, store }) {
    */
   app.$zeyeClient.canIChangeWebcam = () =>
     app.$zeyeClient.getVideoProducer() &&
-    app.$zeyeClient.getVideoProducer().type !== 'share' &&
-    app.$zeyeClient.getMe().canChangeWebcam
+    app.$zeyeClient.getVideoProducer().type !== "share" &&
+    app.$zeyeClient.getMe().canChangeWebcam;
 
   /**
    * @method
@@ -67,9 +67,9 @@ export default function registerFunctions({ app, store }) {
    */
   app.$zeyeClient.getScreenShareState = () =>
     app.$zeyeClient.getVideoProducer() &&
-    app.$zeyeClient.getVideoProducer().type === 'share'
-      ? 'on'
-      : 'off'
+    app.$zeyeClient.getVideoProducer().type === "share"
+      ? "on"
+      : "off";
 
   /**
    * @method
@@ -77,54 +77,54 @@ export default function registerFunctions({ app, store }) {
    * @returns {string}
    */
   app.$zeyeClient.getMicState = () => {
-    let micState
+    let micState;
 
     if (!app.$zeyeClient.getMe().canSendMic) {
-      micState = 'unsupported'
+      micState = "unsupported";
     } else if (!app.$zeyeClient.getAudioProducer()) {
-      micState = 'unsupported'
+      micState = "unsupported";
     } else if (!app.$zeyeClient.getAudioProducer().paused) {
-      micState = 'on'
+      micState = "on";
     } else {
-      micState = 'off'
+      micState = "off";
     }
 
-    return micState
-  }
+    return micState;
+  };
 
   /**
    * @method
    * @name toggleWebcam
    */
   app.$zeyeClient.toggleWebcam = () => {
-    if (app.$zeyeClient.getWebcamState() === 'on') {
-      cookiesManager.setDevices({ webcamEnabled: false })
-      app.$zeyeClient.disableWebcam()
+    if (app.$zeyeClient.getWebcamState() === "on") {
+      cookiesManager.setDevices({ webcamEnabled: false });
+      app.$zeyeClient.disableWebcam();
     } else {
-      cookiesManager.setDevices({ webcamEnabled: true })
-      app.$zeyeClient.enableWebcam()
+      cookiesManager.setDevices({ webcamEnabled: true });
+      app.$zeyeClient.enableWebcam();
     }
-  }
+  };
 
   /**
    * @method
    * @name toggleShare
    */
   app.$zeyeClient.toggleShare = () => {
-    if (app.$zeyeClient.getScreenShareState() === 'on') {
-      app.$zeyeClient.disableShare()
+    if (app.$zeyeClient.getScreenShareState() === "on") {
+      app.$zeyeClient.disableShare();
     } else {
-      app.$zeyeClient.enableShare()
+      app.$zeyeClient.enableShare();
     }
-  }
+  };
 
   /**
    * @method
    * @name toggleMicState
    */
   app.$zeyeClient.toggleMicState = () => {
-    app.$zeyeClient.getMicState() === 'on'
+    app.$zeyeClient.getMicState() === "on"
       ? app.$zeyeClient.muteMic()
-      : app.$zeyeClient.unmuteMic()
-  }
+      : app.$zeyeClient.unmuteMic();
+  };
 }

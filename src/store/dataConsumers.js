@@ -1,31 +1,31 @@
 export const state = () => ({
   dataConsumers: []
-})
+});
 
 export const mutations = {
   setRoomState(state, payload) {
-    if (payload.state === 'closed') {
-      state.dataConsumers = []
+    if (payload.state === "closed") {
+      state.dataConsumers = [];
     }
   },
 
   addDataConsumer(state, payload) {
-    const { dataConsumer } = payload
-    state.dataConsumers.push(dataConsumer)
+    const { dataConsumer } = payload;
+    state.dataConsumers.push(dataConsumer);
   },
 
   removeDataConsumer(state, payload) {
-    const { dataConsumerId } = payload
+    const { dataConsumerId } = payload;
     state.dataConsumers = state.dataConsumers.filter(
-      (consumer) => consumer.id !== dataConsumerId
-    )
+      consumer => consumer.id !== dataConsumerId
+    );
   }
-}
+};
 
 const module = {
   namespaced: true,
   state,
   mutations
-}
+};
 
-export default module
+export default module;

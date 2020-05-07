@@ -1,18 +1,15 @@
-import randomString from '../utils/randomString'
+import randomString from "../utils/randomString";
 
 export const actions = {
-  notify(
-    { commit },
-    { type = 'info', text, title, timeout }
-  ) {
+  notify({ commit }, { type = "info", text, title, timeout }) {
     if (!timeout) {
       switch (type) {
-        case 'info':
-          timeout = 3000
-          break
-        case 'error':
-          timeout = 5000
-          break
+        case "info":
+          timeout = 3000;
+          break;
+        case "error":
+          timeout = 5000;
+          break;
       }
     }
 
@@ -22,20 +19,20 @@ export const actions = {
       title,
       text,
       timeout
-    }
+    };
 
-    commit('notifications/addNotification', notification)
+    commit("notifications/addNotification", notification);
 
     setTimeout(() => {
-      commit('notifications/removeNotification', {
+      commit("notifications/removeNotification", {
         notificationId: notification.id
-      })
-    }, timeout)
+      });
+    }, timeout);
   }
-}
+};
 
 const module = {
   actions
-}
+};
 
-export default module
+export default module;

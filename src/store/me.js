@@ -1,7 +1,7 @@
 export const state = () => ({
-  id: '',
-  displayName: '',
-  device: { flag: '', name: '', version: '' },
+  id: "",
+  displayName: "",
+  device: { flag: "", name: "", version: "" },
   canSendMic: true,
   canSendWebcam: true,
   canChangeWebcam: false,
@@ -11,89 +11,89 @@ export const state = () => ({
   audioOnlyInProgress: false,
   audioMuted: false,
   restartIceInProgress: false
-})
+});
 
 export const mutations = {
   setRoomState(state, payload) {
-    if (payload.state === 'closed') {
-      state.webcamInProgress = false
-      state.shareInProgress = false
-      state.audioOnly = false
-      state.audioOnlyInProgress = false
-      state.audioMuted = false
-      state.restartIceInProgress = false
+    if (payload.state === "closed") {
+      state.webcamInProgress = false;
+      state.shareInProgress = false;
+      state.audioOnly = false;
+      state.audioOnlyInProgress = false;
+      state.audioMuted = false;
+      state.restartIceInProgress = false;
     }
   },
 
   setMe(state, payload) {
-    const { peerId, displayName, device } = payload
-    state.id = peerId
-    state.displayName = displayName
-    state.device = device
+    const { peerId, displayName, device } = payload;
+    state.id = peerId;
+    state.displayName = displayName;
+    state.device = device;
   },
 
   setMediaCapabilities(state, payload) {
-    const { canSendMic, canSendWebcam } = payload
+    const { canSendMic, canSendWebcam } = payload;
 
-    state.canSendMic = canSendMic
-    state.canSendWebcam = canSendWebcam
+    state.canSendMic = canSendMic;
+    state.canSendWebcam = canSendWebcam;
   },
 
   setCanChangeWebcam(state, payload) {
-    const { canChangeWebcam } = payload
+    const { canChangeWebcam } = payload;
 
-    state.canChangeWebcam = canChangeWebcam
+    state.canChangeWebcam = canChangeWebcam;
   },
 
   setWebcamInProgress(state, payload) {
-    const { flag } = payload
+    const { flag } = payload;
 
-    state.webcamInProgress = flag
+    state.webcamInProgress = flag;
   },
 
   setShareInProgress(state, payload) {
-    const { flag } = payload
+    const { flag } = payload;
 
-    state.shareInProgress = flag
+    state.shareInProgress = flag;
   },
 
   setDisplayName(state, payload) {
-    const { displayName } = payload
+    const { displayName } = payload;
 
     if (displayName) {
-      state.displayName = displayName
+      state.displayName = displayName;
     }
   },
 
   setAudioOnlyState(state, payload) {
-    const { enabled } = payload
+    const { enabled } = payload;
 
-    state.audioOnly = enabled
+    state.audioOnly = enabled;
   },
 
   setAudioOnlyInProgress(state, payload) {
-    const { flag } = payload
+    const { flag } = payload;
 
-    state.audioOnlyInProgress = flag
+    state.audioOnlyInProgress = flag;
   },
 
   setAudioMutedState(state, payload) {
-    const { enabled } = payload
+    const { enabled } = payload;
 
-    state.audioMuted = enabled
+    state.audioMuted = enabled;
   },
 
   setRestartIceInProgress(state, payload) {
-    const { flag } = payload
+    const { flag } = payload;
 
-    state.restartIceInProgress = flag
+    state.restartIceInProgress = flag;
   }
-}
+};
 
 const module = {
   namespaced: true,
   state,
   mutations
-}
+};
 
-export default module
+export default module;

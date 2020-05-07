@@ -1,115 +1,115 @@
-import protooClient from 'protoo-client'
-import * as mediasoupClient from 'mediasoup-client'
-import { getProtooUrl } from './urlFactory'
-import * as cookiesManager from './cookiesManager'
-import randomName from './randomName'
+import protooClient from "protoo-client";
+import * as mediasoupClient from "mediasoup-client";
+import { getProtooUrl } from "./urlFactory";
+import * as cookiesManager from "./cookiesManager";
+import randomName from "./randomName";
 
 const VIDEO_CONSTRAINS = {
   qvga: { width: { ideal: 320 }, height: { ideal: 240 } },
   vga: { width: { ideal: 640 }, height: { ideal: 480 } },
   hd: { width: { ideal: 1280 }, height: { ideal: 720 } }
-}
+};
 
 const PC_PROPRIETARY_CONSTRAINTS = {
   optional: [{ googDscp: true }]
-}
+};
 
 const VIDEO_SIMULCAST_ENCODINGS = [
   { scaleResolutionDownBy: 4 },
   { scaleResolutionDownBy: 2 },
   { scaleResolutionDownBy: 1 }
-]
+];
 
 // Used for VP9 webcam video.
-const VIDEO_KSVC_ENCODINGS = [{ scalabilityMode: 'S3T3_KEY' }]
+const VIDEO_KSVC_ENCODINGS = [{ scalabilityMode: "S3T3_KEY" }];
 
 // Used for VP9 desktop sharing.
-const VIDEO_SVC_ENCODINGS = [{ scalabilityMode: 'S3T3', dtx: true }]
+const VIDEO_SVC_ENCODINGS = [{ scalabilityMode: "S3T3", dtx: true }];
 
 export default class ZeyeClient {
   constructor({ store }) {
     // Vue Store
-    this.store = store
+    this.store = store;
 
     // Closed flag.
     // @type {Boolean}
-    this._closed = false
+    this._closed = false;
 
     // Whether we want to produce audio/video.
     // @type {Boolean}
-    this._produce = true
+    this._produce = true;
 
     // Whether we should consume.
     // @type {Boolean}
-    this._consume = true
+    this._consume = true;
 
     // Whether we want DataChannels.
     // @type {Boolean}
-    this._useDataChannel = true
+    this._useDataChannel = true;
 
     // External video.
     // @type {HTMLVideoElement}
-    this._externalVideo = null
+    this._externalVideo = null;
 
     // MediaStream of the external video.
     // @type {MediaStream}
-    this._externalVideoStream = null
+    this._externalVideoStream = null;
 
     // Next expected dataChannel test _useDataChannelnumber.
     // @type {Number}
-    this._nextDataChannelTestNumber = 0
+    this._nextDataChannelTestNumber = 0;
 
     // Protoo URL.
     // @type {String}
-    this._protooUrl = null
+    this._protooUrl = null;
 
     // protoo-client Peer instance.
     // @type {protooClient.Peer}
-    this._protoo = null
+    this._protoo = null;
 
     // mediasoup-client Device instance.
     // @type {mediasoupClient.Device}
-    this._mediasoupDevice = null
+    this._mediasoupDevice = null;
 
     // mediasoup Transport for sending.
     // @type {mediasoupClient.Transport}
-    this._sendTransport = null
+    this._sendTransport = null;
 
     // mediasoup Transport for receiving.
     // @type {mediasoupClient.Transport}
-    this._recvTransport = null
+    this._recvTransport = null;
 
     // Local mic mediasoup Producer.
     // @type {mediasoupClient.Producer}
-    this._micProducer = null
+    this._micProducer = null;
 
     // Local webcam mediasoup Producer.
     // @type {mediasoupClient.Producer}
-    this._webcamProducer = null
+    this._webcamProducer = null;
 
     // Local share mediasoup Producer.
     // @type {mediasoupClient.Producer}
-    this._shareProducer = null
+    this._shareProducer = null;
 
     // Local chat DataProducer.
     // @type {mediasoupClient.DataProducer}
-    this._chatDataProducer = null
+    this._chatDataProducer = null;
 
     // Local bot DataProducer.
     // @type {mediasoupClient.DataProducer}
-    this._botDataProducer = null
+    this._botDataProducer = null;
 
     // mediasoup Consumers.
     // @type {Map<String, mediasoupClient.Consumer>}
-    this._consumers = new Map()
+    this._consumers = new Map();
 
     // mediasoup DataConsumers.
     // @type {Map<String, mediasoupClient.DataConsumer>}
-    this._dataConsumers = new Map()
+    this._dataConsumers = new Map();
 
     // Map of webcam MediaDeviceInfos indexed by deviceId.
     // @type {Map<String, MediaDeviceInfos>}
-    this._webcams = new Map()
+    this._webcams = new Map();
 
     // Local Webcam.
     // @type {Object} with:
@@ -117,26 +117,26 @@ export default class ZeyeClient {
     // - {String} [resolution] - 'qvga' / 'vga' / 'hd'.
     this._webcam = {
       device: null,
-      resolution: 'hd'
-    }
+      resolution: "hd"
+    };
   }
 
   close() {
-    if (this._closed) return
+    if (this._closed) return;
 
-    this._closed = true
+    this._closed = true;
 
-    console.debug('close()')
+    console.debug("close()");
 
     // Close protoo Peer
-    this._protoo.close()
+    this._protoo.close();
 
     // Close mediasoup Transports.
-    if (this._sendTransport) this._sendTransport.close()
+    if (this._sendTransport) this._sendTransport.close();
 
-    if (this._recvTransport) this._recvTransport.close()
+    if (this._recvTransport) this._recvTransport.close();
 
-    this.store.commit('zeyeClient/room/setRoomState', { state: 'closed' })
+    this.store.commit("zeyeClient/room/setRoomState", { state: "closed" });
   }
 
   /**
@@ -149,71 +149,88 @@ export default class ZeyeClient {
    * @param hostname
    * @param protooPort
    */
-  join({ roomId, peerId, displayName, forceH264, forceVP9, hostname, protooPort }) {
-    forceH264 = forceH264 !== undefined ? forceH264 : false
-    forceVP9 = forceVP9 !== undefined ? forceVP9 : false
-    hostname = hostname !== undefined ? hostname : false
-    protooPort = protooPort !== undefined ? protooPort : false
+  join({
+    roomId,
+    peerId,
+    displayName,
+    forceH264,
+    forceVP9,
+    hostname,
+    protooPort
+  }) {
+    forceH264 = forceH264 !== undefined ? forceH264 : false;
+    forceVP9 = forceVP9 !== undefined ? forceVP9 : false;
+    hostname = hostname !== undefined ? hostname : false;
+    protooPort = protooPort !== undefined ? protooPort : false;
 
-    this._displayName = displayName !== undefined ? displayName : randomName()
+    this._displayName = displayName !== undefined ? displayName : randomName();
 
-    this._protooUrl = getProtooUrl({ roomId, peerId, forceH264, forceVP9, hostname, protooPort })
+    this._protooUrl = getProtooUrl({
+      roomId,
+      peerId,
+      forceH264,
+      forceVP9,
+      hostname,
+      protooPort
+    });
 
-    const protooTransport = new protooClient.WebSocketTransport(this._protooUrl)
+    const protooTransport = new protooClient.WebSocketTransport(
+      this._protooUrl
+    );
 
-    this._protoo = new protooClient.Peer(protooTransport)
+    this._protoo = new protooClient.Peer(protooTransport);
 
-    this.store.commit('zeyeClient/room/setRoomState', { state: 'connecting' })
+    this.store.commit("zeyeClient/room/setRoomState", { state: "connecting" });
 
-    this._protoo.on('open', () => this._joinRoom())
+    this._protoo.on("open", () => this._joinRoom());
 
-    this._protoo.on('failed', () => {
-      this.store.dispatch('zeyeClient/notify', {
-        type: 'error',
-        text: 'WebSocket connection failed'
-      })
-    })
+    this._protoo.on("failed", () => {
+      this.store.dispatch("zeyeClient/notify", {
+        type: "error",
+        text: "WebSocket connection failed"
+      });
+    });
 
-    this._protoo.on('disconnected', () => {
-      this.store.dispatch('zeyeClient/notify', {
-        type: 'error',
-        text: 'WebSocket disconnected'
-      })
+    this._protoo.on("disconnected", () => {
+      this.store.dispatch("zeyeClient/notify", {
+        type: "error",
+        text: "WebSocket disconnected"
+      });
 
       // Close mediasoup Transports.
       if (this._sendTransport) {
-        this._sendTransport.close()
-        this._sendTransport = null
+        this._sendTransport.close();
+        this._sendTransport = null;
       }
 
       if (this._recvTransport) {
-        this._recvTransport.close()
-        this._recvTransport = null
+        this._recvTransport.close();
+        this._recvTransport = null;
       }
 
-      this.store.commit('zeyeClient/room/setRoomState', { state: 'closed' })
-    })
+      this.store.commit("zeyeClient/room/setRoomState", { state: "closed" });
+    });
 
-    this._protoo.on('close', () => {
-      if (this._closed) return
+    this._protoo.on("close", () => {
+      if (this._closed) return;
 
-      this.close()
-    })
+      this.close();
+    });
 
     // eslint-disable-next-line no-unused-vars
-    this._protoo.on('request', async (request, accept, reject) => {
+    this._protoo.on("request", async (request, accept, reject) => {
       console.debug(
         'proto "request" event [method:%s, data:%o]',
         request.method,
         request.data
-      )
+      );
 
       switch (request.method) {
-        case 'newConsumer': {
+        case "newConsumer": {
           if (!this._consume) {
-            reject(403, 'I do not want to consume')
+            reject(403, "I do not want to consume");
 
-            break
+            break;
           }
 
           const {
@@ -225,7 +242,7 @@ export default class ZeyeClient {
             type,
             appData,
             producerPaused
-          } = request.data
+          } = request.data;
 
           try {
             const consumer = await this._recvTransport.consume({
@@ -234,23 +251,23 @@ export default class ZeyeClient {
               kind,
               rtpParameters,
               appData: { ...appData, peerId } // Trick.
-            })
+            });
 
             // Store in the map.
-            this._consumers.set(consumer.id, consumer)
+            this._consumers.set(consumer.id, consumer);
 
-            consumer.on('transportclose', () => {
-              this._consumers.delete(consumer.id)
-            })
+            consumer.on("transportclose", () => {
+              this._consumers.delete(consumer.id);
+            });
 
             const {
               spatialLayers,
               temporalLayers
             } = mediasoupClient.parseScalabilityMode(
               consumer.rtpParameters.encodings[0].scalabilityMode
-            )
+            );
 
-            this.store.commit('zeyeClient/consumers/addConsumer', {
+            this.store.commit("zeyeClient/consumers/addConsumer", {
               consumer: {
                 id: consumer.id,
                 type,
@@ -262,53 +279,53 @@ export default class ZeyeClient {
                 preferredSpatialLayer: spatialLayers - 1,
                 preferredTemporalLayer: temporalLayers - 1,
                 priority: 1,
-                codec: consumer.rtpParameters.codecs[0].mimeType.split('/')[1],
+                codec: consumer.rtpParameters.codecs[0].mimeType.split("/")[1],
                 track: consumer.track
               }
-            })
+            });
 
-            this.store.commit('zeyeClient/peers/addConsumer', {
+            this.store.commit("zeyeClient/peers/addConsumer", {
               consumer: {
                 id: consumer.id
               },
               peerId
-            })
+            });
 
             // We are ready. Answer the protoo request so the server will
             // resume this Consumer (which was paused for now if video).
-            accept()
+            accept();
 
             // If audio-only mode is enabled, pause it.
             if (
-              consumer.kind === 'video' &&
+              consumer.kind === "video" &&
               this.store.state.zeyeClient.me.audioOnly
             )
-              this._pauseConsumer(consumer)
+              this._pauseConsumer(consumer);
           } catch (error) {
-            console.error('"newConsumer" request failed:%o', error)
+            console.error('"newConsumer" request failed:%o', error);
 
-            this.store.dispatch('zeyeClient/notify', {
-              type: 'error',
+            this.store.dispatch("zeyeClient/notify", {
+              type: "error",
               text: `Error creating a Consumer: ${error}`
-            })
+            });
 
-            throw error
+            throw error;
           }
 
-          break
+          break;
         }
 
-        case 'newDataConsumer': {
+        case "newDataConsumer": {
           if (!this._consume) {
-            reject(403, 'I do not want to data consume')
+            reject(403, "I do not want to data consume");
 
-            break
+            break;
           }
 
           if (!this._useDataChannel) {
-            reject(403, 'I do not want DataChannels')
+            reject(403, "I do not want DataChannels");
 
-            break
+            break;
           }
 
           const {
@@ -319,7 +336,7 @@ export default class ZeyeClient {
             label,
             protocol,
             appData
-          } = request.data
+          } = request.data;
 
           try {
             const dataConsumer = await this._recvTransport.consumeData({
@@ -329,356 +346,356 @@ export default class ZeyeClient {
               label,
               protocol,
               appData: { ...appData, peerId } // Trick.
-            })
+            });
 
             // Store in the map.
-            this._dataConsumers.set(dataConsumer.id, dataConsumer)
+            this._dataConsumers.set(dataConsumer.id, dataConsumer);
 
-            dataConsumer.on('transportclose', () => {
-              this._dataConsumers.delete(dataConsumer.id)
-            })
+            dataConsumer.on("transportclose", () => {
+              this._dataConsumers.delete(dataConsumer.id);
+            });
 
-            dataConsumer.on('open', () => {
-              console.debug('DataConsumer "open" event')
-            })
+            dataConsumer.on("open", () => {
+              console.debug('DataConsumer "open" event');
+            });
 
-            dataConsumer.on('close', () => {
-              console.warn('DataConsumer "close" event')
+            dataConsumer.on("close", () => {
+              console.warn('DataConsumer "close" event');
 
-              this._dataConsumers.delete(dataConsumer.id)
+              this._dataConsumers.delete(dataConsumer.id);
 
-              this.store.dispatch('zeyeClient/notify', {
-                type: 'error',
-                text: 'DataConsumer closed'
-              })
-            })
+              this.store.dispatch("zeyeClient/notify", {
+                type: "error",
+                text: "DataConsumer closed"
+              });
+            });
 
-            dataConsumer.on('error', (error) => {
-              console.error('DataConsumer "error" event:%o', error)
+            dataConsumer.on("error", error => {
+              console.error('DataConsumer "error" event:%o', error);
 
-              this.store.dispatch('zeyeClient/notify', {
-                type: 'error',
+              this.store.dispatch("zeyeClient/notify", {
+                type: "error",
                 text: `DataConsumer error: ${error}`
-              })
-            })
+              });
+            });
 
-            dataConsumer.on('message', (message) => {
+            dataConsumer.on("message", message => {
               console.debug(
                 'DataConsumer "message" event [streamId:%d]',
                 dataConsumer.sctpStreamParameters.streamId
-              )
+              );
 
               // TODO: For debugging.
-              window.DC_MESSAGE = message
+              window.DC_MESSAGE = message;
 
               if (message instanceof ArrayBuffer) {
-                const view = new DataView(message)
-                const number = view.getUint32()
+                const view = new DataView(message);
+                const number = view.getUint32();
 
                 if (number === 2 ** 32 - 1) {
-                  console.warn('dataChannelTest finished!')
+                  console.warn("dataChannelTest finished!");
 
-                  this._nextDataChannelTestNumber = 0
+                  this._nextDataChannelTestNumber = 0;
 
-                  return
+                  return;
                 }
 
                 if (number > this._nextDataChannelTestNumber) {
                   console.warn(
-                    'dataChannelTest: %s packets missing',
+                    "dataChannelTest: %s packets missing",
                     number - this._nextDataChannelTestNumber
-                  )
+                  );
                 }
 
-                this._nextDataChannelTestNumber = number + 1
+                this._nextDataChannelTestNumber = number + 1;
 
-                return
-              } else if (typeof message !== 'string') {
-                console.warn('ignoring DataConsumer "message" (not a string)')
+                return;
+              } else if (typeof message !== "string") {
+                console.warn('ignoring DataConsumer "message" (not a string)');
 
-                return
+                return;
               }
 
               switch (dataConsumer.label) {
-                case 'chat': {
-                  const { peers } = this.store.state
+                case "chat": {
+                  const { peers } = this.store.state;
                   const peersArray = Object.keys(peers).map(
-                    (_peerId) => peers[_peerId]
-                  )
-                  const sendingPeer = peersArray.find((peer) =>
+                    _peerId => peers[_peerId]
+                  );
+                  const sendingPeer = peersArray.find(peer =>
                     peer.dataConsumers.includes(dataConsumer.id)
-                  )
+                  );
 
                   if (!sendingPeer) {
-                    console.warn('DataConsumer "message" from unknown peer')
+                    console.warn('DataConsumer "message" from unknown peer');
 
-                    break
+                    break;
                   }
 
-                  this.store.dispatch('zeyeClient/notify', {
+                  this.store.dispatch("zeyeClient/notify", {
                     title: `${sendingPeer.displayName} says:`,
                     text: message,
                     timeout: 5000
-                  })
+                  });
 
-                  break
+                  break;
                 }
 
-                case 'bot': {
-                  this.store.dispatch('zeyeClient/notify', {
-                    title: 'Message from Bot:',
+                case "bot": {
+                  this.store.dispatch("zeyeClient/notify", {
+                    title: "Message from Bot:",
                     text: message,
                     timeout: 5000
-                  })
-                  break
+                  });
+                  break;
                 }
               }
-            })
+            });
 
             // TODO: REMOVE
-            window.DC = dataConsumer
+            window.DC = dataConsumer;
 
-            this.store.commit('zeyeClient/dataConsumers/addDataConsumer', {
+            this.store.commit("zeyeClient/dataConsumers/addDataConsumer", {
               dataConsumer: {
                 id: dataConsumer.id,
                 sctpStreamParameters: dataConsumer.sctpStreamParameters,
                 label: dataConsumer.label,
                 protocol: dataConsumer.protocol
               }
-            })
+            });
 
-            this.store.commit('zeyeClient/peers/addDataConsumer', {
+            this.store.commit("zeyeClient/peers/addDataConsumer", {
               dataConsumer: {
                 id: dataConsumer.id
               }
-            })
+            });
 
             // We are ready. Answer the protoo request.
-            accept()
+            accept();
           } catch (error) {
-            console.error('"newDataConsumer" request failed:%o', error)
+            console.error('"newDataConsumer" request failed:%o', error);
 
-            this.store.dispatch('zeyeClient/notify', {
-              type: 'error',
+            this.store.dispatch("zeyeClient/notify", {
+              type: "error",
               text: `Error creating a DataConsumer: ${error}`
-            })
+            });
 
-            throw error
+            throw error;
           }
 
-          break
+          break;
         }
       }
-    })
+    });
 
-    this._protoo.on('notification', (notification) => {
+    this._protoo.on("notification", notification => {
       console.debug(
         'proto "notification" event [method:%s, data:%o]',
         notification.method,
         notification.data
-      )
+      );
 
       switch (notification.method) {
-        case 'producerScore': {
-          const { producerId, score } = notification.data
+        case "producerScore": {
+          const { producerId, score } = notification.data;
 
-          this.store.commit('zeyeClient/producers/setProducerScore', {
+          this.store.commit("zeyeClient/producers/setProducerScore", {
             producerId,
             score
-          })
+          });
 
-          break
+          break;
         }
 
-        case 'newPeer': {
-          const peer = notification.data
+        case "newPeer": {
+          const peer = notification.data;
 
-          this.store.commit('zeyeClient/peers/addPeer', {
+          this.store.commit("zeyeClient/peers/addPeer", {
             peer: {
               ...peer,
               consumers: [],
               dataConsumers: []
             }
-          })
+          });
 
-          this.store.dispatch('zeyeClient/notify', {
+          this.store.dispatch("zeyeClient/notify", {
             text: `${peer.displayName} has joined the room`
-          })
+          });
 
-          break
+          break;
         }
 
-        case 'peerClosed': {
-          const { peerId } = notification.data
+        case "peerClosed": {
+          const { peerId } = notification.data;
 
-          this.store.commit('zeyeClient/peers/removePeer', {
+          this.store.commit("zeyeClient/peers/removePeer", {
             peerId
-          })
+          });
 
-          break
+          break;
         }
 
-        case 'peerDisplayNameChanged': {
-          const { peerId, displayName, oldDisplayName } = notification.data
+        case "peerDisplayNameChanged": {
+          const { peerId, displayName, oldDisplayName } = notification.data;
 
-          this.store.commit('zeyeClient/peers/setPeerDisplayName', {
+          this.store.commit("zeyeClient/peers/setPeerDisplayName", {
             displayName,
             peerId
-          })
+          });
 
-          this.store.dispatch('zeyeClient/notify', {
+          this.store.dispatch("zeyeClient/notify", {
             text: `${oldDisplayName} is now ${displayName}`
-          })
+          });
 
-          break
+          break;
         }
 
-        case 'consumerClosed': {
-          const { consumerId } = notification.data
-          const consumer = this._consumers.get(consumerId)
+        case "consumerClosed": {
+          const { consumerId } = notification.data;
+          const consumer = this._consumers.get(consumerId);
 
-          if (!consumer) break
+          if (!consumer) break;
 
-          consumer.close()
-          this._consumers.delete(consumerId)
+          consumer.close();
+          this._consumers.delete(consumerId);
 
-          const { peerId } = consumer.appData
+          const { peerId } = consumer.appData;
 
           // TODO: probably move peer removers\adders into consumer removers\adders
-          this.store.commit('zeyeClient/peers/removeConsumer', {
+          this.store.commit("zeyeClient/peers/removeConsumer", {
             consumerId,
             peerId
-          })
+          });
 
-          this.store.commit('zeyeClient/consumers/removeConsumer', {
+          this.store.commit("zeyeClient/consumers/removeConsumer", {
             consumerId,
             peerId
-          })
+          });
 
-          break
+          break;
         }
 
-        case 'consumerPaused': {
-          const { consumerId } = notification.data
-          const consumer = this._consumers.get(consumerId)
+        case "consumerPaused": {
+          const { consumerId } = notification.data;
+          const consumer = this._consumers.get(consumerId);
 
-          if (!consumer) break
+          if (!consumer) break;
 
-          this.store.commit('zeyeClient/consumers/setConsumerPaused', {
+          this.store.commit("zeyeClient/consumers/setConsumerPaused", {
             consumerId,
-            originator: 'remote'
-          })
+            originator: "remote"
+          });
 
-          break
+          break;
         }
 
-        case 'consumerResumed': {
-          const { consumerId } = notification.data
-          const consumer = this._consumers.get(consumerId)
+        case "consumerResumed": {
+          const { consumerId } = notification.data;
+          const consumer = this._consumers.get(consumerId);
 
-          if (!consumer) break
+          if (!consumer) break;
 
-          this.store.commit('zeyeClient/consumers/setConsumerResumed', {
+          this.store.commit("zeyeClient/consumers/setConsumerResumed", {
             consumerId,
-            originator: 'remote'
-          })
+            originator: "remote"
+          });
 
-          break
+          break;
         }
 
-        case 'consumerLayersChanged': {
-          const { consumerId, spatialLayer, temporalLayer } = notification.data
-          const consumer = this._consumers.get(consumerId)
+        case "consumerLayersChanged": {
+          const { consumerId, spatialLayer, temporalLayer } = notification.data;
+          const consumer = this._consumers.get(consumerId);
 
-          if (!consumer) break
+          if (!consumer) break;
 
-          this.store.commit('zeyeClient/consumers/setConsumerCurrentLayers', {
+          this.store.commit("zeyeClient/consumers/setConsumerCurrentLayers", {
             consumerId,
             spatialLayer,
             temporalLayer
-          })
+          });
 
-          break
+          break;
         }
 
-        case 'consumerScore': {
-          const { consumerId, score } = notification.data
+        case "consumerScore": {
+          const { consumerId, score } = notification.data;
 
-          this.store.commit('zeyeClient/consumers/setConsumerScore', {
+          this.store.commit("zeyeClient/consumers/setConsumerScore", {
             consumerId,
             score
-          })
+          });
 
-          break
+          break;
         }
 
-        case 'dataConsumerClosed': {
-          const { dataConsumerId } = notification.data
-          const dataConsumer = this._dataConsumers.get(dataConsumerId)
+        case "dataConsumerClosed": {
+          const { dataConsumerId } = notification.data;
+          const dataConsumer = this._dataConsumers.get(dataConsumerId);
 
-          if (!dataConsumer) break
+          if (!dataConsumer) break;
 
-          dataConsumer.close()
-          this._dataConsumers.delete(dataConsumerId)
+          dataConsumer.close();
+          this._dataConsumers.delete(dataConsumerId);
 
-          const { peerId } = dataConsumer.appData
+          const { peerId } = dataConsumer.appData;
 
-          this.store.commit('zeyeClient/dataConsumers/removeDataConsumer', {
+          this.store.commit("zeyeClient/dataConsumers/removeDataConsumer", {
             dataConsumerId,
             peerId
-          })
+          });
 
-          break
+          break;
         }
 
-        case 'activeSpeaker': {
-          const { peerId } = notification.data
+        case "activeSpeaker": {
+          const { peerId } = notification.data;
 
-          this.store.commit('zeyeClient/room/setRoomActiveSpeaker', {
+          this.store.commit("zeyeClient/room/setRoomActiveSpeaker", {
             peerId
-          })
+          });
 
-          break
+          break;
         }
 
         default: {
           console.error(
             'unknown protoo notification.method "%s"',
             notification.method
-          )
+          );
         }
       }
-    })
+    });
 
-    this.ready = true
+    this.ready = true;
   }
 
   async enableMic() {
-    console.debug('enableMic()')
+    console.debug("enableMic()");
 
-    if (this._micProducer) return
+    if (this._micProducer) return;
 
-    if (!this._mediasoupDevice.canProduce('audio')) {
-      console.error('enableMic() | cannot produce audio')
+    if (!this._mediasoupDevice.canProduce("audio")) {
+      console.error("enableMic() | cannot produce audio");
 
-      return
+      return;
     }
 
-    let track
+    let track;
 
     try {
       if (!this._externalVideo) {
-        console.debug('enableMic() | calling getUserMedia()')
+        console.debug("enableMic() | calling getUserMedia()");
 
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: true
-        })
+        });
 
-        track = stream.getAudioTracks()[0]
+        track = stream.getAudioTracks()[0];
       } else {
-        const stream = await this._getExternalVideoStream()
+        const stream = await this._getExternalVideoStream();
 
-        track = stream.getAudioTracks()[0].clone()
+        track = stream.getAudioTracks()[0].clone();
       }
 
       this._micProducer = await this._sendTransport.produce({
@@ -690,172 +707,172 @@ export default class ZeyeClient {
         // NOTE: for testing codec selection.
         // codec : this._mediasoupDevice.rtpCapabilities.codecs
         // 	.find((codec) => codec.mimeType.toLowerCase() === 'audio/pcma')
-      })
+      });
 
-      this.store.commit('zeyeClient/producers/addProducer', {
+      this.store.commit("zeyeClient/producers/addProducer", {
         producer: {
           id: this._micProducer.id,
           paused: this._micProducer.paused,
           track: this._micProducer.track,
           rtpParameters: this._micProducer.rtpParameters,
           codec: this._micProducer.rtpParameters.codecs[0].mimeType.split(
-            '/'
+            "/"
           )[1]
         }
-      })
+      });
 
-      this._micProducer.on('transportclose', () => {
-        this._micProducer = null
-      })
+      this._micProducer.on("transportclose", () => {
+        this._micProducer = null;
+      });
 
-      this._micProducer.on('trackended', () => {
-        this.store.dispatch('zeyeClient/notify', {
-          type: 'error',
-          text: 'Microphone disconnected!'
-        })
+      this._micProducer.on("trackended", () => {
+        this.store.dispatch("zeyeClient/notify", {
+          type: "error",
+          text: "Microphone disconnected!"
+        });
 
-        this.disableMic().catch(() => {})
-      })
+        this.disableMic().catch(() => {});
+      });
     } catch (error) {
-      console.error('enableMic() | failed:%o', error)
+      console.error("enableMic() | failed:%o", error);
 
-      this.store.dispatch('zeyeClient/notify', {
-        type: 'error',
+      this.store.dispatch("zeyeClient/notify", {
+        type: "error",
         text: `Error enabling microphone: ${error}`
-      })
+      });
 
-      if (track) track.stop()
+      if (track) track.stop();
     }
   }
 
   async disableMic() {
-    console.debug('disableMic()')
+    console.debug("disableMic()");
 
-    if (!this._micProducer) return
+    if (!this._micProducer) return;
 
-    this._micProducer.close()
+    this._micProducer.close();
 
-    this.store.commit('zeyeClient/producers/removeProducer', {
+    this.store.commit("zeyeClient/producers/removeProducer", {
       producerId: this._micProducer.id
-    })
+    });
 
     try {
-      await this._protoo.request('closeProducer', {
+      await this._protoo.request("closeProducer", {
         producerId: this._micProducer.id
-      })
+      });
     } catch (error) {
-      this.store.dispatch('zeyeClient/notify', {
-        type: 'error',
+      this.store.dispatch("zeyeClient/notify", {
+        type: "error",
         text: `Error closing server-side mic Producer: ${error}`
-      })
+      });
     }
 
-    this._micProducer = null
+    this._micProducer = null;
   }
 
   async muteMic() {
-    console.debug('muteMic()')
+    console.debug("muteMic()");
 
-    this._micProducer.pause()
+    this._micProducer.pause();
 
     try {
-      await this._protoo.request('pauseProducer', {
+      await this._protoo.request("pauseProducer", {
         producerId: this._micProducer.id
-      })
+      });
 
-      this.store.commit('zeyeClient/producers/setProducerPaused', {
+      this.store.commit("zeyeClient/producers/setProducerPaused", {
         producerId: this._micProducer.id
-      })
+      });
     } catch (error) {
-      console.error('muteMic() | failed: %o', error)
+      console.error("muteMic() | failed: %o", error);
 
-      this.store.dispatch('zeyeClient/notify', {
-        type: 'error',
+      this.store.dispatch("zeyeClient/notify", {
+        type: "error",
         text: `Error pausing server-side mic Producer: ${error}`
-      })
+      });
     }
   }
 
   async unmuteMic() {
-    console.debug('unmuteMic()')
+    console.debug("unmuteMic()");
 
-    this._micProducer.resume()
+    this._micProducer.resume();
 
     try {
-      await this._protoo.request('resumeProducer', {
+      await this._protoo.request("resumeProducer", {
         producerId: this._micProducer.id
-      })
+      });
 
-      this.store.commit('zeyeClient/producers/setProducerResumed', {
+      this.store.commit("zeyeClient/producers/setProducerResumed", {
         producerId: this._micProducer.id
-      })
+      });
     } catch (error) {
-      console.error('unmuteMic() | failed: %o', error)
+      console.error("unmuteMic() | failed: %o", error);
 
-      this.store.dispatch('zeyeClient/notify', {
-        type: 'error',
+      this.store.dispatch("zeyeClient/notify", {
+        type: "error",
         text: `Error resuming server-side mic Producer: ${error}`
-      })
+      });
     }
   }
 
   async enableWebcam() {
-    console.debug('enableWebcam()')
+    console.debug("enableWebcam()");
 
-    if (this._webcamProducer) return
-    else if (this._shareProducer) await this.disableShare()
+    if (this._webcamProducer) return;
+    else if (this._shareProducer) await this.disableShare();
 
-    if (!this._mediasoupDevice.canProduce('video')) {
-      console.error('enableWebcam() | cannot produce video')
+    if (!this._mediasoupDevice.canProduce("video")) {
+      console.error("enableWebcam() | cannot produce video");
 
-      return
+      return;
     }
 
-    let track
-    let device
+    let track;
+    let device;
 
-    this.store.commit('zeyeClient/me/setWebcamInProgress', {
+    this.store.commit("zeyeClient/me/setWebcamInProgress", {
       flag: true
-    })
+    });
 
     try {
       if (!this._externalVideo) {
-        await this._updateWebcams()
-        device = this._webcam.device
+        await this._updateWebcams();
+        device = this._webcam.device;
 
-        const { resolution } = this._webcam
+        const { resolution } = this._webcam;
 
-        if (!device) throw new Error('no webcam devices')
+        if (!device) throw new Error("no webcam devices");
 
-        console.debug('enableWebcam() | calling getUserMedia()')
+        console.debug("enableWebcam() | calling getUserMedia()");
 
         const stream = await navigator.mediaDevices.getUserMedia({
           video: {
             deviceId: { ideal: device.deviceId },
             ...VIDEO_CONSTRAINS[resolution]
           }
-        })
+        });
 
-        track = stream.getVideoTracks()[0]
+        track = stream.getVideoTracks()[0];
       } else {
-        device = { label: 'external video' }
+        device = { label: "external video" };
 
-        const stream = await this._getExternalVideoStream()
+        const stream = await this._getExternalVideoStream();
 
-        track = stream.getVideoTracks()[0].clone()
+        track = stream.getVideoTracks()[0].clone();
       }
 
       if (this._useSimulcast) {
         // If VP9 is the only available video codec then use SVC.
         const firstVideoCodec = this._mediasoupDevice.rtpCapabilities.codecs.find(
-          (c) => c.kind === 'video'
-        )
+          c => c.kind === "video"
+        );
 
-        let encodings
+        let encodings;
 
-        if (firstVideoCodec.mimeType.toLowerCase() === 'video/vp9')
-          encodings = VIDEO_KSVC_ENCODINGS
-        else encodings = VIDEO_SIMULCAST_ENCODINGS
+        if (firstVideoCodec.mimeType.toLowerCase() === "video/vp9")
+          encodings = VIDEO_KSVC_ENCODINGS;
+        else encodings = VIDEO_SIMULCAST_ENCODINGS;
 
         this._webcamProducer = await this._sendTransport.produce({
           track,
@@ -866,12 +883,12 @@ export default class ZeyeClient {
           // NOTE: for testing codec selection.
           // codec : this._mediasoupDevice.rtpCapabilities.codecs
           // 	.find((codec) => codec.mimeType.toLowerCase() === 'video/h264')
-        })
+        });
       } else {
-        this._webcamProducer = await this._sendTransport.produce({ track })
+        this._webcamProducer = await this._sendTransport.produce({ track });
       }
 
-      this.store.commit('zeyeClient/producers/addProducer', {
+      this.store.commit("zeyeClient/producers/addProducer", {
         producer: {
           id: this._webcamProducer.id,
           deviceLabel: device.label,
@@ -880,242 +897,242 @@ export default class ZeyeClient {
           track: this._webcamProducer.track,
           rtpParameters: this._webcamProducer.rtpParameters,
           codec: this._webcamProducer.rtpParameters.codecs[0].mimeType.split(
-            '/'
+            "/"
           )[1]
         }
-      })
+      });
 
-      this._webcamProducer.on('transportclose', () => {
-        this._webcamProducer = null
-      })
+      this._webcamProducer.on("transportclose", () => {
+        this._webcamProducer = null;
+      });
 
-      this._webcamProducer.on('trackended', () => {
-        this.store.dispatch('zeyeClient/notify', {
-          type: 'error',
-          text: 'Webcam disconnected!'
-        })
+      this._webcamProducer.on("trackended", () => {
+        this.store.dispatch("zeyeClient/notify", {
+          type: "error",
+          text: "Webcam disconnected!"
+        });
 
-        this.disableWebcam().catch(() => {})
-      })
+        this.disableWebcam().catch(() => {});
+      });
     } catch (error) {
-      console.error('enableWebcam() | failed:%o', error)
+      console.error("enableWebcam() | failed:%o", error);
 
-      this.store.dispatch('zeyeClient/notify', {
-        type: 'error',
+      this.store.dispatch("zeyeClient/notify", {
+        type: "error",
         text: `Error enabling webcam: ${error}`
-      })
+      });
 
-      if (track) track.stop()
+      if (track) track.stop();
     }
 
-    this.store.commit('zeyeClient/me/setWebcamInProgress', {
+    this.store.commit("zeyeClient/me/setWebcamInProgress", {
       flag: false
-    })
+    });
   }
 
   async disableWebcam() {
-    console.debug('disableWebcam()')
+    console.debug("disableWebcam()");
 
-    if (!this._webcamProducer) return
+    if (!this._webcamProducer) return;
 
-    this._webcamProducer.close()
-    this.store.commit('zeyeClient/producers/removeProducer', {
+    this._webcamProducer.close();
+    this.store.commit("zeyeClient/producers/removeProducer", {
       producerId: this._webcamProducer.id
-    })
+    });
 
     try {
-      await this._protoo.request('closeProducer', {
+      await this._protoo.request("closeProducer", {
         producerId: this._webcamProducer.id
-      })
+      });
     } catch (error) {
-      this.store.dispatch('zeyeClient/notify', {
-        type: 'error',
+      this.store.dispatch("zeyeClient/notify", {
+        type: "error",
         text: `Error closing server-side webcam Producer: ${error}`
-      })
+      });
     }
 
-    this._webcamProducer = null
+    this._webcamProducer = null;
   }
 
   async changeWebcam() {
-    console.debug('changeWebcam()')
+    console.debug("changeWebcam()");
 
-    this.store.commit('zeyeClient/me/setWebcamInProgress', {
+    this.store.commit("zeyeClient/me/setWebcamInProgress", {
       flag: true
-    })
+    });
 
     try {
-      await this._updateWebcams()
+      await this._updateWebcams();
 
-      const array = Array.from(this._webcams.keys())
-      const len = array.length
+      const array = Array.from(this._webcams.keys());
+      const len = array.length;
       const deviceId = this._webcam.device
         ? this._webcam.device.deviceId
-        : undefined
-      let idx = array.indexOf(deviceId)
+        : undefined;
+      let idx = array.indexOf(deviceId);
 
-      if (idx < len - 1) idx++
-      else idx = 0
+      if (idx < len - 1) idx++;
+      else idx = 0;
 
-      this._webcam.device = this._webcams.get(array[idx])
+      this._webcam.device = this._webcams.get(array[idx]);
 
       console.debug(
-        'changeWebcam() | new selected webcam [device:%o]',
+        "changeWebcam() | new selected webcam [device:%o]",
         this._webcam.device
-      )
+      );
 
       // Reset video resolution to HD.
-      this._webcam.resolution = 'hd'
+      this._webcam.resolution = "hd";
 
-      if (!this._webcam.device) throw new Error('no webcam devices')
+      if (!this._webcam.device) throw new Error("no webcam devices");
 
       // Closing the current video track before asking for a new one (mobiles do not like
       // having both front/back cameras open at the same time).
-      this._webcamProducer.track.stop()
+      this._webcamProducer.track.stop();
 
-      console.debug('changeWebcam() | calling getUserMedia()')
+      console.debug("changeWebcam() | calling getUserMedia()");
 
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
           deviceId: { exact: this._webcam.device.deviceId },
           ...VIDEO_CONSTRAINS[this._webcam.resolution]
         }
-      })
+      });
 
-      const track = stream.getVideoTracks()[0]
+      const track = stream.getVideoTracks()[0];
 
-      await this._webcamProducer.replaceTrack({ track })
+      await this._webcamProducer.replaceTrack({ track });
 
-      this.store.commit('zeyeClient/producers/setProducerTrack', {
+      this.store.commit("zeyeClient/producers/setProducerTrack", {
         producerId: this._webcamProducer.id,
         track
-      })
+      });
     } catch (error) {
-      console.error('changeWebcam() | failed: %o', error)
+      console.error("changeWebcam() | failed: %o", error);
 
-      this.store.dispatch('zeyeClient/notify', {
-        type: 'error',
+      this.store.dispatch("zeyeClient/notify", {
+        type: "error",
         text: `Could not change webcam: ${error}`
-      })
+      });
     }
 
-    this.store.commit('zeyeClient/me/setWebcamInProgress', {
+    this.store.commit("zeyeClient/me/setWebcamInProgress", {
       flag: false
-    })
+    });
   }
 
   async changeWebcamResolution() {
-    console.debug('changeWebcamResolution()')
+    console.debug("changeWebcamResolution()");
 
-    this.store.commit('zeyeClient/me/setWebcamInProgress', {
+    this.store.commit("zeyeClient/me/setWebcamInProgress", {
       flag: true
-    })
+    });
 
     try {
       switch (this._webcam.resolution) {
-        case 'qvga':
-          this._webcam.resolution = 'vga'
-          break
-        case 'vga':
-          this._webcam.resolution = 'hd'
-          break
-        case 'hd':
-          this._webcam.resolution = 'qvga'
-          break
+        case "qvga":
+          this._webcam.resolution = "vga";
+          break;
+        case "vga":
+          this._webcam.resolution = "hd";
+          break;
+        case "hd":
+          this._webcam.resolution = "qvga";
+          break;
         default:
-          this._webcam.resolution = 'hd'
+          this._webcam.resolution = "hd";
       }
 
-      console.debug('changeWebcamResolution() | calling getUserMedia()')
+      console.debug("changeWebcamResolution() | calling getUserMedia()");
 
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
           deviceId: { exact: this._webcam.device.deviceId },
           ...VIDEO_CONSTRAINS[this._webcam.resolution]
         }
-      })
+      });
 
-      const track = stream.getVideoTracks()[0]
+      const track = stream.getVideoTracks()[0];
 
-      await this._webcamProducer.replaceTrack({ track })
+      await this._webcamProducer.replaceTrack({ track });
 
-      this.store.commit('zeyeClient/producers/setProducerTrack', {
+      this.store.commit("zeyeClient/producers/setProducerTrack", {
         producerId: this._webcamProducer.id,
         track
-      })
+      });
     } catch (error) {
-      console.error('changeWebcamResolution() | failed: %o', error)
+      console.error("changeWebcamResolution() | failed: %o", error);
 
-      this.store.dispatch('zeyeClient/notify', {
-        type: 'error',
+      this.store.dispatch("zeyeClient/notify", {
+        type: "error",
         text: `Could not change webcam resolution: ${error}`
-      })
+      });
     }
 
-    this.store.commit('zeyeClient/me/setWebcamInProgress', {
+    this.store.commit("zeyeClient/me/setWebcamInProgress", {
       flag: false
-    })
+    });
   }
 
   async enableShare() {
-    console.debug('enableShare()')
+    console.debug("enableShare()");
 
-    if (this._shareProducer) return
-    else if (this._webcamProducer) await this.disableWebcam()
+    if (this._shareProducer) return;
+    else if (this._webcamProducer) await this.disableWebcam();
 
-    if (!this._mediasoupDevice.canProduce('video')) {
-      console.error('enableShare() | cannot produce video')
+    if (!this._mediasoupDevice.canProduce("video")) {
+      console.error("enableShare() | cannot produce video");
 
-      return
+      return;
     }
 
-    let track
+    let track;
 
-    this.store.commit('zeyeClient/me/setShareInProgress', {
+    this.store.commit("zeyeClient/me/setShareInProgress", {
       flag: true
-    })
+    });
 
     try {
-      console.debug('enableShare() | calling getUserMedia()')
+      console.debug("enableShare() | calling getUserMedia()");
 
       const stream = await navigator.mediaDevices.getDisplayMedia({
         audio: false,
         video: {
-          displaySurface: 'monitor',
+          displaySurface: "monitor",
           logicalSurface: true,
           cursor: true,
           width: { max: 1920 },
           height: { max: 1080 },
           frameRate: { max: 30 }
         }
-      })
+      });
 
       // May mean cancelled (in some implementations).
       if (!stream) {
-        this.store.commit('zeyeClient/me/setShareInProgress', {
+        this.store.commit("zeyeClient/me/setShareInProgress", {
           flag: true
-        })
+        });
 
-        return
+        return;
       }
 
-      track = stream.getVideoTracks()[0]
+      track = stream.getVideoTracks()[0];
 
       if (this._useSharingSimulcast) {
         // If VP9 is the only available video codec then use SVC.
         const firstVideoCodec = this._mediasoupDevice.rtpCapabilities.codecs.find(
-          (c) => c.kind === 'video'
-        )
+          c => c.kind === "video"
+        );
 
-        let encodings
+        let encodings;
 
-        if (firstVideoCodec.mimeType.toLowerCase() === 'video/vp9') {
-          encodings = VIDEO_SVC_ENCODINGS
+        if (firstVideoCodec.mimeType.toLowerCase() === "video/vp9") {
+          encodings = VIDEO_SVC_ENCODINGS;
         } else {
-          encodings = VIDEO_SIMULCAST_ENCODINGS.map((encoding) => ({
+          encodings = VIDEO_SIMULCAST_ENCODINGS.map(encoding => ({
             ...encoding,
             dtx: true
-          }))
+          }));
         }
 
         this._shareProducer = await this._sendTransport.produce({
@@ -1127,287 +1144,290 @@ export default class ZeyeClient {
           appData: {
             share: true
           }
-        })
+        });
       } else {
-        this._shareProducer = await this._sendTransport.produce({ track })
+        this._shareProducer = await this._sendTransport.produce({ track });
       }
 
-      this.store.commit('zeyeClient/producers/addProducer', {
+      this.store.commit("zeyeClient/producers/addProducer", {
         producer: {
           id: this._shareProducer.id,
-          type: 'share',
+          type: "share",
           paused: this._shareProducer.paused,
           track: this._shareProducer.track,
           rtpParameters: this._shareProducer.rtpParameters,
           codec: this._shareProducer.rtpParameters.codecs[0].mimeType.split(
-            '/'
+            "/"
           )[1]
         }
-      })
+      });
 
-      this._shareProducer.on('transportclose', () => {
-        this._shareProducer = null
-      })
+      this._shareProducer.on("transportclose", () => {
+        this._shareProducer = null;
+      });
 
-      this._shareProducer.on('trackended', () => {
-        this.store.dispatch('zeyeClient/notify', {
-          type: 'error',
-          text: 'Share disconnected!'
-        })
+      this._shareProducer.on("trackended", () => {
+        this.store.dispatch("zeyeClient/notify", {
+          type: "error",
+          text: "Share disconnected!"
+        });
 
-        this.disableShare().catch(() => {})
-      })
+        this.disableShare().catch(() => {});
+      });
     } catch (error) {
-      console.error('enableShare() | failed:%o', error)
+      console.error("enableShare() | failed:%o", error);
 
-      if (error.name !== 'NotAllowedError') {
-        this.store.dispatch('zeyeClient/notify', {
-          type: 'error',
+      if (error.name !== "NotAllowedError") {
+        this.store.dispatch("zeyeClient/notify", {
+          type: "error",
           text: `Error sharing: ${error}`
-        })
+        });
       }
 
-      if (track) track.stop()
+      if (track) track.stop();
     }
 
-    this.store.commit('zeyeClient/me/setShareInProgress', {
+    this.store.commit("zeyeClient/me/setShareInProgress", {
       flag: false
-    })
+    });
   }
 
   async disableShare() {
-    console.debug('disableShare()')
+    console.debug("disableShare()");
 
-    if (!this._shareProducer) return
+    if (!this._shareProducer) return;
 
-    this._shareProducer.close()
+    this._shareProducer.close();
 
-    this.store.commit('zeyeClient/producers/removeProducer', {
+    this.store.commit("zeyeClient/producers/removeProducer", {
       producerId: this._shareProducer.id
-    })
+    });
 
     try {
-      await this._protoo.request('closeProducer', {
+      await this._protoo.request("closeProducer", {
         producerId: this._shareProducer.id
-      })
+      });
     } catch (error) {
-      this.store.dispatch('zeyeClient/notify', {
-        type: 'error',
+      this.store.dispatch("zeyeClient/notify", {
+        type: "error",
         text: `Error closing server-side share Producer: ${error}`
-      })
+      });
     }
 
-    this._shareProducer = null
+    this._shareProducer = null;
   }
 
   enableAudioOnly() {
-    console.debug('enableAudioOnly()')
+    console.debug("enableAudioOnly()");
 
-    this.store.commit('zeyeClient/me/setAudioOnlyInProgress', {
+    this.store.commit("zeyeClient/me/setAudioOnlyInProgress", {
       flag: true
-    })
+    });
 
-    this.disableWebcam()
+    this.disableWebcam();
 
     for (const consumer of this._consumers.values()) {
-      if (consumer.kind !== 'video') continue
+      if (consumer.kind !== "video") continue;
 
-      this._pauseConsumer(consumer)
+      this._pauseConsumer(consumer);
     }
 
-    this.store.commit('zeyeClient/me/setAudioOnlyState', {
+    this.store.commit("zeyeClient/me/setAudioOnlyState", {
       enabled: true
-    })
+    });
 
-    this.store.commit('zeyeClient/me/setAudioOnlyInProgress', {
+    this.store.commit("zeyeClient/me/setAudioOnlyInProgress", {
       flag: false
-    })
+    });
   }
 
   disableAudioOnly() {
-    console.debug('disableAudioOnly()')
+    console.debug("disableAudioOnly()");
 
-    this.store.commit('zeyeClient/me/setAudioOnlyInProgress', {
+    this.store.commit("zeyeClient/me/setAudioOnlyInProgress", {
       flag: true
-    })
+    });
 
     if (
       !this._webcamProducer &&
       this._produce &&
       (cookiesManager.getDevices() || {}).webcamEnabled
     ) {
-      this.enableWebcam()
+      this.enableWebcam();
     }
 
     for (const consumer of this._consumers.values()) {
-      if (consumer.kind !== 'video') continue
+      if (consumer.kind !== "video") continue;
 
-      this._resumeConsumer(consumer)
+      this._resumeConsumer(consumer);
     }
 
-    this.store.commit('zeyeClient/me/setAudioOnlyState', {
+    this.store.commit("zeyeClient/me/setAudioOnlyState", {
       enabled: false
-    })
+    });
 
-    this.store.commit('zeyeClient/me/setAudioOnlyInProgress', {
+    this.store.commit("zeyeClient/me/setAudioOnlyInProgress", {
       flag: false
-    })
+    });
   }
 
   muteAudio() {
-    console.debug('muteAudio()')
+    console.debug("muteAudio()");
 
-    this.store.commit('zeyeClient/me/setAudioMutedState', {
+    this.store.commit("zeyeClient/me/setAudioMutedState", {
       flag: true
-    })
+    });
   }
 
   unmuteAudio() {
-    console.debug('unmuteAudio()')
+    console.debug("unmuteAudio()");
 
-    this.store.commit('zeyeClient/me/setAudioMutedState', {
+    this.store.commit("zeyeClient/me/setAudioMutedState", {
       flag: false
-    })
+    });
   }
 
   async restartIce() {
-    console.debug('restartIce()')
+    console.debug("restartIce()");
 
-    this.store.commit('zeyeClient/me/setRestartIceInProgress', {
+    this.store.commit("zeyeClient/me/setRestartIceInProgress", {
       flag: true
-    })
+    });
 
     try {
       if (this._sendTransport) {
-        const iceParameters = await this._protoo.request('restartIce', {
+        const iceParameters = await this._protoo.request("restartIce", {
           transportId: this._sendTransport.id
-        })
+        });
 
-        await this._sendTransport.restartIce({ iceParameters })
+        await this._sendTransport.restartIce({ iceParameters });
       }
 
       if (this._recvTransport) {
-        const iceParameters = await this._protoo.request('restartIce', {
+        const iceParameters = await this._protoo.request("restartIce", {
           transportId: this._recvTransport.id
-        })
+        });
 
-        await this._recvTransport.restartIce({ iceParameters })
+        await this._recvTransport.restartIce({ iceParameters });
       }
-      this.store.dispatch('zeyeClient/notify', {
-        text: 'ICE restarted'
-      })
+      this.store.dispatch("zeyeClient/notify", {
+        text: "ICE restarted"
+      });
     } catch (error) {
-      console.error('restartIce() | failed:%o', error)
+      console.error("restartIce() | failed:%o", error);
 
-      this.store.dispatch('zeyeClient/notify', {
-        type: 'error',
+      this.store.dispatch("zeyeClient/notify", {
+        type: "error",
         text: `ICE restart failed: ${error}`
-      })
+      });
     }
 
-    this.store.commit('zeyeClient/me/setRestartIceInProgress', {
+    this.store.commit("zeyeClient/me/setRestartIceInProgress", {
       flag: false
-    })
+    });
   }
 
   async setMaxSendingSpatialLayer(spatialLayer) {
-    console.debug('setMaxSendingSpatialLayer() [spatialLayer:%s]', spatialLayer)
+    console.debug(
+      "setMaxSendingSpatialLayer() [spatialLayer:%s]",
+      spatialLayer
+    );
 
     try {
       if (this._webcamProducer)
-        await this._webcamProducer.setMaxSpatialLayer(spatialLayer)
+        await this._webcamProducer.setMaxSpatialLayer(spatialLayer);
       else if (this._shareProducer)
-        await this._shareProducer.setMaxSpatialLayer(spatialLayer)
+        await this._shareProducer.setMaxSpatialLayer(spatialLayer);
     } catch (error) {
-      console.error('setMaxSendingSpatialLayer() | failed:%o', error)
+      console.error("setMaxSendingSpatialLayer() | failed:%o", error);
 
-      this.store.dispatch('zeyeClient/notify', {
-        type: 'error',
+      this.store.dispatch("zeyeClient/notify", {
+        type: "error",
         text: `Error setting max sending video spatial layer: ${error}`
-      })
+      });
     }
   }
 
   async setConsumerPreferredLayers(consumerId, spatialLayer, temporalLayer) {
     console.debug(
-      'setConsumerPreferredLayers() [consumerId:%s, spatialLayer:%s, temporalLayer:%s]',
+      "setConsumerPreferredLayers() [consumerId:%s, spatialLayer:%s, temporalLayer:%s]",
       consumerId,
       spatialLayer,
       temporalLayer
-    )
+    );
 
     try {
-      await this._protoo.request('setConsumerPreferredLayers', {
+      await this._protoo.request("setConsumerPreferredLayers", {
         consumerId,
         spatialLayer,
         temporalLayer
-      })
+      });
 
-      this.store.commit('zeyeClient/consumers/setConsumerPreferredLayers', {
+      this.store.commit("zeyeClient/consumers/setConsumerPreferredLayers", {
         consumerId,
         spatialLayer,
         temporalLayer
-      })
+      });
     } catch (error) {
-      console.error('setConsumerPreferredLayers() | failed:%o', error)
+      console.error("setConsumerPreferredLayers() | failed:%o", error);
 
-      this.store.dispatch('zeyeClient/notify', {
-        type: 'error',
+      this.store.dispatch("zeyeClient/notify", {
+        type: "error",
         text: `Error setting Consumer preferred layers: ${error}`
-      })
+      });
     }
   }
 
   async setConsumerPriority(consumerId, priority) {
     console.debug(
-      'setConsumerPriority() [consumerId:%s, priority:%d]',
+      "setConsumerPriority() [consumerId:%s, priority:%d]",
       consumerId,
       priority
-    )
+    );
 
     try {
-      await this._protoo.request('setConsumerPriority', {
+      await this._protoo.request("setConsumerPriority", {
         consumerId,
         priority
-      })
+      });
 
-      this.store.commit('zeyeClient/consumers/setConsumerPriority', {
+      this.store.commit("zeyeClient/consumers/setConsumerPriority", {
         consumerId,
         priority
-      })
+      });
     } catch (error) {
-      console.error('setConsumerPriority() | failed:%o', error)
+      console.error("setConsumerPriority() | failed:%o", error);
 
-      this.store.dispatch('zeyeClient/notify', {
-        type: 'error',
+      this.store.dispatch("zeyeClient/notify", {
+        type: "error",
         text: `Error setting Consumer priority: ${error}`
-      })
+      });
     }
   }
 
   async requestConsumerKeyFrame(consumerId) {
-    console.debug('requestConsumerKeyFrame() [consumerId:%s]', consumerId)
+    console.debug("requestConsumerKeyFrame() [consumerId:%s]", consumerId);
 
     try {
-      await this._protoo.request('requestConsumerKeyFrame', { consumerId })
+      await this._protoo.request("requestConsumerKeyFrame", { consumerId });
 
-      this.store.dispatch('zeyeClient/notify', {
-        text: 'Keyframe requested for video consumer'
-      })
+      this.store.dispatch("zeyeClient/notify", {
+        text: "Keyframe requested for video consumer"
+      });
     } catch (error) {
-      console.error('requestConsumerKeyFrame() | failed:%o', error)
+      console.error("requestConsumerKeyFrame() | failed:%o", error);
 
-      this.store.dispatch('zeyeClient/notify', {
-        type: 'error',
+      this.store.dispatch("zeyeClient/notify", {
+        type: "error",
         text: `Error requesting key frame for Consumer: ${error}`
-      })
+      });
     }
   }
 
   async enableChatDataProducer() {
-    console.debug('enableChatDataProducer()')
+    console.debug("enableChatDataProducer()");
 
-    if (!this._useDataChannel) return
+    if (!this._useDataChannel) return;
 
     // NOTE: Should enable this code but it's useful for testing.
     // if (this._chatDataProducer)
@@ -1418,67 +1438,67 @@ export default class ZeyeClient {
       this._chatDataProducer = await this._sendTransport.produceData({
         ordered: false,
         maxRetransmits: 1,
-        label: 'chat',
-        priority: 'medium',
-        appData: { info: 'my-chat-DataProducer' }
-      })
+        label: "chat",
+        priority: "medium",
+        appData: { info: "my-chat-DataProducer" }
+      });
 
-      this.store.commit('zeyeClient/dataProducers/addDataProducer', {
+      this.store.commit("zeyeClient/dataProducers/addDataProducer", {
         dataProducer: {
           id: this._chatDataProducer.id,
           sctpStreamParameters: this._chatDataProducer.sctpStreamParameters,
           label: this._chatDataProducer.label,
           protocol: this._chatDataProducer.protocol
         }
-      })
+      });
 
-      this._chatDataProducer.on('transportclose', () => {
-        this._chatDataProducer = null
-      })
+      this._chatDataProducer.on("transportclose", () => {
+        this._chatDataProducer = null;
+      });
 
-      this._chatDataProducer.on('open', () => {
-        console.debug('chat DataProducer "open" event')
-      })
+      this._chatDataProducer.on("open", () => {
+        console.debug('chat DataProducer "open" event');
+      });
 
-      this._chatDataProducer.on('close', () => {
-        console.error('chat DataProducer "close" event')
+      this._chatDataProducer.on("close", () => {
+        console.error('chat DataProducer "close" event');
 
-        this._chatDataProducer = null
+        this._chatDataProducer = null;
 
-        this.store.dispatch('zeyeClient/notify', {
-          type: 'error',
-          text: 'Chat DataProducer closed'
-        })
-      })
+        this.store.dispatch("zeyeClient/notify", {
+          type: "error",
+          text: "Chat DataProducer closed"
+        });
+      });
 
-      this._chatDataProducer.on('error', (error) => {
-        console.error('chat DataProducer "error" event:%o', error)
+      this._chatDataProducer.on("error", error => {
+        console.error('chat DataProducer "error" event:%o', error);
 
-        this.store.dispatch('zeyeClient/notify', {
-          type: 'error',
+        this.store.dispatch("zeyeClient/notify", {
+          type: "error",
           text: `Chat DataProducer error: ${error}`
-        })
-      })
+        });
+      });
 
-      this._chatDataProducer.on('bufferedamountlow', () => {
-        console.debug('chat DataProducer "bufferedamountlow" event')
-      })
+      this._chatDataProducer.on("bufferedamountlow", () => {
+        console.debug('chat DataProducer "bufferedamountlow" event');
+      });
     } catch (error) {
-      console.error('enableChatDataProducer() | failed:%o', error)
+      console.error("enableChatDataProducer() | failed:%o", error);
 
-      this.store.dispatch('zeyeClient/notify', {
-        type: 'error',
+      this.store.dispatch("zeyeClient/notify", {
+        type: "error",
         text: `Error enabling chat DataProducer: ${error}`
-      })
+      });
 
-      throw error
+      throw error;
     }
   }
 
   async enableBotDataProducer() {
-    console.debug('enableBotDataProducer()')
+    console.debug("enableBotDataProducer()");
 
-    if (!this._useDataChannel) return
+    if (!this._useDataChannel) return;
 
     // NOTE: Should enable this code but it's useful for testing.
     // if (this._botDataProducer)
@@ -1489,325 +1509,327 @@ export default class ZeyeClient {
       this._botDataProducer = await this._sendTransport.produceData({
         ordered: false,
         maxPacketLifeTime: 2000,
-        label: 'bot',
-        priority: 'medium',
-        appData: { info: 'my-bot-DataProducer' }
-      })
+        label: "bot",
+        priority: "medium",
+        appData: { info: "my-bot-DataProducer" }
+      });
 
-      this.store.commit('zeyeClient/dataProducers/addDataProducer', {
+      this.store.commit("zeyeClient/dataProducers/addDataProducer", {
         dataProducer: {
           id: this._botDataProducer.id,
           sctpStreamParameters: this._botDataProducer.sctpStreamParameters,
           label: this._botDataProducer.label,
           protocol: this._botDataProducer.protocol
         }
-      })
+      });
 
-      this._botDataProducer.on('transportclose', () => {
-        this._botDataProducer = null
-      })
+      this._botDataProducer.on("transportclose", () => {
+        this._botDataProducer = null;
+      });
 
-      this._botDataProducer.on('open', () => {
-        console.debug('bot DataProducer "open" event')
-      })
+      this._botDataProducer.on("open", () => {
+        console.debug('bot DataProducer "open" event');
+      });
 
-      this._botDataProducer.on('close', () => {
-        console.error('bot DataProducer "close" event')
+      this._botDataProducer.on("close", () => {
+        console.error('bot DataProducer "close" event');
 
-        this._botDataProducer = null
+        this._botDataProducer = null;
 
-        this.store.dispatch('zeyeClient/notify', {
-          type: 'error',
-          text: 'Bot DataProducer closed'
-        })
-      })
+        this.store.dispatch("zeyeClient/notify", {
+          type: "error",
+          text: "Bot DataProducer closed"
+        });
+      });
 
-      this._botDataProducer.on('error', (error) => {
-        console.error('bot DataProducer "error" event:%o', error)
+      this._botDataProducer.on("error", error => {
+        console.error('bot DataProducer "error" event:%o', error);
 
-        this.store.dispatch('zeyeClient/notify', {
-          type: 'error',
+        this.store.dispatch("zeyeClient/notify", {
+          type: "error",
           text: `Bot DataProducer error: ${error}`
-        })
-      })
+        });
+      });
 
-      this._botDataProducer.on('bufferedamountlow', () => {
-        console.debug('bot DataProducer "bufferedamountlow" event')
-      })
+      this._botDataProducer.on("bufferedamountlow", () => {
+        console.debug('bot DataProducer "bufferedamountlow" event');
+      });
     } catch (error) {
-      console.error('enableBotDataProducer() | failed:%o', error)
+      console.error("enableBotDataProducer() | failed:%o", error);
 
-      this.store.dispatch('zeyeClient/notify', {
-        type: 'error',
+      this.store.dispatch("zeyeClient/notify", {
+        type: "error",
         text: `Error enabling bot DataProducer: ${error}`
-      })
+      });
 
-      throw error
+      throw error;
     }
   }
 
   sendChatMessage(text) {
-    console.debug('sendChatMessage() [text:"%s]', text)
+    console.debug('sendChatMessage() [text:"%s]', text);
 
     if (!this._chatDataProducer) {
-      this.store.dispatch('zeyeClient/notify', {
-        type: 'error',
-        text: 'No chat DataProducer'
-      })
+      this.store.dispatch("zeyeClient/notify", {
+        type: "error",
+        text: "No chat DataProducer"
+      });
 
-      return
+      return;
     }
 
     try {
-      this._chatDataProducer.send(text)
+      this._chatDataProducer.send(text);
     } catch (error) {
-      console.error('chat DataProducer.send() failed:%o', error)
+      console.error("chat DataProducer.send() failed:%o", error);
 
-      this.store.dispatch('zeyeClient/notify', {
-        type: 'error',
+      this.store.dispatch("zeyeClient/notify", {
+        type: "error",
         text: `chat DataProducer.send() failed: ${error}`
-      })
+      });
     }
   }
 
   sendBotMessage(text) {
-    console.debug('sendBotMessage() [text:"%s]', text)
+    console.debug('sendBotMessage() [text:"%s]', text);
 
     if (!this._botDataProducer) {
-      this.store.dispatch('zeyeClient/notify', {
-        type: 'error',
-        text: 'No bot DataProducer'
-      })
+      this.store.dispatch("zeyeClient/notify", {
+        type: "error",
+        text: "No bot DataProducer"
+      });
 
-      return
+      return;
     }
 
     try {
-      this._botDataProducer.send(text)
+      this._botDataProducer.send(text);
     } catch (error) {
-      console.error('bot DataProducer.send() failed:%o', error)
+      console.error("bot DataProducer.send() failed:%o", error);
 
-      this.store.dispatch('zeyeClient/notify', {
-        type: 'error',
+      this.store.dispatch("zeyeClient/notify", {
+        type: "error",
         text: `bot DataProducer.send() failed: ${error}`
-      })
+      });
     }
   }
 
   async changeDisplayName(displayName) {
-    console.debug('changeDisplayName() [displayName:"%s"]', displayName)
+    console.debug('changeDisplayName() [displayName:"%s"]', displayName);
 
     // Store in cookie.
-    cookiesManager.setUser({ displayName })
+    cookiesManager.setUser({ displayName });
 
     try {
-      await this._protoo.request('changeDisplayName', { displayName })
+      await this._protoo.request("changeDisplayName", { displayName });
 
-      this._displayName = displayName
+      this._displayName = displayName;
 
-      this.store.commit('zeyeClient/me/setDisplayName', {
+      this.store.commit("zeyeClient/me/setDisplayName", {
         displayName
-      })
+      });
 
-      this.store.dispatch('zeyeClient/notify', {
-        text: 'Display name changed'
-      })
+      this.store.dispatch("zeyeClient/notify", {
+        text: "Display name changed"
+      });
     } catch (error) {
-      console.error('changeDisplayName() | failed: %o', error)
+      console.error("changeDisplayName() | failed: %o", error);
 
-      this.store.dispatch('zeyeClient/notify', {
-        type: 'error',
+      this.store.dispatch("zeyeClient/notify", {
+        type: "error",
         text: `Could not change display name: ${error}`
-      })
+      });
 
       // We need to refresh the component for it to render the previous
       // displayName again.
 
-      this.store.commit('zeyeClient/me/setDisplayName', { displayName: false })
+      this.store.commit("zeyeClient/me/setDisplayName", { displayName: false });
     }
   }
 
   getSendTransportRemoteStats() {
-    console.debug('getSendTransportRemoteStats()')
+    console.debug("getSendTransportRemoteStats()");
 
-    if (!this._sendTransport) return
+    if (!this._sendTransport) return;
 
-    return this._protoo.request('getTransportStats', {
+    return this._protoo.request("getTransportStats", {
       transportId: this._sendTransport.id
-    })
+    });
   }
 
   getRecvTransportRemoteStats() {
-    console.debug('getRecvTransportRemoteStats()')
+    console.debug("getRecvTransportRemoteStats()");
 
-    if (!this._recvTransport) return
+    if (!this._recvTransport) return;
 
-    return this._protoo.request('getTransportStats', {
+    return this._protoo.request("getTransportStats", {
       transportId: this._recvTransport.id
-    })
+    });
   }
 
   getAudioRemoteStats() {
-    console.debug('getAudioRemoteStats()')
+    console.debug("getAudioRemoteStats()");
 
-    if (!this._micProducer) return
+    if (!this._micProducer) return;
 
-    return this._protoo.request('getProducerStats', {
+    return this._protoo.request("getProducerStats", {
       producerId: this._micProducer.id
-    })
+    });
   }
 
   getVideoRemoteStats() {
-    console.debug('getVideoRemoteStats()')
+    console.debug("getVideoRemoteStats()");
 
-    const producer = this._webcamProducer || this._shareProducer
+    const producer = this._webcamProducer || this._shareProducer;
 
-    if (!producer) return
+    if (!producer) return;
 
-    return this._protoo.request('getProducerStats', { producerId: producer.id })
+    return this._protoo.request("getProducerStats", {
+      producerId: producer.id
+    });
   }
 
   getConsumerRemoteStats(consumerId) {
-    console.debug('getConsumerRemoteStats()')
+    console.debug("getConsumerRemoteStats()");
 
-    const consumer = this._consumers.get(consumerId)
+    const consumer = this._consumers.get(consumerId);
 
-    if (!consumer) return
+    if (!consumer) return;
 
-    return this._protoo.request('getConsumerStats', { consumerId })
+    return this._protoo.request("getConsumerStats", { consumerId });
   }
 
   getChatDataProducerRemoteStats() {
-    console.debug('getChatDataProducerRemoteStats()')
+    console.debug("getChatDataProducerRemoteStats()");
 
-    const dataProducer = this._chatDataProducer
+    const dataProducer = this._chatDataProducer;
 
-    if (!dataProducer) return
+    if (!dataProducer) return;
 
-    return this._protoo.request('getDataProducerStats', {
+    return this._protoo.request("getDataProducerStats", {
       dataProducerId: dataProducer.id
-    })
+    });
   }
 
   getBotDataProducerRemoteStats() {
-    console.debug('getBotDataProducerRemoteStats()')
+    console.debug("getBotDataProducerRemoteStats()");
 
-    const dataProducer = this._botDataProducer
+    const dataProducer = this._botDataProducer;
 
-    if (!dataProducer) return
+    if (!dataProducer) return;
 
-    return this._protoo.request('getDataProducerStats', {
+    return this._protoo.request("getDataProducerStats", {
       dataProducerId: dataProducer.id
-    })
+    });
   }
 
   getDataConsumerRemoteStats(dataConsumerId) {
-    console.debug('getDataConsumerRemoteStats()')
+    console.debug("getDataConsumerRemoteStats()");
 
-    const dataConsumer = this._dataConsumers.get(dataConsumerId)
+    const dataConsumer = this._dataConsumers.get(dataConsumerId);
 
-    if (!dataConsumer) return
+    if (!dataConsumer) return;
 
-    return this._protoo.request('getDataConsumerStats', { dataConsumerId })
+    return this._protoo.request("getDataConsumerStats", { dataConsumerId });
   }
 
   getSendTransportLocalStats() {
-    console.debug('getSendTransportLocalStats()')
+    console.debug("getSendTransportLocalStats()");
 
-    if (!this._sendTransport) return
+    if (!this._sendTransport) return;
 
-    return this._sendTransport.getStats()
+    return this._sendTransport.getStats();
   }
 
   getRecvTransportLocalStats() {
-    console.debug('getRecvTransportLocalStats()')
+    console.debug("getRecvTransportLocalStats()");
 
-    if (!this._recvTransport) return
+    if (!this._recvTransport) return;
 
-    return this._recvTransport.getStats()
+    return this._recvTransport.getStats();
   }
 
   getAudioLocalStats() {
-    console.debug('getAudioLocalStats()')
+    console.debug("getAudioLocalStats()");
 
-    if (!this._micProducer) return
+    if (!this._micProducer) return;
 
-    return this._micProducer.getStats()
+    return this._micProducer.getStats();
   }
 
   getVideoLocalStats() {
-    console.debug('getVideoLocalStats()')
+    console.debug("getVideoLocalStats()");
 
-    const producer = this._webcamProducer || this._shareProducer
+    const producer = this._webcamProducer || this._shareProducer;
 
-    if (!producer) return
+    if (!producer) return;
 
-    return producer.getStats()
+    return producer.getStats();
   }
 
   getConsumerLocalStats(consumerId) {
-    const consumer = this._consumers.get(consumerId)
+    const consumer = this._consumers.get(consumerId);
 
-    if (!consumer) return
+    if (!consumer) return;
 
-    return consumer.getStats()
+    return consumer.getStats();
   }
 
   async applyNetworkThrottle({ uplink, downlink, rtt, secret }) {
     console.debug(
-      'applyNetworkThrottle() [uplink:%s, downlink:%s, rtt:%s]',
+      "applyNetworkThrottle() [uplink:%s, downlink:%s, rtt:%s]",
       uplink,
       downlink,
       rtt
-    )
+    );
 
     try {
-      await this._protoo.request('applyNetworkThrottle', {
+      await this._protoo.request("applyNetworkThrottle", {
         uplink,
         downlink,
         rtt,
         secret
-      })
+      });
     } catch (error) {
-      console.error('applyNetworkThrottle() | failed:%o', error)
+      console.error("applyNetworkThrottle() | failed:%o", error);
 
-      this.store.dispatch('zeyeClient/notify', {
-        type: 'error',
+      this.store.dispatch("zeyeClient/notify", {
+        type: "error",
         text: `Error applying network throttle: ${error}`
-      })
+      });
     }
   }
 
   async resetNetworkThrottle({ silent = false, secret }) {
-    console.debug('resetNetworkThrottle()')
+    console.debug("resetNetworkThrottle()");
 
     try {
-      await this._protoo.request('resetNetworkThrottle', { secret })
+      await this._protoo.request("resetNetworkThrottle", { secret });
     } catch (error) {
       if (!silent) {
-        console.error('resetNetworkThrottle() | failed:%o', error)
+        console.error("resetNetworkThrottle() | failed:%o", error);
 
-        this.store.dispatch('zeyeClient/notify', {
-          type: 'error',
+        this.store.dispatch("zeyeClient/notify", {
+          type: "error",
           text: `Error resetting network throttle: ${error}`
-        })
+        });
       }
     }
   }
 
   async _joinRoom() {
-    console.debug('_joinRoom()')
+    console.debug("_joinRoom()");
 
     try {
       this._mediasoupDevice = new mediasoupClient.Device({
         handlerName: this._handlerName
-      })
+      });
 
       const routerRtpCapabilities = await this._protoo.request(
-        'getRouterRtpCapabilities'
-      )
+        "getRouterRtpCapabilities"
+      );
 
-      await this._mediasoupDevice.load({ routerRtpCapabilities })
+      await this._mediasoupDevice.load({ routerRtpCapabilities });
 
       // NOTE: Stuff to play remote audios due to browsers' new autoplay policy.
       //
@@ -1816,18 +1838,18 @@ export default class ZeyeClient {
       {
         const stream = await navigator.mediaDevices.getUserMedia({
           audio: true
-        })
-        const audioTrack = stream.getAudioTracks()[0]
+        });
+        const audioTrack = stream.getAudioTracks()[0];
 
-        audioTrack.enabled = false
+        audioTrack.enabled = false;
 
-        setTimeout(() => audioTrack.stop(), 120000)
+        setTimeout(() => audioTrack.stop(), 120000);
       }
 
       // Create mediasoup Transport for sending (unless we don't want to produce).
       if (this._produce) {
         const transportInfo = await this._protoo.request(
-          'createWebRtcTransport',
+          "createWebRtcTransport",
           {
             forceTcp: this._forceTcp,
             producing: true,
@@ -1836,7 +1858,7 @@ export default class ZeyeClient {
               ? this._mediasoupDevice.sctpCapabilities
               : undefined
           }
-        )
+        );
 
         const {
           id,
@@ -1844,7 +1866,7 @@ export default class ZeyeClient {
           iceCandidates,
           dtlsParameters,
           sctpParameters
-        } = transportInfo
+        } = transportInfo;
 
         this._sendTransport = this._mediasoupDevice.createSendTransport({
           id,
@@ -1854,46 +1876,46 @@ export default class ZeyeClient {
           sctpParameters,
           iceServers: [],
           proprietaryConstraints: PC_PROPRIETARY_CONSTRAINTS
-        })
+        });
 
         this._sendTransport.on(
-          'connect',
+          "connect",
           (
             { dtlsParameters },
             callback,
             errback // eslint-disable-line no-shadow
           ) => {
             this._protoo
-              .request('connectWebRtcTransport', {
+              .request("connectWebRtcTransport", {
                 transportId: this._sendTransport.id,
                 dtlsParameters
               })
               .then(callback)
-              .catch(errback)
+              .catch(errback);
           }
-        )
+        );
 
         this._sendTransport.on(
-          'produce',
+          "produce",
           async ({ kind, rtpParameters, appData }, callbackfunc, errback) => {
             try {
               // eslint-disable-next-line no-shadow
-              const { id } = await this._protoo.request('produce', {
+              const { id } = await this._protoo.request("produce", {
                 transportId: this._sendTransport.id,
                 kind,
                 rtpParameters,
                 appData
-              })
+              });
 
-              callbackfunc({ id })
+              callbackfunc({ id });
             } catch (error) {
-              errback(error)
+              errback(error);
             }
           }
-        )
+        );
 
         this._sendTransport.on(
-          'producedata',
+          "producedata",
           async (
             { sctpStreamParameters, label, protocol, appData },
             callbackfunc,
@@ -1903,30 +1925,30 @@ export default class ZeyeClient {
               '"producedata" event: [sctpStreamParameters:%o, appData:%o]',
               sctpStreamParameters,
               appData
-            )
+            );
 
             try {
               // eslint-disable-next-line no-shadow
-              const { id } = await this._protoo.request('produceData', {
+              const { id } = await this._protoo.request("produceData", {
                 transportId: this._sendTransport.id,
                 sctpStreamParameters,
                 label,
                 protocol,
                 appData
-              })
+              });
 
-              callbackfunc({ id })
+              callbackfunc({ id });
             } catch (error) {
-              errback(error)
+              errback(error);
             }
           }
-        )
+        );
       }
 
       // Create mediasoup Transport for sending (unless we don't want to consume).
       if (this._consume) {
         const transportInfo = await this._protoo.request(
-          'createWebRtcTransport',
+          "createWebRtcTransport",
           {
             forceTcp: this._forceTcp,
             producing: false,
@@ -1935,7 +1957,7 @@ export default class ZeyeClient {
               ? this._mediasoupDevice.sctpCapabilities
               : undefined
           }
-        )
+        );
 
         const {
           id,
@@ -1943,7 +1965,7 @@ export default class ZeyeClient {
           iceCandidates,
           dtlsParameters,
           sctpParameters
-        } = transportInfo
+        } = transportInfo;
 
         this._recvTransport = this._mediasoupDevice.createRecvTransport({
           id,
@@ -1952,29 +1974,29 @@ export default class ZeyeClient {
           dtlsParameters,
           sctpParameters,
           iceServers: []
-        })
+        });
 
         this._recvTransport.on(
-          'connect',
+          "connect",
           (
             { dtlsParameters },
             callback,
             errback // eslint-disable-line no-shadow
           ) => {
             this._protoo
-              .request('connectWebRtcTransport', {
+              .request("connectWebRtcTransport", {
                 transportId: this._recvTransport.id,
                 dtlsParameters
               })
               .then(callback)
-              .catch(errback)
+              .catch(errback);
           }
-        )
+        );
       }
 
       // Join now into the room.
       // NOTE: Don't send our RTP capabilities if we don't want to consume.
-      const { peers } = await this._protoo.request('join', {
+      const { peers } = await this._protoo.request("join", {
         displayName: this._displayName,
         device: this._device,
         rtpCapabilities: this._consume
@@ -1984,177 +2006,178 @@ export default class ZeyeClient {
           this._useDataChannel && this._consume
             ? this._mediasoupDevice.sctpCapabilities
             : undefined
-      })
+      });
 
-      this.store.commit('zeyeClient/room/setRoomState', {
-        state: 'connected'
-      })
+      this.store.commit("zeyeClient/room/setRoomState", {
+        state: "connected"
+      });
 
       // Clean all the existing notifcations.
-      this.store.commit('zeyeClient/notifications/removeAllNotifications')
+      this.store.commit("zeyeClient/notifications/removeAllNotifications");
 
-      this.store.dispatch('zeyeClient/notify', {
-        text: 'You are in the room!',
+      this.store.dispatch("zeyeClient/notify", {
+        text: "You are in the room!",
         timeout: 3000
-      })
+      });
 
       for (const peer of peers) {
-        this.store.commit('zeyeClient/peers/addPeer', {
+        this.store.commit("zeyeClient/peers/addPeer", {
           peer: { ...peer, consumers: [], dataConsumers: [] }
-        })
+        });
       }
 
       // Enable mic/webcam.
       if (this._produce) {
         // Set our media capabilities.
 
-        this.store.commit('zeyeClient/me/setMediaCapabilities', {
-          canSendMic: this._mediasoupDevice.canProduce('audio'),
-          canSendWebcam: this._mediasoupDevice.canProduce('video')
-        })
+        this.store.commit("zeyeClient/me/setMediaCapabilities", {
+          canSendMic: this._mediasoupDevice.canProduce("audio"),
+          canSendWebcam: this._mediasoupDevice.canProduce("video")
+        });
 
-        this.enableMic()
+        this.enableMic();
 
-        const devicesCookie = cookiesManager.getDevices()
+        const devicesCookie = cookiesManager.getDevices();
 
         if (
           !devicesCookie ||
           devicesCookie.webcamEnabled ||
           this._externalVideo
         )
-          this.enableWebcam()
+          this.enableWebcam();
 
-        this._sendTransport.on('connectionstatechange', (connectionState) => {
-          if (connectionState === 'connected') {
-            this.enableChatDataProducer()
-            this.enableBotDataProducer()
+        this._sendTransport.on("connectionstatechange", connectionState => {
+          if (connectionState === "connected") {
+            this.enableChatDataProducer();
+            this.enableBotDataProducer();
           }
-        })
+        });
       }
 
       // NOTE: For testing.
       if (window.SHOW_INFO) {
-        const { me } = this.store.state
+        const { me } = this.store.state;
 
-        this.store.commit('zeyeClient/room/setRoomStatsPeerId', {
+        this.store.commit("zeyeClient/room/setRoomStatsPeerId", {
           peerId: me.id
-        })
+        });
       }
     } catch (error) {
-      console.error('_joinRoom() failed:%o', error)
+      console.error("_joinRoom() failed:%o", error);
 
-      this.store.dispatch('zeyeClient/notify', {
-        type: 'error',
+      this.store.dispatch("zeyeClient/notify", {
+        type: "error",
         text: `Could not join the room: ${error}`
-      })
+      });
 
-      this.close()
+      this.close();
     }
   }
 
   async _updateWebcams() {
-    console.debug('_updateWebcams()')
+    console.debug("_updateWebcams()");
 
     // Reset the list.
-    this._webcams = new Map()
+    this._webcams = new Map();
 
-    console.debug('_updateWebcams() | calling enumerateDevices()')
+    console.debug("_updateWebcams() | calling enumerateDevices()");
 
-    const devices = await navigator.mediaDevices.enumerateDevices()
+    const devices = await navigator.mediaDevices.enumerateDevices();
 
     for (const device of devices) {
-      if (device.kind !== 'videoinput') continue
+      if (device.kind !== "videoinput") continue;
 
-      this._webcams.set(device.deviceId, device)
+      this._webcams.set(device.deviceId, device);
     }
 
-    const array = Array.from(this._webcams.values())
-    const len = array.length
+    const array = Array.from(this._webcams.values());
+    const len = array.length;
     const currentWebcamId = this._webcam.device
       ? this._webcam.device.deviceId
-      : undefined
+      : undefined;
 
-    console.debug('_updateWebcams() [webcams:%o]', array)
+    console.debug("_updateWebcams() [webcams:%o]", array);
 
-    if (len === 0) this._webcam.device = null
-    else if (!this._webcams.has(currentWebcamId)) this._webcam.device = array[0]
+    if (len === 0) this._webcam.device = null;
+    else if (!this._webcams.has(currentWebcamId))
+      this._webcam.device = array[0];
 
-    this.store.commit('zeyeClient/me/setCanChangeWebcam', {
+    this.store.commit("zeyeClient/me/setCanChangeWebcam", {
       flag: this._webcams.size > 1
-    })
+    });
   }
 
   _getWebcamType(device) {
     if (/(back|rear)/i.test(device.label)) {
-      console.debug('_getWebcamType() | it seems to be a back camera')
+      console.debug("_getWebcamType() | it seems to be a back camera");
 
-      return 'back'
+      return "back";
     } else {
-      console.debug('_getWebcamType() | it seems to be a front camera')
+      console.debug("_getWebcamType() | it seems to be a front camera");
 
-      return 'front'
+      return "front";
     }
   }
 
   async _pauseConsumer(consumer) {
-    if (consumer.paused) return
+    if (consumer.paused) return;
 
     try {
-      await this._protoo.request('pauseConsumer', { consumerId: consumer.id })
+      await this._protoo.request("pauseConsumer", { consumerId: consumer.id });
 
-      consumer.pause()
+      consumer.pause();
 
-      this.store.commit('zeyeClient/consumers/setConsumerPaused', {
+      this.store.commit("zeyeClient/consumers/setConsumerPaused", {
         consumerId: consumer.id,
-        originator: 'local'
-      })
+        originator: "local"
+      });
     } catch (error) {
-      console.error('_pauseConsumer() | failed:%o', error)
+      console.error("_pauseConsumer() | failed:%o", error);
 
-      this.store.dispatch('zeyeClient/notify', {
-        type: 'error',
+      this.store.dispatch("zeyeClient/notify", {
+        type: "error",
         text: `Error pausing Consumer: ${error}`
-      })
+      });
     }
   }
 
   async _resumeConsumer(consumer) {
-    if (!consumer.paused) return
+    if (!consumer.paused) return;
 
     try {
-      await this._protoo.request('resumeConsumer', { consumerId: consumer.id })
+      await this._protoo.request("resumeConsumer", { consumerId: consumer.id });
 
-      consumer.resume()
+      consumer.resume();
 
-      this.store.commit('zeyeClient/consumers/setConsumerResumed', {
+      this.store.commit("zeyeClient/consumers/setConsumerResumed", {
         consumerId: consumer.id,
-        originator: 'local'
-      })
+        originator: "local"
+      });
     } catch (error) {
-      console.error('_resumeConsumer() | failed:%o', error)
+      console.error("_resumeConsumer() | failed:%o", error);
 
-      this.store.dispatch('zeyeClient/notify', {
-        type: 'error',
+      this.store.dispatch("zeyeClient/notify", {
+        type: "error",
         text: `Error resuming Consumer: ${error}`
-      })
+      });
     }
   }
 
   async _getExternalVideoStream() {
-    if (this._externalVideoStream) return this._externalVideoStream
+    if (this._externalVideoStream) return this._externalVideoStream;
 
     if (this._externalVideo.readyState < 3) {
-      await new Promise((resolve) =>
-        this._externalVideo.addEventListener('canplay', resolve)
-      )
+      await new Promise(resolve =>
+        this._externalVideo.addEventListener("canplay", resolve)
+      );
     }
 
     if (this._externalVideo.captureStream)
-      this._externalVideoStream = this._externalVideo.captureStream()
+      this._externalVideoStream = this._externalVideo.captureStream();
     else if (this._externalVideo.mozCaptureStream)
-      this._externalVideoStream = this._externalVideo.mozCaptureStream()
-    else throw new Error('video.captureStream() not supported')
+      this._externalVideoStream = this._externalVideo.mozCaptureStream();
+    else throw new Error("video.captureStream() not supported");
 
-    return this._externalVideoStream
+    return this._externalVideoStream;
   }
 }

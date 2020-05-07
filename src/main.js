@@ -1,21 +1,20 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import Vue from "vue";
+import Vuex from "vuex";
 
-import App from './App.vue'
-import zeyeClient from './index'
+import App from "./App.vue";
+import zeyeClient from "./index";
 
-
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 const store = new Vuex.Store({
   modules: {
     zeyeClient: { namespaced: true }
   }
-})
+});
 
-Vue.use(zeyeClient, store)
-Vue.config.productionTip = false
+Vue.use(zeyeClient, store);
+Vue.config.productionTip = false;
 
 new Vue({
-  render: h => h(App),
-}).$mount('#app')
+  render: h => h(App)
+}).$mount("#app");
