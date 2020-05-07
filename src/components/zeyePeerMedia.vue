@@ -56,7 +56,7 @@ export default {
   },
   computed: {
     isLocalMedia() {
-      return !this.peerId;
+      return this.peerId === "me";
     }
   },
   mounted() {
