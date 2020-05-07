@@ -12916,13 +12916,6 @@ var ZeyeClient = /*#__PURE__*/function () {
                   });
                   _mediasoupClient$pars = mediasoupClient.parseScalabilityMode(consumer.rtpParameters.encodings[0].scalabilityMode), spatialLayers = _mediasoupClient$pars.spatialLayers, temporalLayers = _mediasoupClient$pars.temporalLayers;
 
-                  _this.store.commit('zeyeClient/peers/addConsumer', {
-                    consumer: {
-                      id: consumer.id
-                    },
-                    peerId: _peerId2
-                  });
-
                   _this.store.commit('zeyeClient/consumers/addConsumer', {
                     consumer: {
                       id: consumer.id,
@@ -12938,6 +12931,13 @@ var ZeyeClient = /*#__PURE__*/function () {
                       codec: consumer.rtpParameters.codecs[0].mimeType.split('/')[1],
                       track: consumer.track
                     }
+                  });
+
+                  _this.store.commit('zeyeClient/peers/addConsumer', {
+                    consumer: {
+                      id: consumer.id
+                    },
+                    peerId: _peerId2
                   }); // We are ready. Answer the protoo request so the server will
                   // resume this Consumer (which was paused for now if video).
 

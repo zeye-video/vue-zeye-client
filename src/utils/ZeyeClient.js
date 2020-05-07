@@ -250,13 +250,6 @@ export default class ZeyeClient {
               consumer.rtpParameters.encodings[0].scalabilityMode
             )
 
-            this.store.commit('zeyeClient/peers/addConsumer', {
-              consumer: {
-                id: consumer.id
-              },
-              peerId
-            })
-
             this.store.commit('zeyeClient/consumers/addConsumer', {
               consumer: {
                 id: consumer.id,
@@ -272,6 +265,13 @@ export default class ZeyeClient {
                 codec: consumer.rtpParameters.codecs[0].mimeType.split('/')[1],
                 track: consumer.track
               }
+            })
+
+            this.store.commit('zeyeClient/peers/addConsumer', {
+              consumer: {
+                id: consumer.id
+              },
+              peerId
             })
 
             // We are ready. Answer the protoo request so the server will
