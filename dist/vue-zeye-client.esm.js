@@ -15815,23 +15815,21 @@ var script = {
       }
 
       if (videoTrack) {
-        if (this.$zeyeClient.getVideoProducer().track) {
-          var _this$$refs = this.$refs,
-              audioElem = _this$$refs.audioElem,
-              videoElem = _this$$refs.videoElem;
-          videoElem.muted = true;
-          var videoStream = new MediaStream();
-          videoStream.addTrack(videoTrack);
-          videoElem.srcObject = videoStream;
+        var _this$$refs = this.$refs,
+            audioElem = _this$$refs.audioElem,
+            videoElem = _this$$refs.videoElem;
+        videoElem.muted = true;
+        var videoStream = new MediaStream();
+        videoStream.addTrack(videoTrack);
+        videoElem.srcObject = videoStream;
 
-          videoElem.onplay = function () {
-            audioElem.play().catch(function (error) {
-              return console.warn('audioElem.play() failed:%o', error);
-            });
-          };
+        videoElem.onplay = function () {
+          audioElem.play().catch(function (error) {
+            return console.warn('audioElem.play() failed:%o', error);
+          });
+        };
 
-          videoElem.play();
-        }
+        videoElem.play();
       }
     },
     _runHark: function _runHark(stream) {
@@ -16025,7 +16023,7 @@ var __vue_staticRenderFns__ = [];
   /* style */
   const __vue_inject_styles__ = function (inject) {
     if (!inject) return
-    inject("data-v-1e8f15f6_0", { source: ".volume-container{position:absolute;top:0;bottom:0;width:10px;display:flex;-webkit-box-orient:vertical;flex-direction:column;-webkit-box-pack:center;justify-content:center;-webkit-box-align:center;align-items:center;pointer-events:none}.volume-container .bar{width:6px;border-radius:6px;transition:.1s ease-in 0s}.zeye-peer-media{position:relative;flex:100 100 auto;display:flex}.zeye-peer-media.active-speaker{box-shadow:0 0 5px #adff2f}", map: undefined, media: undefined });
+    inject("data-v-49e0d5c7_0", { source: ".volume-container{position:absolute;top:0;bottom:0;width:10px;display:flex;-webkit-box-orient:vertical;flex-direction:column;-webkit-box-pack:center;justify-content:center;-webkit-box-align:center;align-items:center;pointer-events:none}.volume-container .bar{width:6px;border-radius:6px;transition:.1s ease-in 0s}.zeye-peer-media{position:relative;flex:100 100 auto;display:flex}.zeye-peer-media.active-speaker{box-shadow:0 0 5px #adff2f}", map: undefined, media: undefined });
 
   };
   /* scoped */

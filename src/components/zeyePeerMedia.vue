@@ -76,25 +76,22 @@ export default {
       }
 
       if (videoTrack) {
+        const {audioElem, videoElem} = this.$refs
 
-        if (this.$zeyeClient.getVideoProducer().track) {
-          const {audioElem, videoElem} = this.$refs
+        videoElem.muted = true
 
-          videoElem.muted = true
+        const videoStream = new MediaStream()
 
-          const videoStream = new MediaStream()
+        videoStream.addTrack(videoTrack)
+        videoElem.srcObject = videoStream
 
-          videoStream.addTrack(videoTrack)
-          videoElem.srcObject = videoStream
-
-          videoElem.onplay = () => {
-            audioElem
-                    .play()
-                    .catch((error) => console.warn('audioElem.play() failed:%o', error))
-          }
-
-          videoElem.play()
+        videoElem.onplay = () => {
+          audioElem
+                  .play()
+                  .catch((error) => console.warn('audioElem.play() failed:%o', error))
         }
+
+        videoElem.play()
       }
     },
     _runHark(stream) {
