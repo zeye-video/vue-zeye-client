@@ -1,9 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import App from './Demo.vue'
 import zeyeClient from '../src'
-
+import App from './Demo.vue'
 
 Vue.use(Vuex)
 
@@ -17,5 +16,5 @@ Vue.use(zeyeClient, store)
 Vue.config.productionTip = false
 
 new Vue({
-  render: h => h(App),
+  render: (h) => h(App)
 }).$mount('#app')
