@@ -2,7 +2,7 @@
   "name": "vue-zeye-client",
   "license": "ISC",
   "author": "stasoft91@gmail.com",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -31,7 +31,6 @@
     "mediasoup-client": "^3.6.5",
     "pokemon": "^2.0.2",
     "protoo-client": "^4.0.4"
-
   },
   "devDependencies": {
     "core-js": "^3.6.4",

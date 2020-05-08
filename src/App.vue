@@ -23,20 +23,20 @@
 <script>
 export default {
   mounted() {
-    this.$zeyeClient.setRoomUrl();
+    this.$zeyeClient.setRoomUrl()
 
-    const roomId = "example01";
-    const peerId = "example" + Math.random();
+    const roomId = 'example01'
+    const peerId = 'example' + Math.random()
 
-    this.$zeyeClient.setMe(peerId);
+    this.$zeyeClient.setMe(peerId)
 
     this.$zeyeClient.join({
       roomId,
       peerId,
       displayName: this.$zeyeClient.getMe().displayName
-    });
+    })
   }
-};
+}
 </script>
 
 <style>

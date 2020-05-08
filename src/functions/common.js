@@ -5,7 +5,7 @@ export default function registerFunctions({ app, store }) {
    * @returns {string}
    */
   app.$zeyeClient.isConnected = () =>
-    store.state.zeyeClient.room.state === "connected";
+    store.state.zeyeClient.room.state === 'connected'
 
   /**
    * @method
@@ -13,15 +13,15 @@ export default function registerFunctions({ app, store }) {
    * @returns {string}
    */
   app.$zeyeClient.getGlobalAudioMuted = () =>
-    store.state.zeyeClient.me.audioMuted;
+    store.state.zeyeClient.me.audioMuted
 
   /**
    * @method
    * @name getGlobalVideoMuted
    * @returns {string}
    */
-  app.$zeyeClient.getVideoVisible = peerId =>
+  app.$zeyeClient.getVideoVisible = (peerId) =>
     Boolean(app.$zeyeClient.getVideoConsumer(peerId)) &&
     !app.$zeyeClient.getVideoConsumer(peerId).locallyPaused &&
-    !app.$zeyeClient.getVideoConsumer(peerId).remotelyPaused;
+    !app.$zeyeClient.getVideoConsumer(peerId).remotelyPaused
 }

@@ -6,13 +6,13 @@ export function getProtooUrl({
   hostname,
   protooPort
 }) {
-  hostname = hostname !== undefined ? hostname : "localhost";
-  protooPort = protooPort !== undefined ? protooPort : "4443";
+  hostname = hostname !== undefined ? hostname : 'localhost'
+  protooPort = protooPort !== undefined ? protooPort : '4443'
 
-  let url = `wss://${hostname}:${protooPort}/?roomId=${roomId}&peerId=${peerId}`;
+  let url = `wss://${hostname}:${protooPort}/?roomId=${roomId}&peerId=${peerId}`
 
-  if (forceH264) url = `${url}&forceH264=true`;
-  else if (forceVP9) url = `${url}&forceVP9=true`;
+  if (forceH264) url = `${url}&forceH264=true`
+  else if (forceVP9) url = `${url}&forceVP9=true`
 
-  return url;
+  return url
 }
