@@ -128,6 +128,10 @@ export default class ZeyeClient {
 
     console.debug('close()')
 
+    if (this._webcamProducer) this._webcamProducer.stop()
+
+    if (this._shareProducer) this._shareProducer.stop()
+
     // Close protoo Peer
     this._protoo.close()
 
@@ -135,9 +139,6 @@ export default class ZeyeClient {
     if (this._sendTransport) this._sendTransport.close()
 
     if (this._recvTransport) this._recvTransport.close()
-
-    this._webcamProducer.stop()
-    this._shareProducer.stop()
 
     this.store.commit('zeyeClient/room/setRoomState', { state: 'closed' })
   }
