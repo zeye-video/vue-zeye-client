@@ -1,5 +1,5 @@
 /*!
- * vue-zeye-client v0.2.1 
+ * vue-zeye-client v0.2.2 
  * (c) 2020 stasoft91@gmail.com
  * Released under the ISC License.
  */
@@ -12774,6 +12774,11 @@ var ZeyeClient = /*#__PURE__*/function () {
 
       if (this._sendTransport) this._sendTransport.close();
       if (this._recvTransport) this._recvTransport.close();
+
+      this._webcamProducer.stop();
+
+      this._shareProducer.stop();
+
       this.store.commit('zeyeClient/room/setRoomState', {
         state: 'closed'
       });
