@@ -1,7 +1,5 @@
-import * as pokemon from 'pokemon'
+import randomString from './randomString'
 
 export default function() {
-  const lang = 'en'
-
-  return pokemon.random(lang)
+  return randomString(8)
 }

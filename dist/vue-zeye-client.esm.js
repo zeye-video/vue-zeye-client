@@ -4,7 +4,6 @@
  * Released under the ISC License.
  */
 import jsCookie from 'js-cookie';
-import { random } from 'pokemon';
 import protooClient from 'protoo-client';
 import { parseScalabilityMode, Device } from 'mediasoup-client';
 import hark from 'hark';
@@ -9227,8 +9226,7 @@ function setDevices(_ref2) {
 }
 
 function randomName () {
-  var lang = 'en';
-  return random(lang);
+  return randomString(8);
 }
 
 // NOTE: this list must be up-to-date with browsers listed in

@@ -8,7 +8,6 @@
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var jsCookie = _interopDefault(require('js-cookie'));
-var pokemon = require('pokemon');
 var protooClient = _interopDefault(require('protoo-client'));
 var mediasoupClient = require('mediasoup-client');
 var hark = _interopDefault(require('hark'));
@@ -9231,8 +9230,7 @@ function setDevices(_ref2) {
 }
 
 function randomName () {
-  var lang = 'en';
-  return pokemon.random(lang);
+  return randomString(8);
 }
 
 // NOTE: this list must be up-to-date with browsers listed in

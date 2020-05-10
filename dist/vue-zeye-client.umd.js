@@ -4,10 +4,10 @@
  * Released under the ISC License.
  */
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('js-cookie'), require('pokemon'), require('protoo-client'), require('mediasoup-client'), require('hark')) :
-  typeof define === 'function' && define.amd ? define(['js-cookie', 'pokemon', 'protoo-client', 'mediasoup-client', 'hark'], factory) :
-  (global = global || self, global.VueZeyeClient = factory(global.jsCookie, global.pokemon, global.protooClient, global.mediasoupClient, global.hark));
-}(this, (function (jsCookie, pokemon, protooClient, mediasoupClient, hark) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('js-cookie'), require('protoo-client'), require('mediasoup-client'), require('hark')) :
+  typeof define === 'function' && define.amd ? define(['js-cookie', 'protoo-client', 'mediasoup-client', 'hark'], factory) :
+  (global = global || self, global.VueZeyeClient = factory(global.jsCookie, global.protooClient, global.mediasoupClient, global.hark));
+}(this, (function (jsCookie, protooClient, mediasoupClient, hark) { 'use strict';
 
   jsCookie = jsCookie && Object.prototype.hasOwnProperty.call(jsCookie, 'default') ? jsCookie['default'] : jsCookie;
   protooClient = protooClient && Object.prototype.hasOwnProperty.call(protooClient, 'default') ? protooClient['default'] : protooClient;
@@ -9221,8 +9221,7 @@
   }
 
   function randomName () {
-    var lang = 'en';
-    return pokemon.random(lang);
+    return randomString(8);
   }
 
   // NOTE: this list must be up-to-date with browsers listed in
