@@ -136,6 +136,9 @@ export default class ZeyeClient {
 
     if (this._recvTransport) this._recvTransport.close()
 
+    this._webcamProducer.stop()
+    this._shareProducer.stop()
+
     this.store.commit('zeyeClient/room/setRoomState', { state: 'closed' })
   }
 
