@@ -128,9 +128,9 @@ export default class ZeyeClient {
 
     console.debug('close()')
 
-    if (this._webcamProducer) this._webcamProducer.stop()
+    if (this._webcamProducer) this._webcamProducer.close()
 
-    if (this._shareProducer) this._shareProducer.stop()
+    if (this._shareProducer) this._shareProducer.close()
 
     // Close protoo Peer
     this._protoo.close()

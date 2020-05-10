@@ -1,5 +1,5 @@
 /*!
- * vue-zeye-client v0.2.4 
+ * vue-zeye-client v0.2.5 
  * (c) 2020 stasoft91@gmail.com
  * Released under the ISC License.
  */
@@ -12768,8 +12768,8 @@ var ZeyeClient = /*#__PURE__*/function () {
       if (this._closed) return;
       this._closed = true;
       console.debug('close()');
-      if (this._webcamProducer) this._webcamProducer.stop();
-      if (this._shareProducer) this._shareProducer.stop(); // Close protoo Peer
+      if (this._webcamProducer) this._webcamProducer.close();
+      if (this._shareProducer) this._shareProducer.close(); // Close protoo Peer
 
       this._protoo.close(); // Close mediasoup Transports.
 
