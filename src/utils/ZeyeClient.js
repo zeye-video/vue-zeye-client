@@ -1085,7 +1085,7 @@ export default class ZeyeClient {
     if (!this._mediasoupDevice.canProduce('video')) {
       console.error('enableShare() | cannot produce video')
 
-      return
+      return false
     }
 
     let track
@@ -1112,10 +1112,10 @@ export default class ZeyeClient {
       // May mean cancelled (in some implementations).
       if (!stream) {
         this.store.commit('zeyeClient/me/setShareInProgress', {
-          flag: true
+          flag: false
         })
 
-        return
+        return false
       }
 
       track = stream.getVideoTracks()[0]
@@ -1215,6 +1215,8 @@ export default class ZeyeClient {
         text: `Error closing server-side share Producer: ${error}`
       })
     }
+
+    await this.enableWebcam()
 
     this._shareProducer = null
   }

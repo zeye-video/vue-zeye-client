@@ -1,5 +1,5 @@
 /*!
- * vue-zeye-client v0.2.5 
+ * vue-zeye-client v0.2.6 
  * (c) 2020 stasoft91@gmail.com
  * Released under the ISC License.
  */
@@ -14080,7 +14080,7 @@ var ZeyeClient = /*#__PURE__*/function () {
                 }
 
                 console.error('enableShare() | cannot produce video');
-                return _context10.abrupt("return");
+                return _context10.abrupt("return", false);
 
               case 11:
                 this.store.commit('zeyeClient/me/setShareInProgress', {
@@ -14116,9 +14116,9 @@ var ZeyeClient = /*#__PURE__*/function () {
                 }
 
                 this.store.commit('zeyeClient/me/setShareInProgress', {
-                  flag: true
+                  flag: false
                 });
-                return _context10.abrupt("return");
+                return _context10.abrupt("return", false);
 
               case 20:
                 track = stream.getVideoTracks()[0];
@@ -14272,9 +14272,13 @@ var ZeyeClient = /*#__PURE__*/function () {
                 });
 
               case 13:
+                _context11.next = 15;
+                return this.enableWebcam();
+
+              case 15:
                 this._shareProducer = null;
 
-              case 14:
+              case 16:
               case "end":
                 return _context11.stop();
             }
