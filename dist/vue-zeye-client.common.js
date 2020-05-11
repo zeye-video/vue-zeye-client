@@ -14062,7 +14062,7 @@ var ZeyeClient = /*#__PURE__*/function () {
                   break;
                 }
 
-                return _context10.abrupt("return");
+                return _context10.abrupt("return", false);
 
               case 5:
                 if (!this._webcamProducer) {
@@ -14215,8 +14215,9 @@ var ZeyeClient = /*#__PURE__*/function () {
                 this.store.commit('zeyeClient/me/setShareInProgress', {
                   flag: false
                 });
+                return _context10.abrupt("return", true);
 
-              case 43:
+              case 44:
               case "end":
                 return _context10.stop();
             }

@@ -1079,7 +1079,7 @@ export default class ZeyeClient {
   async enableShare() {
     console.debug('enableShare()')
 
-    if (this._shareProducer) return
+    if (this._shareProducer) return false
     else if (this._webcamProducer) await this.disableWebcam()
 
     if (!this._mediasoupDevice.canProduce('video')) {
@@ -1192,6 +1192,8 @@ export default class ZeyeClient {
     this.store.commit('zeyeClient/me/setShareInProgress', {
       flag: false
     })
+
+    return true
   }
 
   async disableShare() {
