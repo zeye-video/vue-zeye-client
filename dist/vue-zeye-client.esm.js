@@ -1,5 +1,5 @@
 /*!
- * vue-zeye-client v0.2.6 
+ * vue-zeye-client v0.2.7 
  * (c) 2020 stasoft91@gmail.com
  * Released under the ISC License.
  */
@@ -14046,45 +14046,46 @@ var ZeyeClient = /*#__PURE__*/function () {
       var _enableShare = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee10() {
         var _this4 = this;
 
-        var track, stream, firstVideoCodec, encodings;
+        var result, track, stream, firstVideoCodec, encodings;
         return regenerator.wrap(function _callee10$(_context10) {
           while (1) {
             switch (_context10.prev = _context10.next) {
               case 0:
                 console.debug('enableShare()');
+                result = true;
 
                 if (!this._shareProducer) {
-                  _context10.next = 5;
+                  _context10.next = 6;
                   break;
                 }
 
                 return _context10.abrupt("return", false);
 
-              case 5:
+              case 6:
                 if (!this._webcamProducer) {
-                  _context10.next = 8;
+                  _context10.next = 9;
                   break;
                 }
 
-                _context10.next = 8;
+                _context10.next = 9;
                 return this.disableWebcam();
 
-              case 8:
+              case 9:
                 if (this._mediasoupDevice.canProduce('video')) {
-                  _context10.next = 11;
+                  _context10.next = 12;
                   break;
                 }
 
                 console.error('enableShare() | cannot produce video');
                 return _context10.abrupt("return", false);
 
-              case 11:
+              case 12:
                 this.store.commit('zeyeClient/me/setShareInProgress', {
                   flag: true
                 });
-                _context10.prev = 12;
+                _context10.prev = 13;
                 console.debug('enableShare() | calling getUserMedia()');
-                _context10.next = 16;
+                _context10.next = 17;
                 return navigator.mediaDevices.getDisplayMedia({
                   audio: false,
                   video: {
@@ -14103,11 +14104,11 @@ var ZeyeClient = /*#__PURE__*/function () {
                   }
                 });
 
-              case 16:
+              case 17:
                 stream = _context10.sent;
 
                 if (stream) {
-                  _context10.next = 20;
+                  _context10.next = 21;
                   break;
                 }
 
@@ -14116,11 +14117,11 @@ var ZeyeClient = /*#__PURE__*/function () {
                 });
                 return _context10.abrupt("return", false);
 
-              case 20:
+              case 21:
                 track = stream.getVideoTracks()[0];
 
                 if (!this._useSharingSimulcast) {
-                  _context10.next = 29;
+                  _context10.next = 30;
                   break;
                 }
 
@@ -14139,7 +14140,7 @@ var ZeyeClient = /*#__PURE__*/function () {
                   });
                 }
 
-                _context10.next = 26;
+                _context10.next = 27;
                 return this._sendTransport.produce({
                   track: track,
                   encodings: encodings,
@@ -14151,21 +14152,21 @@ var ZeyeClient = /*#__PURE__*/function () {
                   }
                 });
 
-              case 26:
+              case 27:
                 this._shareProducer = _context10.sent;
-                _context10.next = 32;
+                _context10.next = 33;
                 break;
 
-              case 29:
-                _context10.next = 31;
+              case 30:
+                _context10.next = 32;
                 return this._sendTransport.produce({
                   track: track
                 });
 
-              case 31:
+              case 32:
                 this._shareProducer = _context10.sent;
 
-              case 32:
+              case 33:
                 this.store.commit('zeyeClient/producers/addProducer', {
                   producer: {
                     id: this._shareProducer.id,
@@ -14190,12 +14191,12 @@ var ZeyeClient = /*#__PURE__*/function () {
                   _this4.disableShare().catch(function () {});
                 });
 
-                _context10.next = 42;
+                _context10.next = 44;
                 break;
 
-              case 37:
-                _context10.prev = 37;
-                _context10.t0 = _context10["catch"](12);
+              case 38:
+                _context10.prev = 38;
+                _context10.t0 = _context10["catch"](13);
                 console.error('enableShare() | failed:%o', _context10.t0);
 
                 if (_context10.t0.name !== 'NotAllowedError') {
@@ -14206,19 +14207,20 @@ var ZeyeClient = /*#__PURE__*/function () {
                 }
 
                 if (track) track.stop();
+                result = false;
 
-              case 42:
+              case 44:
                 this.store.commit('zeyeClient/me/setShareInProgress', {
                   flag: false
                 });
-                return _context10.abrupt("return", true);
+                return _context10.abrupt("return", result);
 
-              case 44:
+              case 46:
               case "end":
                 return _context10.stop();
             }
           }
-        }, _callee10, this, [[12, 37]]);
+        }, _callee10, this, [[13, 38]]);
       }));
 
       function enableShare() {

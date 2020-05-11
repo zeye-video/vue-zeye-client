@@ -1079,6 +1079,8 @@ export default class ZeyeClient {
   async enableShare() {
     console.debug('enableShare()')
 
+    let result = true
+
     if (this._shareProducer) return false
     else if (this._webcamProducer) await this.disableWebcam()
 
@@ -1187,13 +1189,15 @@ export default class ZeyeClient {
       }
 
       if (track) track.stop()
+
+      result = false
     }
 
     this.store.commit('zeyeClient/me/setShareInProgress', {
       flag: false
     })
 
-    return true
+    return result
   }
 
   async disableShare() {
