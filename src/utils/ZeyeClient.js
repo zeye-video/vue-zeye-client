@@ -1222,8 +1222,6 @@ export default class ZeyeClient {
       })
     }
 
-    await this.enableWebcam()
-
     this._shareProducer = null
   }
 

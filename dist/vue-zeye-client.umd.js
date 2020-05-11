@@ -1,5 +1,5 @@
 /*!
- * vue-zeye-client v0.2.7 
+ * vue-zeye-client v0.2.8 
  * (c) 2020 stasoft91@gmail.com
  * Released under the ISC License.
  */
@@ -14266,13 +14266,9 @@
                   });
 
                 case 13:
-                  _context11.next = 15;
-                  return this.enableWebcam();
-
-                case 15:
                   this._shareProducer = null;
 
-                case 16:
+                case 14:
                 case "end":
                   return _context11.stop();
               }
