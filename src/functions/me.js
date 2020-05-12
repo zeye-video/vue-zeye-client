@@ -107,14 +107,14 @@ export default function registerFunctions({ app, store }) {
   }
 
   /**
-   * @method
+   * @method toggleShare
    * @name toggleShare
    */
-  app.$zeyeClient.toggleShare = () => {
+  app.$zeyeClient.toggleShare = async () => {
     if (app.$zeyeClient.getScreenShareState() === 'on') {
-      app.$zeyeClient.enableWebcam()
+      await app.$zeyeClient.enableWebcam()
     } else {
-      app.$zeyeClient.enableShare()
+      await app.$zeyeClient.enableShare()
     }
 
     // Producer tracks most probably updated after theese actions,
