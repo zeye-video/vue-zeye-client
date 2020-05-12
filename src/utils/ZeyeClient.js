@@ -1,5 +1,6 @@
 import protooClient from 'protoo-client'
 import * as mediasoupClient from 'mediasoup-client'
+import Vue from 'vue'
 import { getProtooUrl } from './urlFactory'
 import * as cookiesManager from './cookiesManager'
 import randomName from './randomName'
@@ -119,6 +120,8 @@ export default class ZeyeClient {
       device: null,
       resolution: 'hd'
     }
+
+    this.$bus = new Vue()
   }
 
   close() {
