@@ -63,7 +63,7 @@ export default {
     this.waitForMediaAvailability()
 
     if (this.isLocalMedia) {
-      this.$zeyeClient.$bus.$on('update-my-media', function() {
+      this.$zeyeClient.$bus.$on('update-my-media', () => {
         this.runVideo()
         this.runAudio()
       })
