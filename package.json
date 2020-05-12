@@ -2,7 +2,7 @@
   "name": "vue-zeye-client",
   "license": "ISC",
   "author": "stasoft91@gmail.com",
-  "version": "0.2.21",
+  "version": "0.2.22",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",

@@ -10,7 +10,8 @@ export const state = () => ({
   audioOnly: false,
   audioOnlyInProgress: false,
   audioMuted: false,
-  restartIceInProgress: false
+  restartIceInProgress: false,
+  currentAudioOutputDevice: null
 })
 
 export const mutations = {
@@ -87,6 +88,12 @@ export const mutations = {
     const { flag } = payload
 
     state.restartIceInProgress = flag
+  },
+
+  setCurrentAudioOutputDevice(state, payload) {
+    const { currentAudioOutputDevice } = payload
+
+    state.currentAudioOutputDevice = currentAudioOutputDevice
   }
 }
 

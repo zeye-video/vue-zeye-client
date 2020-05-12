@@ -134,6 +134,24 @@ export default function registerFunctions({ app, store }) {
 
   /**
    * @method
+   * @name getOutputDevices
+   * @returns {Object} (Map)
+   */
+  app.$zeyeClient.getOutputDevices = () => {
+    return app.$zeyeClient._outputDevices
+  }
+
+  /**
+   * @method
+   * @name getOutputDevices
+   * @returns {Object} (Map)
+   */
+  app.$zeyeClient.getCurrentAudioOutputDevice = () => {
+    return app.$zeyeClient.store.state.me.currentAudioOutputDevice
+  }
+
+  /**
+   * @method
    * @name setOutputDevice
    * @param deviceId
    */

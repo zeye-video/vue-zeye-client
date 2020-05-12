@@ -112,6 +112,10 @@ export default class ZeyeClient {
     // @type {Map<String, MediaDeviceInfos>}
     this._webcams = new Map()
 
+    // Array of output audio MediaDeviceInfos indexed by deviceId.
+    // @type {Array<MediaDeviceInfos>}
+    this._outputDevices = []
+
     // Local Webcam.
     // @type {Object} with:
     // - {MediaDeviceInfo} [device]
@@ -2095,10 +2099,18 @@ export default class ZeyeClient {
     const devices = await navigator.mediaDevices.enumerateDevices()
 
     for (const device of devices) {
-      if (device.kind !== 'videoinput') continue
+      if (device.kind === 'audiooutput') {
+        this._outputDevices.push(device)
+      }
 
-      this._webcams.set(device.deviceId, device)
+      if (device.kind === 'videoinput') {
+        this._webcams.set(device.deviceId, device)
+      }
     }
+
+    this.store.commit('zeyeClient/me/setCurrentAudioOutputDevice', {
+      currentAudioOutputDevice: this._outputDevices[0]
+    })
 
     const array = Array.from(this._webcams.values())
     const len = array.length
