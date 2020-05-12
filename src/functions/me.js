@@ -134,6 +134,28 @@ export default function registerFunctions({ app, store }) {
 
   /**
    * @method
+   * @name updateAudioOutputDevices
+   */
+  app.$zeyeClient.updateAudioOutputDevices = async () => {
+    const devices = await navigator.mediaDevices.enumerateDevices()
+
+    app.$zeyeClient._outputDevices = devices.filter(
+      (device) => device.kind === 'audiooutput'
+    )
+
+    // if none current output set in store then it is definitely default one
+    if (app.$zeyeClient.store.me.currentAudioOutputDevice === null) {
+      app.$zeyeClient.store.commit(
+        'zeyeClient/me/setCurrentAudioOutputDevice',
+        {
+          currentAudioOutputDevice: app.$zeyeClient._outputDevices[0]
+        }
+      )
+    }
+  }
+
+  /**
+   * @method
    * @name getOutputDevices
    * @returns {Object} (Map)
    */
