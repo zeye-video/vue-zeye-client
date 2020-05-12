@@ -119,7 +119,7 @@ export default function registerFunctions({ app, store }) {
 
     // Producer tracks most probably updated after theese actions,
     // so event is emitted to be caught in zeyePeerMedia component
-    app.$zeyeEventBus.$emit('update-my-media')
+    app.$bus.$emit('update-my-media')
   }
 
   /**
