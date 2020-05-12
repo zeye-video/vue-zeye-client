@@ -131,4 +131,13 @@ export default function registerFunctions({ app, store }) {
       ? app.$zeyeClient.muteMic()
       : app.$zeyeClient.unmuteMic()
   }
+
+  /**
+   * @method
+   * @name setOutputDevice
+   * @param deviceId
+   */
+  app.$zeyeClient.setOutputDevice = (deviceId) => {
+    app.$zeyeClient.$bus.$emit('set-output-device-id', deviceId)
+  }
 }

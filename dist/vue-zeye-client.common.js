@@ -1,5 +1,5 @@
 /*!
- * vue-zeye-client v0.2.20 
+ * vue-zeye-client v0.2.21 
  * (c) 2020 stasoft91@gmail.com
  * Released under the ISC License.
  */
@@ -12454,6 +12454,45 @@ function registerFunctions$1(_ref) {
   app.$zeyeClient.toggleMicState = function () {
     app.$zeyeClient.getMicState() === 'on' ? app.$zeyeClient.muteMic() : app.$zeyeClient.unmuteMic();
   };
+  /**
+   * @method
+   * @name setOutputDevice
+   * @param audioOutputIndex (optional)
+   */
+
+
+  app.$zeyeClient.setOutputDevice = /*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee2(audioOutputIndex) {
+      var devices, audioDevices;
+      return regenerator.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.next = 2;
+              return navigator.mediaDevices.enumerateDevices();
+
+            case 2:
+              devices = _context2.sent;
+              audioDevices = devices.filter(function (device) {
+                return device.kind === 'audiooutput';
+              });
+
+              if (audioDevices[audioOutputIndex] !== undefined) {
+                app.$zeyeClient.$bus.$emit('set-output-device-id', audioDevices[audioOutputIndex].deviceId);
+              }
+
+            case 5:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2);
+    }));
+
+    return function (_x) {
+      return _ref3.apply(this, arguments);
+    };
+  }();
 }
 
 function registerFunctions$2(_ref) {
@@ -15823,10 +15862,16 @@ var script = {
 
         _this.runAudio();
       });
+      this.$zeyeClient.$bus.$on('set-output-device-id', function (deviceId) {
+        _this.$refs.audioElem.setSinkId(deviceId);
+
+        _this.runAudio();
+      });
     }
   },
   beforeDestroy: function beforeDestroy() {
     this.$zeyeClient.$bus.$off('update-my-media');
+    this.$zeyeClient.$bus.$off('set-output-device-id');
   },
   methods: {
     runAudio: function runAudio() {
@@ -16063,7 +16108,7 @@ var __vue_staticRenderFns__ = [];
   /* style */
   const __vue_inject_styles__ = function (inject) {
     if (!inject) return
-    inject("data-v-8d79ebac_0", { source: ".volume-container{position:absolute;top:0;bottom:0;width:10px;display:flex;-webkit-box-orient:vertical;flex-direction:column;-webkit-box-pack:center;justify-content:center;-webkit-box-align:center;align-items:center;pointer-events:none}.volume-container .bar{width:6px;border-radius:6px;transition:.1s ease-in 0s}.zeye-peer-media{position:relative;flex:100 100 auto;display:flex}.zeye-peer-media.active-speaker{box-shadow:0 0 5px #adff2f}", map: undefined, media: undefined });
+    inject("data-v-91bc68f0_0", { source: ".volume-container{position:absolute;top:0;bottom:0;width:10px;display:flex;-webkit-box-orient:vertical;flex-direction:column;-webkit-box-pack:center;justify-content:center;-webkit-box-align:center;align-items:center;pointer-events:none}.volume-container .bar{width:6px;border-radius:6px;transition:.1s ease-in 0s}.zeye-peer-media{position:relative;flex:100 100 auto;display:flex}.zeye-peer-media.active-speaker{box-shadow:0 0 5px #adff2f}", map: undefined, media: undefined });
 
   };
   /* scoped */

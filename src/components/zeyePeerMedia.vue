@@ -67,10 +67,15 @@ export default {
         this.runVideo()
         this.runAudio()
       })
+      this.$zeyeClient.$bus.$on('set-output-device-id', (deviceId) => {
+        this.$refs.audioElem.setSinkId(deviceId)
+        this.runAudio()
+      })
     }
   },
   beforeDestroy() {
     this.$zeyeClient.$bus.$off('update-my-media')
+    this.$zeyeClient.$bus.$off('set-output-device-id')
   },
   methods: {
     runAudio() {

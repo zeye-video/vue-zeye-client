@@ -81,3 +81,18 @@ Also available as
 `this.$zeyeClient.muteMic()` and 
 `this.$zeyeClient.unmuteMic()`
 
+
+---
+
+#### this.$zeyeClient.setOutputDevice(audioOutputIndex) :void
+Change audio output by its id
+
+```
+const devices = await navigator.mediaDevices.enumerateDevices()
+const audioDevices = devices.filter(
+  (device) => device.kind === 'audiooutput'
+)
+
+<a v-for="(device, index) in audioDevices" :key="device.deviceId" @click="$zeyeClient.setOutputDevice(device.deviceId)">Output {{index}}</a>
+```
+
