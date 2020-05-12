@@ -40,9 +40,9 @@ export const mutations = {
   },
 
   setCanChangeWebcam(state, payload) {
-    const { canChangeWebcam } = payload
+    const { flag } = payload
 
-    state.canChangeWebcam = canChangeWebcam
+    state.canChangeWebcam = flag
   },
 
   setWebcamInProgress(state, payload) {
