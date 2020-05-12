@@ -68,6 +68,13 @@ export default {
         this.runAudio()
       })
       this.$zeyeClient.$bus.$on('set-output-device-id', (deviceId) => {
+        if (this.$zeyeClient.getAudioProducer() === undefined) {
+          console.debug(
+            'Received audioOutputDeviceChange before producer was created'
+          )
+          return
+        }
+
         this.$refs.audioElem.setSinkId(deviceId)
         this.runAudio()
       })
