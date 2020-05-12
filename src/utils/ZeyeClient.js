@@ -1024,6 +1024,8 @@ export default class ZeyeClient {
     this.store.commit('zeyeClient/me/setWebcamInProgress', {
       flag: false
     })
+
+    this.$bus.$emit('update-my-media')
   }
 
   async changeWebcamResolution() {

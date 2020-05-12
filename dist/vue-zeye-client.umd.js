@@ -1,5 +1,5 @@
 /*!
- * vue-zeye-client v0.2.18 
+ * vue-zeye-client v0.2.20 
  * (c) 2020 stasoft91@gmail.com
  * Released under the ISC License.
  */
@@ -13958,8 +13958,9 @@
                   this.store.commit('zeyeClient/me/setWebcamInProgress', {
                     flag: false
                   });
+                  this.$bus.$emit('update-my-media');
 
-                case 31:
+                case 32:
                 case "end":
                   return _context8.stop();
               }
