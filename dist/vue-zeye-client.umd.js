@@ -1,5 +1,5 @@
 /*!
- * vue-zeye-client v0.2.21 
+ * vue-zeye-client v0.2.23 
  * (c) 2020 stasoft91@gmail.com
  * Released under the ISC License.
  */
@@ -8844,7 +8844,8 @@
       audioOnly: false,
       audioOnlyInProgress: false,
       audioMuted: false,
-      restartIceInProgress: false
+      restartIceInProgress: false,
+      currentAudioOutputDevice: null
     };
   };
   var mutations$3 = {
@@ -8906,6 +8907,10 @@
     setRestartIceInProgress: function setRestartIceInProgress(state, payload) {
       var flag = payload.flag;
       state.restartIceInProgress = flag;
+    },
+    setCurrentAudioOutputDevice: function setCurrentAudioOutputDevice(state, payload) {
+      var currentAudioOutputDevice = payload.currentAudioOutputDevice;
+      state.currentAudioOutputDevice = currentAudioOutputDevice;
     }
   };
   var module$4 = {
@@ -12447,13 +12452,69 @@
     };
     /**
      * @method
-     * @name setOutputDevice
-     * @param deviceId
+     * @name updateAudioOutputDevices
      */
 
 
-    app.$zeyeClient.setOutputDevice = function (deviceId) {
-      app.$zeyeClient.$bus.$emit('set-output-device-id', deviceId);
+    app.$zeyeClient.updateAudioOutputDevices = /*#__PURE__*/_asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee2() {
+      var devices;
+      return regenerator.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.next = 2;
+              return navigator.mediaDevices.enumerateDevices();
+
+            case 2:
+              devices = _context2.sent;
+              app.$zeyeClient._outputDevices = devices.filter(function (device) {
+                return device.kind === 'audiooutput';
+              }); // if none current output set in store then it is definitely default one
+
+              if (app.$zeyeClient.getMe().currentAudioOutputDevice === null) {
+                app.$zeyeClient.store.commit('zeyeClient/me/setCurrentAudioOutputDevice', {
+                  currentAudioOutputDevice: app.$zeyeClient._outputDevices[0]
+                });
+              }
+
+            case 5:
+            case "end":
+              return _context2.stop();
+          }
+        }
+      }, _callee2);
+    }));
+    /**
+     * @method
+     * @name getOutputDevices
+     * @returns {Object} (Map)
+     */
+
+    app.$zeyeClient.getOutputDevices = function () {
+      return app.$zeyeClient._outputDevices;
+    };
+    /**
+     * @method
+     * @name getOutputDevices
+     * @returns {Object} (Map)
+     */
+
+
+    app.$zeyeClient.getCurrentAudioOutputDevice = function () {
+      return app.$zeyeClient.getMe().currentAudioOutputDevice;
+    };
+    /**
+     * @method
+     * @name setOutputDevice
+     * @param device
+     */
+
+
+    app.$zeyeClient.setOutputDevice = function (device) {
+      app.$zeyeClient.store.commit('zeyeClient/me/setCurrentAudioOutputDevice', {
+        currentAudioOutputDevice: device
+      });
+      app.$zeyeClient.$bus.$emit('set-output-device-id', device.deviceId);
     };
   }
 
@@ -12781,7 +12842,10 @@
       this._dataConsumers = new Map(); // Map of webcam MediaDeviceInfos indexed by deviceId.
       // @type {Map<String, MediaDeviceInfos>}
 
-      this._webcams = new Map(); // Local Webcam.
+      this._webcams = new Map(); // Array of output audio MediaDeviceInfos indexed by deviceId.
+      // @type {Array<MediaDeviceInfos>}
+
+      this._outputDevices = []; // Local Webcam.
       // @type {Object} with:
       // - {MediaDeviceInfo} [device]
       // - {String} [resolution] - 'qvga' / 'vga' / 'hd'.
@@ -15526,50 +15590,28 @@
                 case 5:
                   devices = _context25.sent;
                   _iterator4 = _createForOfIteratorHelper(devices);
-                  _context25.prev = 7;
 
-                  _iterator4.s();
+                  try {
+                    for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+                      device = _step4.value;
 
-                case 9:
-                  if ((_step4 = _iterator4.n()).done) {
-                    _context25.next = 16;
-                    break;
+                      if (device.kind === 'audiooutput') {
+                        this._outputDevices.push(device);
+                      }
+
+                      if (device.kind === 'videoinput') {
+                        this._webcams.set(device.deviceId, device);
+                      }
+                    }
+                  } catch (err) {
+                    _iterator4.e(err);
+                  } finally {
+                    _iterator4.f();
                   }
 
-                  device = _step4.value;
-
-                  if (!(device.kind !== 'videoinput')) {
-                    _context25.next = 13;
-                    break;
-                  }
-
-                  return _context25.abrupt("continue", 14);
-
-                case 13:
-                  this._webcams.set(device.deviceId, device);
-
-                case 14:
-                  _context25.next = 9;
-                  break;
-
-                case 16:
-                  _context25.next = 21;
-                  break;
-
-                case 18:
-                  _context25.prev = 18;
-                  _context25.t0 = _context25["catch"](7);
-
-                  _iterator4.e(_context25.t0);
-
-                case 21:
-                  _context25.prev = 21;
-
-                  _iterator4.f();
-
-                  return _context25.finish(21);
-
-                case 24:
+                  this.store.commit('zeyeClient/me/setCurrentAudioOutputDevice', {
+                    currentAudioOutputDevice: this._outputDevices[0]
+                  });
                   array = Array.from(this._webcams.values());
                   len = array.length;
                   currentWebcamId = this._webcam.device ? this._webcam.device.deviceId : undefined;
@@ -15579,12 +15621,12 @@
                     flag: this._webcams.size > 1
                   });
 
-                case 30:
+                case 15:
                 case "end":
                   return _context25.stop();
               }
             }
-          }, _callee25, this, [[7, 18, 21, 24]]);
+          }, _callee25, this);
         }));
 
         function _updateWebcams() {
@@ -15826,8 +15868,6 @@
         });
         this.$zeyeClient.$bus.$on('set-output-device-id', function (deviceId) {
           _this.$refs.audioElem.setSinkId(deviceId);
-
-          _this.runAudio();
         });
       }
     },
@@ -16070,7 +16110,7 @@
     /* style */
     const __vue_inject_styles__ = function (inject) {
       if (!inject) return
-      inject("data-v-91bc68f0_0", { source: ".volume-container{position:absolute;top:0;bottom:0;width:10px;display:flex;-webkit-box-orient:vertical;flex-direction:column;-webkit-box-pack:center;justify-content:center;-webkit-box-align:center;align-items:center;pointer-events:none}.volume-container .bar{width:6px;border-radius:6px;transition:.1s ease-in 0s}.zeye-peer-media{position:relative;flex:100 100 auto;display:flex}.zeye-peer-media.active-speaker{box-shadow:0 0 5px #adff2f}", map: undefined, media: undefined });
+      inject("data-v-0f437536_0", { source: ".volume-container{position:absolute;top:0;bottom:0;width:10px;display:flex;-webkit-box-orient:vertical;flex-direction:column;-webkit-box-pack:center;justify-content:center;-webkit-box-align:center;align-items:center;pointer-events:none}.volume-container .bar{width:6px;border-radius:6px;transition:.1s ease-in 0s}.zeye-peer-media{position:relative;flex:100 100 auto;display:flex}.zeye-peer-media.active-speaker{box-shadow:0 0 5px #adff2f}", map: undefined, media: undefined });
 
     };
     /* scoped */
