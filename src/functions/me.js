@@ -112,10 +112,14 @@ export default function registerFunctions({ app, store }) {
    */
   app.$zeyeClient.toggleShare = () => {
     if (app.$zeyeClient.getScreenShareState() === 'on') {
-      app.$zeyeClient.disableShare()
+      app.$zeyeClient.enableWebcam()
     } else {
       app.$zeyeClient.enableShare()
     }
+
+    // Producer tracks most probably updated after theese actions,
+    // so event is emitted to be caught in zeyePeerMedia component
+    app.$emit('update-my-media')
   }
 
   /**

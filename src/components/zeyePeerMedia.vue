@@ -61,6 +61,13 @@ export default {
   },
   mounted() {
     this.waitForMediaAvailability()
+
+    if (this.isLocalMedia) {
+      this.$on('update-my-media', function() {
+        this.runVideo()
+        this.runAudio()
+      })
+    }
   },
   methods: {
     runAudio() {
