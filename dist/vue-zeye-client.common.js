@@ -12457,42 +12457,13 @@ function registerFunctions$1(_ref) {
   /**
    * @method
    * @name setOutputDevice
-   * @param audioOutputIndex (optional)
+   * @param deviceId
    */
 
 
-  app.$zeyeClient.setOutputDevice = /*#__PURE__*/function () {
-    var _ref3 = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee2(audioOutputIndex) {
-      var devices, audioDevices;
-      return regenerator.wrap(function _callee2$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              _context2.next = 2;
-              return navigator.mediaDevices.enumerateDevices();
-
-            case 2:
-              devices = _context2.sent;
-              audioDevices = devices.filter(function (device) {
-                return device.kind === 'audiooutput';
-              });
-
-              if (audioDevices[audioOutputIndex] !== undefined) {
-                app.$zeyeClient.$bus.$emit('set-output-device-id', audioDevices[audioOutputIndex].deviceId);
-              }
-
-            case 5:
-            case "end":
-              return _context2.stop();
-          }
-        }
-      }, _callee2);
-    }));
-
-    return function (_x) {
-      return _ref3.apply(this, arguments);
-    };
-  }();
+  app.$zeyeClient.setOutputDevice = function (deviceId) {
+    app.$zeyeClient.$bus.$emit('set-output-device-id', deviceId);
+  };
 }
 
 function registerFunctions$2(_ref) {
