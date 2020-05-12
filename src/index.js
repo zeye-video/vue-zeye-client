@@ -28,6 +28,7 @@ const zeyeClient = {
      */
     this.$zeyeClient = new ZeyeClient({ store })
     Vue.prototype.$zeyeClient = this.$zeyeClient
+    Vue.prototype.$zeyeEventBus = new Vue()
     Vue.$zeyeClient = this.$zeyeClient
     Vue.component('zeye-peer-media', zeyePeerMedia)
 
