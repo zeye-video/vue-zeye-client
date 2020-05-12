@@ -1,5 +1,5 @@
 /*!
- * vue-zeye-client v0.2.17 
+ * vue-zeye-client v0.2.18 
  * (c) 2020 stasoft91@gmail.com
  * Released under the ISC License.
  */
@@ -8873,8 +8873,8 @@
       state.canSendWebcam = canSendWebcam;
     },
     setCanChangeWebcam: function setCanChangeWebcam(state, payload) {
-      var canChangeWebcam = payload.canChangeWebcam;
-      state.canChangeWebcam = canChangeWebcam;
+      var flag = payload.flag;
+      state.canChangeWebcam = flag;
     },
     setWebcamInProgress: function setWebcamInProgress(state, payload) {
       var flag = payload.flag;
