@@ -144,7 +144,7 @@ export default function registerFunctions({ app, store }) {
     )
 
     // if none current output set in store then it is definitely default one
-    if (app.$zeyeClient.store.me.currentAudioOutputDevice === null) {
+    if (app.$zeyeClient.getMe().currentAudioOutputDevice === null) {
       app.$zeyeClient.store.commit(
         'zeyeClient/me/setCurrentAudioOutputDevice',
         {
@@ -169,15 +169,19 @@ export default function registerFunctions({ app, store }) {
    * @returns {Object} (Map)
    */
   app.$zeyeClient.getCurrentAudioOutputDevice = () => {
-    return app.$zeyeClient.store.state.me.currentAudioOutputDevice
+    return app.$zeyeClient.getMe().currentAudioOutputDevice
   }
 
   /**
    * @method
    * @name setOutputDevice
-   * @param deviceId
+   * @param device
    */
-  app.$zeyeClient.setOutputDevice = (deviceId) => {
-    app.$zeyeClient.$bus.$emit('set-output-device-id', deviceId)
+  app.$zeyeClient.setOutputDevice = (device) => {
+    app.$zeyeClient.store.commit('zeyeClient/me/setCurrentAudioOutputDevice', {
+      currentAudioOutputDevice: device
+    })
+
+    app.$zeyeClient.$bus.$emit('set-output-device-id', device.deviceId)
   }
 }
