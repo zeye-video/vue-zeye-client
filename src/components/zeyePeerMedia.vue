@@ -6,6 +6,7 @@
     <video
       ref="videoElem"
       autoPlay
+      playsInline
       muted
       :controls="false"
       style="width: 100%"
@@ -13,6 +14,7 @@
     <audio
       ref="audioElem"
       autoPlay
+      playsInline
       muted
       :controls="false"
       style="width: 100%"

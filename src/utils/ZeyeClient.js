@@ -28,7 +28,8 @@ const VIDEO_KSVC_ENCODINGS = [{ scalabilityMode: 'S3T3_KEY' }]
 const VIDEO_SVC_ENCODINGS = [{ scalabilityMode: 'S3T3', dtx: true }]
 
 export default class ZeyeClient {
-  constructor({ store }) {
+  constructor({ store, forceH264, forceVP9 }) {
+
     // Vue Store
     this.store = store
 
@@ -125,6 +126,12 @@ export default class ZeyeClient {
       resolution: 'hd'
     }
 
+    // Force H264 codec for sending.
+    this._forceH264 = Boolean(forceH264)
+
+    // Force VP9 codec for sending.
+    this._forceVP9 = Boolean(forceVP9)
+
     this.$bus = new Vue()
   }
 
@@ -164,13 +171,9 @@ export default class ZeyeClient {
     roomId,
     peerId,
     displayName,
-    forceH264,
-    forceVP9,
     hostname,
     protooPort
   }) {
-    forceH264 = forceH264 !== undefined ? forceH264 : false
-    forceVP9 = forceVP9 !== undefined ? forceVP9 : false
     hostname = hostname !== undefined ? hostname : false
     protooPort = protooPort !== undefined ? protooPort : false
 
@@ -179,8 +182,6 @@ export default class ZeyeClient {
     this._protooUrl = getProtooUrl({
       roomId,
       peerId,
-      forceH264,
-      forceVP9,
       hostname,
       protooPort
     })
@@ -871,30 +872,50 @@ export default class ZeyeClient {
         track = stream.getVideoTracks()[0].clone()
       }
 
+      let encodings
+      let codec
+      const codecOptions = {
+        videoGoogleStartBitrate: 1000
+      }
+
+      if (this._forceH264) {
+        codec = this._mediasoupDevice.rtpCapabilities.codecs.find(
+          (c) => c.mimeType.toLowerCase() === 'video/h264'
+        )
+
+        if (!codec) {
+          throw new Error('desired H264 codec+configuration is not supported')
+        }
+      } else if (this._forceVP9) {
+        codec = this._mediasoupDevice.rtpCapabilities.codecs.find(
+          (c) => c.mimeType.toLowerCase() === 'video/vp9'
+        )
+
+        if (!codec) {
+          throw new Error('desired VP9 codec+configuration is not supported')
+        }
+      }
+
       if (this._useSimulcast) {
         // If VP9 is the only available video codec then use SVC.
         const firstVideoCodec = this._mediasoupDevice.rtpCapabilities.codecs.find(
           (c) => c.kind === 'video'
         )
-
-        let encodings
-
-        if (firstVideoCodec.mimeType.toLowerCase() === 'video/vp9')
+        if (
+          (this._forceVP9 && codec) ||
+          firstVideoCodec.mimeType.toLowerCase() === 'video/vp9'
+        ) {
           encodings = VIDEO_KSVC_ENCODINGS
-        else encodings = VIDEO_SIMULCAST_ENCODINGS
+        } else {
+          encodings = VIDEO_SIMULCAST_ENCODINGS
+        }
 
         this._webcamProducer = await this._sendTransport.produce({
           track,
           encodings,
-          codecOptions: {
-            videoGoogleStartBitrate: 1000
-          }
-          // NOTE: for testing codec selection.
-          // codec : this._mediasoupDevice.rtpCapabilities.codecs
-          // 	.find((codec) => codec.mimeType.toLowerCase() === 'video/h264')
+          codecOptions,
+          codec
         })
-      } else {
-        this._webcamProducer = await this._sendTransport.produce({ track })
       }
 
       this.store.commit('zeyeClient/producers/addProducer', {
@@ -1130,6 +1151,29 @@ export default class ZeyeClient {
       }
 
       track = stream.getVideoTracks()[0]
+      let encodings
+      let codec
+      const codecOptions = {
+        videoGoogleStartBitrate: 1000
+      }
+
+      if (this._forceH264) {
+        codec = this._mediasoupDevice.rtpCapabilities.codecs.find(
+          (c) => c.mimeType.toLowerCase() === 'video/h264'
+        )
+
+        if (!codec) {
+          throw new Error('desired H264 codec+configuration is not supported')
+        }
+      } else if (this._forceVP9) {
+        codec = this._mediasoupDevice.rtpCapabilities.codecs.find(
+          (c) => c.mimeType.toLowerCase() === 'video/vp9'
+        )
+
+        if (!codec) {
+          throw new Error('desired VP9 codec+configuration is not supported')
+        }
+      }
 
       if (this._useSharingSimulcast) {
         // If VP9 is the only available video codec then use SVC.
@@ -1137,9 +1181,10 @@ export default class ZeyeClient {
           (c) => c.kind === 'video'
         )
 
-        let encodings
-
-        if (firstVideoCodec.mimeType.toLowerCase() === 'video/vp9') {
+        if (
+          (this._forceVP9 && codec) ||
+          firstVideoCodec.mimeType.toLowerCase() === 'video/vp9'
+        ) {
           encodings = VIDEO_SVC_ENCODINGS
         } else {
           encodings = VIDEO_SIMULCAST_ENCODINGS.map((encoding) => ({
@@ -1147,20 +1192,14 @@ export default class ZeyeClient {
             dtx: true
           }))
         }
-
-        this._shareProducer = await this._sendTransport.produce({
-          track,
-          encodings,
-          codecOptions: {
-            videoGoogleStartBitrate: 1000
-          },
-          appData: {
-            share: true
-          }
-        })
-      } else {
-        this._shareProducer = await this._sendTransport.produce({ track })
       }
+      this._shareProducer = await this._sendTransport.produce({
+        track,
+        encodings,
+        codecOptions,
+        codec,
+        appData: { share: true }
+      })
 
       this.store.commit('zeyeClient/producers/addProducer', {
         producer: {
