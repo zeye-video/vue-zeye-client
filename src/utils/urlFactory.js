@@ -1,13 +1,13 @@
 export function getProtooUrl({
   roomId,
   peerId,
-  hostname,
+  protooHostname,
   protooPort,
   authToken
 }) {
-  hostname = hostname !== undefined ? hostname : 'localhost'
+  protooHostname = protooHostname !== undefined ? protooHostname : 'localhost'
   protooPort = protooPort !== undefined ? protooPort : '4443'
   authToken = authToken !== undefined ? authToken : ''
 
-  return `wss://${hostname}:${protooPort}/?roomId=${roomId}&peerId=${peerId}&authToken=${authToken}`
+  return `wss://${protooHostname}:${protooPort}/?roomId=${roomId}&peerId=${peerId}&authToken=${authToken}`
 }

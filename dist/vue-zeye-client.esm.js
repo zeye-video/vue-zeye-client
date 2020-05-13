@@ -1,5 +1,5 @@
 /*!
- * vue-zeye-client v0.3.0 
+ * vue-zeye-client v0.3.2 
  * (c) 2020 stasoft91
  * Released under the ISC License.
  */
@@ -12722,13 +12722,13 @@ function registerFunctions$6(_ref) {
 function getProtooUrl(_ref) {
   var roomId = _ref.roomId,
       peerId = _ref.peerId,
-      hostname = _ref.hostname,
+      protooHostname = _ref.protooHostname,
       protooPort = _ref.protooPort,
       authToken = _ref.authToken;
-  hostname = hostname !== undefined ? hostname : 'localhost';
+  protooHostname = protooHostname !== undefined ? protooHostname : 'localhost';
   protooPort = protooPort !== undefined ? protooPort : '4443';
   authToken = authToken !== undefined ? authToken : '';
-  return "wss://".concat(hostname, ":").concat(protooPort, "/?roomId=").concat(roomId, "&peerId=").concat(peerId, "&authToken=").concat(authToken);
+  return "wss://".concat(protooHostname, ":").concat(protooPort, "/?roomId=").concat(roomId, "&peerId=").concat(peerId, "&authToken=").concat(authToken);
 }
 
 var VIDEO_CONSTRAINS = {
