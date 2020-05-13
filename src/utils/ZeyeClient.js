@@ -902,16 +902,14 @@ export default class ZeyeClient {
         } else {
           encodings = VIDEO_SIMULCAST_ENCODINGS
         }
-
-        this._webcamProducer = await this._sendTransport.produce({
-          track,
-          encodings,
-          codecOptions,
-          codec
-        })
-      } else {
-        this._webcamProducer = await this._sendTransport.produce({ track })
       }
+
+      this._webcamProducer = await this._sendTransport.produce({
+        track,
+        encodings,
+        codecOptions,
+        codec
+      })
 
       this.store.commit('zeyeClient/producers/addProducer', {
         producer: {
@@ -1188,6 +1186,7 @@ export default class ZeyeClient {
           }))
         }
       }
+
       this._shareProducer = await this._sendTransport.produce({
         track,
         encodings,

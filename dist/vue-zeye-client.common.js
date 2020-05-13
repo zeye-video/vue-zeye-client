@@ -1,5 +1,5 @@
 /*!
- * vue-zeye-client v0.2.28 
+ * vue-zeye-client v0.2.29 
  * (c) 2020 stasoft91@gmail.com
  * Released under the ISC License.
  */
@@ -13848,23 +13848,20 @@ var ZeyeClient = /*#__PURE__*/function () {
                 throw new Error('desired VP9 codec+configuration is not supported');
 
               case 43:
-                if (!this._useSimulcast) {
-                  _context6.next = 51;
-                  break;
+                if (this._useSimulcast) {
+                  // If VP9 is the only available video codec then use SVC.
+                  firstVideoCodec = this._mediasoupDevice.rtpCapabilities.codecs.find(function (c) {
+                    return c.kind === 'video';
+                  });
+
+                  if (this._forceVP9 && codec || firstVideoCodec.mimeType.toLowerCase() === 'video/vp9') {
+                    encodings = VIDEO_KSVC_ENCODINGS;
+                  } else {
+                    encodings = VIDEO_SIMULCAST_ENCODINGS;
+                  }
                 }
 
-                // If VP9 is the only available video codec then use SVC.
-                firstVideoCodec = this._mediasoupDevice.rtpCapabilities.codecs.find(function (c) {
-                  return c.kind === 'video';
-                });
-
-                if (this._forceVP9 && codec || firstVideoCodec.mimeType.toLowerCase() === 'video/vp9') {
-                  encodings = VIDEO_KSVC_ENCODINGS;
-                } else {
-                  encodings = VIDEO_SIMULCAST_ENCODINGS;
-                }
-
-                _context6.next = 48;
+                _context6.next = 46;
                 return this._sendTransport.produce({
                   track: track,
                   encodings: encodings,
@@ -13872,21 +13869,8 @@ var ZeyeClient = /*#__PURE__*/function () {
                   codec: codec
                 });
 
-              case 48:
+              case 46:
                 this._webcamProducer = _context6.sent;
-                _context6.next = 54;
-                break;
-
-              case 51:
-                _context6.next = 53;
-                return this._sendTransport.produce({
-                  track: track
-                });
-
-              case 53:
-                this._webcamProducer = _context6.sent;
-
-              case 54:
                 this.store.commit('zeyeClient/producers/addProducer', {
                   producer: {
                     id: this._webcamProducer.id,
@@ -13912,11 +13896,11 @@ var ZeyeClient = /*#__PURE__*/function () {
                   _this3.disableWebcam().catch(function () {});
                 });
 
-                _context6.next = 64;
+                _context6.next = 57;
                 break;
 
-              case 59:
-                _context6.prev = 59;
+              case 52:
+                _context6.prev = 52;
                 _context6.t0 = _context6["catch"](12);
                 console.error('enableWebcam() | failed:%o', _context6.t0);
                 this.store.dispatch('zeyeClient/notify', {
@@ -13925,17 +13909,17 @@ var ZeyeClient = /*#__PURE__*/function () {
                 });
                 if (track) track.stop();
 
-              case 64:
+              case 57:
                 this.store.commit('zeyeClient/me/setWebcamInProgress', {
                   flag: false
                 });
 
-              case 65:
+              case 58:
               case "end":
                 return _context6.stop();
             }
           }
-        }, _callee6, this, [[12, 59]]);
+        }, _callee6, this, [[12, 52]]);
       }));
 
       function enableWebcam() {
