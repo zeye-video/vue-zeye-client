@@ -1,6 +1,7 @@
 import protooClient from 'protoo-client'
 import * as mediasoupClient from 'mediasoup-client'
 import Vue from 'vue'
+import axios from 'axios'
 import { getProtooUrl } from './urlFactory'
 import * as cookiesManager from './cookiesManager'
 import randomName from './randomName'
@@ -161,22 +162,63 @@ export default class ZeyeClient {
    * @param roomId
    * @param peerId
    * @param displayName
-   * @param forceH264
-   * @param forceVP9
-   * @param hostname
+   * @param protooHostname
    * @param protooPort
+   * @param wsAuthEndpoint
+   * @param wsAuthData
    */
-  join({ roomId, peerId, displayName, hostname, protooPort }) {
-    hostname = hostname !== undefined ? hostname : false
+  async join({
+    roomId,
+    peerId,
+    displayName,
+    protooHostname,
+    protooPort,
+    wsAuthEndpoint,
+    wsAuthData
+  }) {
+    protooHostname = protooHostname !== undefined ? protooHostname : false
     protooPort = protooPort !== undefined ? protooPort : false
 
+    wsAuthEndpoint = wsAuthEndpoint !== undefined ? wsAuthEndpoint : false
+    wsAuthData = wsAuthData !== undefined ? wsAuthData : {}
+
     this._displayName = displayName !== undefined ? displayName : randomName()
+
+    let authToken = false
+
+    /*
+      wsAuthEndpoint is an authentication backend api POST endpoint which
+      in exchange for current session cookies and\or wsAuthData
+      will ask backend to store a short lived (e.g. 1 minute) one-time use token (e.g. in DB)
+      with some random string in it and send that token back
+
+      Given token must be present in protocol url, so that zeye-server could check it against DB.
+      Token should be removed from DB afterwards.
+
+      Typical flow:
+      1. User wants to connect
+      2. wsAuthEndpoint will return either authToken or empty string (or HTTP 401 for which means empty authTicket as well)
+      3. getProtooUrl will form url with authToken
+      4. zeye-server if configured to allow guests will open wss as usual
+      5. zeye-server if configured to check authorization will check given ticket in DB and remove it from DB afterwards
+     */
+
+    if (wsAuthEndpoint) {
+      try {
+        const response = await axios.post(wsAuthEndpoint, wsAuthData, {
+          withCredentials: true
+        })
+
+        authToken = response.data
+      } catch (e) {}
+    }
 
     this._protooUrl = getProtooUrl({
       roomId,
       peerId,
-      hostname,
-      protooPort
+      protooHostname,
+      protooPort,
+      authToken
     })
 
     const protooTransport = new protooClient.WebSocketTransport(this._protooUrl)

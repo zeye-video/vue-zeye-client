@@ -2,10 +2,7 @@
   <div id="app">
     <h1>Z<span>&#128065;</span> Client</h1>
     <div style="width:250px">
-      <zeye-peer-media
-        :show-volume-bar="true"
-        :peer-id="$zeyeClient.getMe().id"
-      ></zeye-peer-media>
+      <zeye-peer-media :show-volume-bar="true" peer-id="me"></zeye-peer-media>
     </div>
     <div
       v-for="peer in $zeyeClient.getPeers()"
@@ -33,7 +30,9 @@ export default {
     this.$zeyeClient.join({
       roomId,
       peerId,
-      displayName: this.$zeyeClient.getMe().displayName
+      displayName: this.$zeyeClient.getMe().displayName,
+      protooPort: '4443',
+      wsAuthEndpoint: 'https://localhost:4443/authEndpoint'
     })
   }
 }

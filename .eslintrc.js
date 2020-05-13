@@ -5,18 +5,18 @@ module.exports = {
     node: true
   },
   parserOptions: {
-    parser: "babel-eslint"
+    parser: 'babel-eslint'
   },
   extends: [
-    "@nuxtjs",
-    "prettier",
-    "prettier/vue",
-    "plugin:prettier/recommended",
-    "plugin:nuxt/recommended"
+    '@nuxtjs',
+    'prettier',
+    'prettier/vue',
+    'plugin:prettier/recommended',
+    'plugin:nuxt/recommended'
   ],
-  plugins: ["prettier"],
+  plugins: ['prettier'],
   // add your custom rules here
   rules: {
-    "no-console": "off"
+    'no-console': 'off'
   }
-};
+}
