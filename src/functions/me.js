@@ -156,17 +156,17 @@ export default function registerFunctions({ app, store }) {
 
   /**
    * @method
-   * @name getOutputDevices
-   * @returns {Object} (Map)
+   * @name getAudioOutputDevices
+   * @returns Array<MediaDeviceInfo>
    */
-  app.$zeyeClient.getOutputDevices = () => {
+  app.$zeyeClient.getAudioOutputDevices = () => {
     return app.$zeyeClient._outputDevices
   }
 
   /**
    * @method
    * @name getOutputDevices
-   * @returns {Object} (Map)
+   * @returns Object
    */
   app.$zeyeClient.getCurrentAudioOutputDevice = () => {
     return app.$zeyeClient.getMe().currentAudioOutputDevice
@@ -174,10 +174,10 @@ export default function registerFunctions({ app, store }) {
 
   /**
    * @method
-   * @name setOutputDevice
+   * @name setAudioOutputDevice
    * @param device
    */
-  app.$zeyeClient.setOutputDevice = (device) => {
+  app.$zeyeClient.setAudioOutputDevice = (device) => {
     app.$zeyeClient.store.commit('zeyeClient/me/setCurrentAudioOutputDevice', {
       currentAudioOutputDevice: device
     })

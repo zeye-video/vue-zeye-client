@@ -96,3 +96,48 @@ const audioDevices = devices.filter(
 <a v-for="(device, index) in audioDevices" :key="device.deviceId" @click="$zeyeClient.setOutputDevice(device.deviceId)">Output {{index}}</a>
 ```
 
+---
+
+#### this.$zeyeClient.updateAudioOutputDevices() :void
+Update known audio output devices + set current as default one
+
+---
+
+
+#### this.$zeyeClient.getAudioOutputDevices() :Array<MediaDeviceInfo>
+Get array of known output devices
+Should be called only after updateAudioOutputDevices
+
+---
+
+
+#### this.$zeyeClient.getCurrentAudioOutputDevice() :MediaDeviceInfo
+get known audio output devices
+Should be called only after updateAudioOutputDevices
+
+---
+
+
+#### this.$zeyeClient.setAudioOutputDevice(mediaDeviceInfo) :void
+Set audio output device
+
+```vue
+<v-list-item
+  v-for="outputDevice in $zeyeClient.getAudioOutputDevices()"
+  :key="outputDevice.deviceId"
+  @click="$zeyeClient.setAudioOutputDevice(outputDevice)"
+>
+  <v-list-item-title>
+    <v-icon
+      v-if="
+        $zeyeClient.getCurrentAudioOutputDevice().deviceId ===
+          outputDevice.deviceId
+      "
+    >
+      mdi-check
+    </v-icon>
+    {{ outputDevice.label }}
+  </v-list-item-title>
+</v-list-item>
+```
+---
