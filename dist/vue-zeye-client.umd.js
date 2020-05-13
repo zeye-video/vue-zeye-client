@@ -1,5 +1,5 @@
 /*!
- * vue-zeye-client v0.2.26 
+ * vue-zeye-client v0.2.28 
  * (c) 2020 stasoft91@gmail.com
  * Released under the ISC License.
  */
@@ -13840,7 +13840,7 @@
 
                 case 43:
                   if (!this._useSimulcast) {
-                    _context6.next = 49;
+                    _context6.next = 51;
                     break;
                   }
 
@@ -13865,8 +13865,19 @@
 
                 case 48:
                   this._webcamProducer = _context6.sent;
+                  _context6.next = 54;
+                  break;
 
-                case 49:
+                case 51:
+                  _context6.next = 53;
+                  return this._sendTransport.produce({
+                    track: track
+                  });
+
+                case 53:
+                  this._webcamProducer = _context6.sent;
+
+                case 54:
                   this.store.commit('zeyeClient/producers/addProducer', {
                     producer: {
                       id: this._webcamProducer.id,
@@ -13892,11 +13903,11 @@
                     _this3.disableWebcam().catch(function () {});
                   });
 
-                  _context6.next = 59;
+                  _context6.next = 64;
                   break;
 
-                case 54:
-                  _context6.prev = 54;
+                case 59:
+                  _context6.prev = 59;
                   _context6.t0 = _context6["catch"](12);
                   console.error('enableWebcam() | failed:%o', _context6.t0);
                   this.store.dispatch('zeyeClient/notify', {
@@ -13905,17 +13916,17 @@
                   });
                   if (track) track.stop();
 
-                case 59:
+                case 64:
                   this.store.commit('zeyeClient/me/setWebcamInProgress', {
                     flag: false
                   });
 
-                case 60:
+                case 65:
                 case "end":
                   return _context6.stop();
               }
             }
-          }, _callee6, this, [[12, 54]]);
+          }, _callee6, this, [[12, 59]]);
         }));
 
         function enableWebcam() {

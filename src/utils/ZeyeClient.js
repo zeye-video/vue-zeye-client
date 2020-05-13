@@ -29,7 +29,6 @@ const VIDEO_SVC_ENCODINGS = [{ scalabilityMode: 'S3T3', dtx: true }]
 
 export default class ZeyeClient {
   constructor({ store, forceH264, forceVP9 }) {
-
     // Vue Store
     this.store = store
 
@@ -167,13 +166,7 @@ export default class ZeyeClient {
    * @param hostname
    * @param protooPort
    */
-  join({
-    roomId,
-    peerId,
-    displayName,
-    hostname,
-    protooPort
-  }) {
+  join({ roomId, peerId, displayName, hostname, protooPort }) {
     hostname = hostname !== undefined ? hostname : false
     protooPort = protooPort !== undefined ? protooPort : false
 
@@ -916,6 +909,8 @@ export default class ZeyeClient {
           codecOptions,
           codec
         })
+      } else {
+        this._webcamProducer = await this._sendTransport.produce({ track })
       }
 
       this.store.commit('zeyeClient/producers/addProducer', {
