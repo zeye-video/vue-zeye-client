@@ -100,4 +100,4 @@ export default ({ store }) => {
 
 
 ### Also we have some documentation
-See [Docs](https://stasoft91.github.io/vue-zeye-client/)
+See [Docs](./docs)
