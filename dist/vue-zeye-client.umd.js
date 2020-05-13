@@ -1,5 +1,5 @@
 /*!
- * vue-zeye-client v0.2.23 
+ * vue-zeye-client v0.2.26 
  * (c) 2020 stasoft91@gmail.com
  * Released under the ISC License.
  */
@@ -12486,17 +12486,17 @@
     }));
     /**
      * @method
-     * @name getOutputDevices
-     * @returns {Object} (Map)
+     * @name getAudioOutputDevices
+     * @returns Array<MediaDeviceInfo>
      */
 
-    app.$zeyeClient.getOutputDevices = function () {
+    app.$zeyeClient.getAudioOutputDevices = function () {
       return app.$zeyeClient._outputDevices;
     };
     /**
      * @method
      * @name getOutputDevices
-     * @returns {Object} (Map)
+     * @returns Object
      */
 
 
@@ -12505,12 +12505,12 @@
     };
     /**
      * @method
-     * @name setOutputDevice
+     * @name setAudioOutputDevice
      * @param device
      */
 
 
-    app.$zeyeClient.setOutputDevice = function (device) {
+    app.$zeyeClient.setAudioOutputDevice = function (device) {
       app.$zeyeClient.store.commit('zeyeClient/me/setCurrentAudioOutputDevice', {
         currentAudioOutputDevice: device
       });
@@ -12716,15 +12716,11 @@
   function getProtooUrl(_ref) {
     var roomId = _ref.roomId,
         peerId = _ref.peerId,
-        forceH264 = _ref.forceH264,
-        forceVP9 = _ref.forceVP9,
         hostname = _ref.hostname,
         protooPort = _ref.protooPort;
     hostname = hostname !== undefined ? hostname : 'localhost';
     protooPort = protooPort !== undefined ? protooPort : '4443';
-    var url = "wss://".concat(hostname, ":").concat(protooPort, "/?roomId=").concat(roomId, "&peerId=").concat(peerId);
-    if (forceH264) url = "".concat(url, "&forceH264=true");else if (forceVP9) url = "".concat(url, "&forceVP9=true");
-    return url;
+    return "wss://".concat(hostname, ":").concat(protooPort, "/?roomId=").concat(roomId, "&peerId=").concat(peerId);
   }
 
   var VIDEO_CONSTRAINS = {
@@ -12777,7 +12773,9 @@
 
   var ZeyeClient = /*#__PURE__*/function () {
     function ZeyeClient(_ref) {
-      var store = _ref.store;
+      var store = _ref.store,
+          forceH264 = _ref.forceH264,
+          forceVP9 = _ref.forceVP9;
 
       _classCallCheck(this, ZeyeClient);
 
@@ -12853,7 +12851,11 @@
       this._webcam = {
         device: null,
         resolution: 'hd'
-      };
+      }; // Force H264 codec for sending.
+
+      this._forceH264 = Boolean(forceH264); // Force VP9 codec for sending.
+
+      this._forceVP9 = Boolean(forceVP9);
       this.$bus = new Vue();
     }
 
@@ -12894,20 +12896,14 @@
         var roomId = _ref2.roomId,
             peerId = _ref2.peerId,
             displayName = _ref2.displayName,
-            forceH264 = _ref2.forceH264,
-            forceVP9 = _ref2.forceVP9,
             hostname = _ref2.hostname,
             protooPort = _ref2.protooPort;
-        forceH264 = forceH264 !== undefined ? forceH264 : false;
-        forceVP9 = forceVP9 !== undefined ? forceVP9 : false;
         hostname = hostname !== undefined ? hostname : false;
         protooPort = protooPort !== undefined ? protooPort : false;
         this._displayName = displayName !== undefined ? displayName : randomName();
         this._protooUrl = getProtooUrl({
           roomId: roomId,
           peerId: peerId,
-          forceH264: forceH264,
-          forceVP9: forceVP9,
           hostname: hostname,
           protooPort: protooPort
         });
@@ -13714,7 +13710,7 @@
         var _enableWebcam = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee6() {
           var _this3 = this;
 
-          var track, device, resolution, stream, _stream2, firstVideoCodec, encodings;
+          var track, device, resolution, stream, _stream2, encodings, codec, codecOptions, firstVideoCodec;
 
           return regenerator.wrap(function _callee6$(_context6) {
             while (1) {
@@ -13801,8 +13797,50 @@
                   track = _stream2.getVideoTracks()[0].clone();
 
                 case 32:
+                  codecOptions = {
+                    videoGoogleStartBitrate: 1000
+                  };
+
+                  if (!this._forceH264) {
+                    _context6.next = 39;
+                    break;
+                  }
+
+                  codec = this._mediasoupDevice.rtpCapabilities.codecs.find(function (c) {
+                    return c.mimeType.toLowerCase() === 'video/h264';
+                  });
+
+                  if (codec) {
+                    _context6.next = 37;
+                    break;
+                  }
+
+                  throw new Error('desired H264 codec+configuration is not supported');
+
+                case 37:
+                  _context6.next = 43;
+                  break;
+
+                case 39:
+                  if (!this._forceVP9) {
+                    _context6.next = 43;
+                    break;
+                  }
+
+                  codec = this._mediasoupDevice.rtpCapabilities.codecs.find(function (c) {
+                    return c.mimeType.toLowerCase() === 'video/vp9';
+                  });
+
+                  if (codec) {
+                    _context6.next = 43;
+                    break;
+                  }
+
+                  throw new Error('desired VP9 codec+configuration is not supported');
+
+                case 43:
                   if (!this._useSimulcast) {
-                    _context6.next = 40;
+                    _context6.next = 49;
                     break;
                   }
 
@@ -13810,34 +13848,25 @@
                   firstVideoCodec = this._mediasoupDevice.rtpCapabilities.codecs.find(function (c) {
                     return c.kind === 'video';
                   });
-                  if (firstVideoCodec.mimeType.toLowerCase() === 'video/vp9') encodings = VIDEO_KSVC_ENCODINGS;else encodings = VIDEO_SIMULCAST_ENCODINGS;
-                  _context6.next = 37;
+
+                  if (this._forceVP9 && codec || firstVideoCodec.mimeType.toLowerCase() === 'video/vp9') {
+                    encodings = VIDEO_KSVC_ENCODINGS;
+                  } else {
+                    encodings = VIDEO_SIMULCAST_ENCODINGS;
+                  }
+
+                  _context6.next = 48;
                   return this._sendTransport.produce({
                     track: track,
                     encodings: encodings,
-                    codecOptions: {
-                      videoGoogleStartBitrate: 1000
-                    } // NOTE: for testing codec selection.
-                    // codec : this._mediasoupDevice.rtpCapabilities.codecs
-                    // 	.find((codec) => codec.mimeType.toLowerCase() === 'video/h264')
-
+                    codecOptions: codecOptions,
+                    codec: codec
                   });
 
-                case 37:
-                  this._webcamProducer = _context6.sent;
-                  _context6.next = 43;
-                  break;
-
-                case 40:
-                  _context6.next = 42;
-                  return this._sendTransport.produce({
-                    track: track
-                  });
-
-                case 42:
+                case 48:
                   this._webcamProducer = _context6.sent;
 
-                case 43:
+                case 49:
                   this.store.commit('zeyeClient/producers/addProducer', {
                     producer: {
                       id: this._webcamProducer.id,
@@ -13863,11 +13892,11 @@
                     _this3.disableWebcam().catch(function () {});
                   });
 
-                  _context6.next = 53;
+                  _context6.next = 59;
                   break;
 
-                case 48:
-                  _context6.prev = 48;
+                case 54:
+                  _context6.prev = 54;
                   _context6.t0 = _context6["catch"](12);
                   console.error('enableWebcam() | failed:%o', _context6.t0);
                   this.store.dispatch('zeyeClient/notify', {
@@ -13876,17 +13905,17 @@
                   });
                   if (track) track.stop();
 
-                case 53:
+                case 59:
                   this.store.commit('zeyeClient/me/setWebcamInProgress', {
                     flag: false
                   });
 
-                case 54:
+                case 60:
                 case "end":
                   return _context6.stop();
               }
             }
-          }, _callee6, this, [[12, 48]]);
+          }, _callee6, this, [[12, 54]]);
         }));
 
         function enableWebcam() {
@@ -14142,7 +14171,7 @@
         var _enableShare = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee10() {
           var _this4 = this;
 
-          var result, track, stream, firstVideoCodec, encodings;
+          var result, track, stream, encodings, codec, codecOptions, firstVideoCodec;
           return regenerator.wrap(function _callee10$(_context10) {
             while (1) {
               switch (_context10.prev = _context10.next) {
@@ -14215,54 +14244,78 @@
 
                 case 21:
                   track = stream.getVideoTracks()[0];
+                  codecOptions = {
+                    videoGoogleStartBitrate: 1000
+                  };
 
-                  if (!this._useSharingSimulcast) {
-                    _context10.next = 30;
+                  if (!this._forceH264) {
+                    _context10.next = 29;
                     break;
                   }
 
-                  // If VP9 is the only available video codec then use SVC.
-                  firstVideoCodec = this._mediasoupDevice.rtpCapabilities.codecs.find(function (c) {
-                    return c.kind === 'video';
+                  codec = this._mediasoupDevice.rtpCapabilities.codecs.find(function (c) {
+                    return c.mimeType.toLowerCase() === 'video/h264';
                   });
 
-                  if (firstVideoCodec.mimeType.toLowerCase() === 'video/vp9') {
-                    encodings = VIDEO_SVC_ENCODINGS;
-                  } else {
-                    encodings = VIDEO_SIMULCAST_ENCODINGS.map(function (encoding) {
-                      return _objectSpread2({}, encoding, {
-                        dtx: true
-                      });
-                    });
+                  if (codec) {
+                    _context10.next = 27;
+                    break;
                   }
 
-                  _context10.next = 27;
+                  throw new Error('desired H264 codec+configuration is not supported');
+
+                case 27:
+                  _context10.next = 33;
+                  break;
+
+                case 29:
+                  if (!this._forceVP9) {
+                    _context10.next = 33;
+                    break;
+                  }
+
+                  codec = this._mediasoupDevice.rtpCapabilities.codecs.find(function (c) {
+                    return c.mimeType.toLowerCase() === 'video/vp9';
+                  });
+
+                  if (codec) {
+                    _context10.next = 33;
+                    break;
+                  }
+
+                  throw new Error('desired VP9 codec+configuration is not supported');
+
+                case 33:
+                  if (this._useSharingSimulcast) {
+                    // If VP9 is the only available video codec then use SVC.
+                    firstVideoCodec = this._mediasoupDevice.rtpCapabilities.codecs.find(function (c) {
+                      return c.kind === 'video';
+                    });
+
+                    if (this._forceVP9 && codec || firstVideoCodec.mimeType.toLowerCase() === 'video/vp9') {
+                      encodings = VIDEO_SVC_ENCODINGS;
+                    } else {
+                      encodings = VIDEO_SIMULCAST_ENCODINGS.map(function (encoding) {
+                        return _objectSpread2({}, encoding, {
+                          dtx: true
+                        });
+                      });
+                    }
+                  }
+
+                  _context10.next = 36;
                   return this._sendTransport.produce({
                     track: track,
                     encodings: encodings,
-                    codecOptions: {
-                      videoGoogleStartBitrate: 1000
-                    },
+                    codecOptions: codecOptions,
+                    codec: codec,
                     appData: {
                       share: true
                     }
                   });
 
-                case 27:
+                case 36:
                   this._shareProducer = _context10.sent;
-                  _context10.next = 33;
-                  break;
-
-                case 30:
-                  _context10.next = 32;
-                  return this._sendTransport.produce({
-                    track: track
-                  });
-
-                case 32:
-                  this._shareProducer = _context10.sent;
-
-                case 33:
                   this.store.commit('zeyeClient/producers/addProducer', {
                     producer: {
                       id: this._shareProducer.id,
@@ -14287,11 +14340,11 @@
                     _this4.disableShare().catch(function () {});
                   });
 
-                  _context10.next = 44;
+                  _context10.next = 48;
                   break;
 
-                case 38:
-                  _context10.prev = 38;
+                case 42:
+                  _context10.prev = 42;
                   _context10.t0 = _context10["catch"](13);
                   console.error('enableShare() | failed:%o', _context10.t0);
 
@@ -14305,18 +14358,18 @@
                   if (track) track.stop();
                   result = false;
 
-                case 44:
+                case 48:
                   this.store.commit('zeyeClient/me/setShareInProgress', {
                     flag: false
                   });
                   return _context10.abrupt("return", result);
 
-                case 46:
+                case 50:
                 case "end":
                   return _context10.stop();
               }
             }
-          }, _callee10, this, [[13, 38]]);
+          }, _callee10, this, [[13, 42]]);
         }));
 
         function enableShare() {
@@ -15866,10 +15919,11 @@
 
           _this.runAudio();
         });
-        this.$zeyeClient.$bus.$on('set-output-device-id', function (deviceId) {
-          _this.$refs.audioElem.setSinkId(deviceId);
-        });
       }
+
+      this.$zeyeClient.$bus.$on('set-output-device-id', function (deviceId) {
+        _this.$refs.audioElem.setSinkId(deviceId);
+      });
     },
     beforeDestroy: function beforeDestroy() {
       this.$zeyeClient.$bus.$off('update-my-media');
@@ -16101,7 +16155,7 @@
   const __vue_script__ = script;
 
   /* template */
-  var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"zeye-peer-media",class:{ 'active-speaker': _vm.$zeyeClient.isSpeakerActive(_vm.peerId) }},[_c('video',{ref:"videoElem",staticStyle:{"width":"100%"},attrs:{"autoPlay":"","muted":"","controls":false},domProps:{"muted":true}}),_vm._v(" "),_c('audio',{ref:"audioElem",staticStyle:{"width":"100%"},attrs:{"autoPlay":"","muted":"","controls":false}}),_vm._v(" "),(_vm.showVolumeBar)?_c('div',{staticClass:"volume-container"},[_c('div',{staticClass:"bar",style:({
+  var __vue_render__ = function () {var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;return _c('div',{staticClass:"zeye-peer-media",class:{ 'active-speaker': _vm.$zeyeClient.isSpeakerActive(_vm.peerId) }},[_c('video',{ref:"videoElem",staticStyle:{"width":"100%"},attrs:{"autoPlay":"","playsInline":"","muted":"","controls":false},domProps:{"muted":true}}),_vm._v(" "),_c('audio',{ref:"audioElem",staticStyle:{"width":"100%"},attrs:{"autoPlay":"","playsInline":"","muted":"","controls":false}}),_vm._v(" "),(_vm.showVolumeBar)?_c('div',{staticClass:"volume-container"},[_c('div',{staticClass:"bar",style:({
           height: _vm.audioVolume * 10 + '%',
           backgroundColor: _vm.volumeBarColor
         })})]):_vm._e()])};
@@ -16110,7 +16164,7 @@
     /* style */
     const __vue_inject_styles__ = function (inject) {
       if (!inject) return
-      inject("data-v-0f437536_0", { source: ".volume-container{position:absolute;top:0;bottom:0;width:10px;display:flex;-webkit-box-orient:vertical;flex-direction:column;-webkit-box-pack:center;justify-content:center;-webkit-box-align:center;align-items:center;pointer-events:none}.volume-container .bar{width:6px;border-radius:6px;transition:.1s ease-in 0s}.zeye-peer-media{position:relative;flex:100 100 auto;display:flex}.zeye-peer-media.active-speaker{box-shadow:0 0 5px #adff2f}", map: undefined, media: undefined });
+      inject("data-v-2e1c075c_0", { source: ".volume-container{position:absolute;top:0;bottom:0;width:10px;display:flex;-webkit-box-orient:vertical;flex-direction:column;-webkit-box-pack:center;justify-content:center;-webkit-box-align:center;align-items:center;pointer-events:none}.volume-container .bar{width:6px;border-radius:6px;transition:.1s ease-in 0s}.zeye-peer-media{position:relative;flex:100 100 auto;display:flex}.zeye-peer-media.active-speaker{box-shadow:0 0 5px #adff2f}", map: undefined, media: undefined });
 
     };
     /* scoped */
