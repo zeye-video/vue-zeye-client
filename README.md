@@ -1,6 +1,7 @@
 # Getting Started
 
 Pronouced like [zaɪ]Client
+Designed to work in pair with my [fork](https://github.com/stasoft91/zeye-server) of [mediasoup-demo-server](https://github.com/versatica/mediasoup-demo)
 
 VueZeyeClient relies heavily on vuex. 
 Everything under the hood work is in there, so installing vuex is mandatory.
