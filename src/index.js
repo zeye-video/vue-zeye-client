@@ -12,16 +12,34 @@ import ZeyeClient from './utils/ZeyeClient'
 import zeyePeerMedia from './components/zeyePeerMedia.vue'
 
 const zeyeClient = {
-  install(Vue, store) {
-    store.registerModule(['zeyeClient', 'consumers'], consumers)
-    store.registerModule(['zeyeClient', 'dataConsumers'], dataConsumers)
-    store.registerModule(['zeyeClient', 'dataProducers'], dataProducers)
-    store.registerModule(['zeyeClient', 'index'], index)
-    store.registerModule(['zeyeClient', 'me'], me)
-    store.registerModule(['zeyeClient', 'notifications'], notifications)
-    store.registerModule(['zeyeClient', 'peers'], peers)
-    store.registerModule(['zeyeClient', 'producers'], producers)
-    store.registerModule(['zeyeClient', 'room'], room)
+  install(Vue, store, preserveState) {
+    store.registerModule(['zeyeClient', 'consumers'], consumers, {
+      preserveState
+    })
+    store.registerModule(['zeyeClient', 'dataConsumers'], dataConsumers, {
+      preserveState
+    })
+    store.registerModule(['zeyeClient', 'dataProducers'], dataProducers, {
+      preserveState
+    })
+    store.registerModule(['zeyeClient', 'index'], index, {
+      preserveState
+    })
+    store.registerModule(['zeyeClient', 'me'], me, {
+      preserveState
+    })
+    store.registerModule(['zeyeClient', 'notifications'], notifications, {
+      preserveState
+    })
+    store.registerModule(['zeyeClient', 'peers'], peers, {
+      preserveState
+    })
+    store.registerModule(['zeyeClient', 'producers'], producers, {
+      preserveState
+    })
+    store.registerModule(['zeyeClient', 'room'], room, {
+      preserveState
+    })
 
     /**
      * @type {ZeyeClient}

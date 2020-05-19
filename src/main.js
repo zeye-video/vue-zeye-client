@@ -12,7 +12,7 @@ const store = new Vuex.Store({
   }
 })
 
-Vue.use(zeyeClient, store)
+Vue.use(zeyeClient, store, false)
 Vue.config.productionTip = false
 
 new Vue({
