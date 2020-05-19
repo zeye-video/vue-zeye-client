@@ -13,6 +13,8 @@ import zeyePeerMedia from './components/zeyePeerMedia.vue'
 
 const zeyeClient = {
   install(Vue, store, preserveState) {
+    preserveState = preserveState !== undefined
+
     store.registerModule(['zeyeClient', 'consumers'], consumers, {
       preserveState
     })
