@@ -60,7 +60,7 @@ new Vue({ }).$mount('#app')
 Then somewhere in your `conference.vue`:
 ```html
 <div style="width:250px">
-    <zeye-peer-media  :show-volume-bar="true" :peer-id="$zeyeClient.getMe().id"></zeye-peer-media>
+    <zeye-peer-media  :show-volume-bar="true" :peer-id="'me'"></zeye-peer-media>
 </div>
 
 <div style="width:250px" v-for="peer in $zeyeClient.getPeers()" :key="peer.id">
