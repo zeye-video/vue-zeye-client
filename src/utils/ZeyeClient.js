@@ -148,7 +148,7 @@ export default class ZeyeClient {
     if (this._shareProducer) this._shareProducer.close()
 
     // Close protoo Peer
-    this._protoo.close()
+    if (this._protoo) this._protoo.close()
 
     // Close mediasoup Transports.
     if (this._sendTransport) this._sendTransport.close()
