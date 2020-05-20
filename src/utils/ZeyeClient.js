@@ -543,7 +543,7 @@ export default class ZeyeClient {
       switch (notification.method) {
         case 'chatMessage': {
           this.store.commit('zeyeClient/chat/pushMessage', {
-            message: request.data
+            message: notification.data
           })
           break
         }
