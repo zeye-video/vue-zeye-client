@@ -5,7 +5,7 @@ import axios from 'axios'
 import { getProtooUrl } from './urlFactory'
 import * as cookiesManager from './cookiesManager'
 import randomName from './randomName'
-import randomString from "./randomString";
+import randomString from './randomString'
 
 const VIDEO_CONSTRAINS = {
   qvga: { width: { ideal: 320 }, height: { ideal: 240 } },
@@ -205,13 +205,11 @@ export default class ZeyeClient {
      */
 
     if (wsAuthEndpoint) {
-      try {
-        const response = await axios.post(wsAuthEndpoint, wsAuthData, {
-          withCredentials: true
-        })
+      const response = await axios.post(wsAuthEndpoint, wsAuthData, {
+        withCredentials: true
+      })
 
-        authToken = response.data
-      } catch (e) {}
+      authToken = response.data
     }
 
     this._protooUrl = getProtooUrl({
@@ -1668,7 +1666,7 @@ export default class ZeyeClient {
 
     this._protoo.request('chatMessage', {
       id: randomString(10),
-      timestamp: (new Date()).getTime(),
+      timestamp: new Date().getTime(),
       author: this.store.state.zeyeClient.me.displayName,
       text
     })
