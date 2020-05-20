@@ -205,9 +205,13 @@ export default class ZeyeClient {
 
     if (wsAuthEndpoint) {
       try {
-        const response = await axios.post(wsAuthEndpoint, wsAuthData, {
-          withCredentials: true
-        })
+        const response = await axios.post(
+          wsAuthEndpoint,
+          { room: roomId, ...wsAuthData },
+          {
+            withCredentials: true
+          }
+        )
 
         authToken = response.data
       } catch (e) {}
