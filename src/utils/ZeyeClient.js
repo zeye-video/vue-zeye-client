@@ -5,6 +5,7 @@ import axios from 'axios'
 import { getProtooUrl } from './urlFactory'
 import * as cookiesManager from './cookiesManager'
 import randomName from './randomName'
+import randomString from "./randomString";
 
 const VIDEO_CONSTRAINS = {
   qvga: { width: { ideal: 320 }, height: { ideal: 240 } },
@@ -1666,6 +1667,8 @@ export default class ZeyeClient {
     console.debug('sendChatMessage() [text:"%s]', text)
 
     this._protoo.request('chatMessage', {
+      id: randomString(10),
+      timestamp: (new Date()).getTime(),
       author: this.store.state.zeyeClient.me.displayName,
       text
     })
