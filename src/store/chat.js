@@ -9,3 +9,11 @@ export const mutations = {
     state.messages.push(message)
   }
 }
+
+const module = {
+  namespaced: true,
+  state,
+  mutations
+}
+
+export default module
