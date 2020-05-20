@@ -271,6 +271,13 @@ export default class ZeyeClient {
       )
 
       switch (request.method) {
+        case 'chatMessage': {
+          this.store.commit('zeyeClient/chat/pushMessage', {
+            message: request.data
+          })
+          break
+        }
+
         case 'newConsumer': {
           if (!this._consume) {
             reject(403, 'I do not want to consume')
@@ -2137,8 +2144,8 @@ export default class ZeyeClient {
 
         this._sendTransport.on('connectionstatechange', (connectionState) => {
           if (connectionState === 'connected') {
-            this.enableChatDataProducer()
-            this.enableBotDataProducer()
+            // this.enableChatDataProducer()
+            // this.enableBotDataProducer()
           }
         })
       }
