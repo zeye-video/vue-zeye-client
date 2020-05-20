@@ -7,6 +7,7 @@ import notifications from './store/notifications'
 import peers from './store/peers'
 import producers from './store/producers'
 import room from './store/room'
+import chat from './store/chat'
 import registerFunctions from './zeyeFunctions'
 import ZeyeClient from './utils/ZeyeClient'
 import zeyePeerMedia from './components/zeyePeerMedia.vue'
@@ -40,6 +41,9 @@ const zeyeClient = {
       preserveState
     })
     store.registerModule(['zeyeClient', 'room'], room, {
+      preserveState
+    })
+    store.registerModule(['zeyeClient', 'chat'], chat, {
       preserveState
     })
 
