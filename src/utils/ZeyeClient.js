@@ -1665,49 +1665,10 @@ export default class ZeyeClient {
   sendChatMessage(text) {
     console.debug('sendChatMessage() [text:"%s]', text)
 
-    if (!this._chatDataProducer) {
-      this.store.dispatch('zeyeClient/notify', {
-        type: 'error',
-        text: 'No chat DataProducer'
-      })
-
-      return
-    }
-
-    try {
-      this._chatDataProducer.send(text)
-    } catch (error) {
-      console.error('chat DataProducer.send() failed:%o', error)
-
-      this.store.dispatch('zeyeClient/notify', {
-        type: 'error',
-        text: `chat DataProducer.send() failed: ${error}`
-      })
-    }
-  }
-
-  sendBotMessage(text) {
-    console.debug('sendBotMessage() [text:"%s]', text)
-
-    if (!this._botDataProducer) {
-      this.store.dispatch('zeyeClient/notify', {
-        type: 'error',
-        text: 'No bot DataProducer'
-      })
-
-      return
-    }
-
-    try {
-      this._botDataProducer.send(text)
-    } catch (error) {
-      console.error('bot DataProducer.send() failed:%o', error)
-
-      this.store.dispatch('zeyeClient/notify', {
-        type: 'error',
-        text: `bot DataProducer.send() failed: ${error}`
-      })
-    }
+    this._protoo.request('chatMessage', {
+      author: this.store.state.zeyeClient.me.displayName,
+      text
+    })
   }
 
   async changeDisplayName(displayName) {
