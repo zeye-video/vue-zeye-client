@@ -183,7 +183,16 @@ export default class ZeyeClient {
     wsAuthEndpoint = wsAuthEndpoint !== undefined ? wsAuthEndpoint : false
     wsAuthData = wsAuthData !== undefined ? wsAuthData : {}
 
-    this._displayName = displayName !== undefined ? displayName : randomName()
+    if (displayName !== undefined) {
+      this._displayName = displayName
+    } else if (
+      cookiesManager.getUser() &&
+      cookiesManager.getUser().displayName
+    ) {
+      this._displayName = cookiesManager.getUser().displayName
+    } else {
+      this._displayName = randomName()
+    }
 
     let authToken = false
 

@@ -1,7 +1,7 @@
 import jsCookie from 'js-cookie'
 
-const USER_COOKIE = 'mediasoup-demo.user'
-const DEVICES_COOKIE = 'mediasoup-demo.devices'
+const USER_COOKIE = 'zeye.user'
+const DEVICES_COOKIE = 'zeye.devices'
 
 export function getUser() {
   return jsCookie.getJSON(USER_COOKIE)

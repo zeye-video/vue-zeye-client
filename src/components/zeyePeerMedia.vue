@@ -183,6 +183,7 @@ export default {
 <style>
 .volume-container {
   position: absolute;
+  left: 0;
   top: 0;
   bottom: 0;
   width: 10px;
