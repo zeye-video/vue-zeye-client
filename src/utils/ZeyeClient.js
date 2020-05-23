@@ -2275,6 +2275,7 @@ export default class ZeyeClient {
     this.deNoise = !this.deNoise
     this.disableMic()
     this.enableMic(this.deNoise)
+    this.$bus.$emit('update-my-media')
   }
 
   _initAudioFilters(stream) {

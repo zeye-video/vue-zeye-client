@@ -1,5 +1,5 @@
 /*!
- * vue-zeye-client v0.5.10 
+ * vue-zeye-client v0.5.11 
  * (c) 2020 stasoft91
  * Released under the ISC License.
  */
@@ -15958,6 +15958,7 @@ var ZeyeClient = /*#__PURE__*/function () {
       this.deNoise = !this.deNoise;
       this.disableMic();
       this.enableMic(this.deNoise);
+      this.$bus.$emit('update-my-media');
     }
   }, {
     key: "_initAudioFilters",
