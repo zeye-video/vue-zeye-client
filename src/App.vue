@@ -32,12 +32,14 @@ export default {
       peerId,
       displayName: this.$zeyeClient.getMe().displayName,
       protooPort: '4443',
+      protooHostname: 'back.rtcp.loc'
+      /*
       wsAuthEndpoint: 'https://localhost:4443/authEndpoint',
       wsAuthData: {
         // zeye-server auth endpoint does not provide password protection by default,
         // as mentioned before - you should write your own auth provider for such matters
         somePasswordForThatRoom: 'qwerty'
-      }
+      } */
     })
   }
 }

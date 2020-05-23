@@ -133,7 +133,13 @@ export default class ZeyeClient {
     // Force VP9 codec for sending.
     this._forceVP9 = Boolean(forceVP9)
 
+    // Inner signaling
     this.$bus = new Vue()
+
+    // Microphone preprocessing
+    this.audioContext = new (window.AudioContext || window.webkitAudioContext)()
+
+    this.deNoise = false
   }
 
   close() {
@@ -730,7 +736,7 @@ export default class ZeyeClient {
     this.ready = true
   }
 
-  async enableMic() {
+  async enableMic(deNoise) {
     console.debug('enableMic()')
 
     if (this._micProducer) return
@@ -747,9 +753,19 @@ export default class ZeyeClient {
       if (!this._externalVideo) {
         console.debug('enableMic() | calling getUserMedia()')
 
-        const stream = await navigator.mediaDevices.getUserMedia({
-          audio: true
-        })
+        let stream
+        if (deNoise === true) {
+          stream = await navigator.mediaDevices.getUserMedia(
+            {
+              audio: true
+            },
+            this._initAudioFilters
+          )
+        } else {
+          stream = await navigator.mediaDevices.getUserMedia({
+            audio: true
+          })
+        }
 
         track = stream.getAudioTracks()[0]
       } else {
@@ -2253,5 +2269,34 @@ export default class ZeyeClient {
     else throw new Error('video.captureStream() not supported')
 
     return this._externalVideoStream
+  }
+
+  toggleDeNoise() {
+    this.deNoise = !this.deNoise
+    this.disableMic()
+    this.enableMic(this.deNoise)
+  }
+
+  _initAudioFilters(stream) {
+    const compressor = this.audioContext.createDynamicsCompressor()
+    compressor.threshold.value = -50
+    compressor.knee.value = 40
+    compressor.ratio.value = 12
+    compressor.reduction.value = -20
+    compressor.attack.value = 0
+    compressor.release.value = 0.25
+
+    const filter = this.audioContext.createBiquadFilter()
+    filter.Q.value = 8.3
+    filter.frequency.value = 355
+    filter.gain.value = 3.0
+    filter.type = 'bandpass'
+    filter.connect(compressor)
+
+    compressor.connect(this.audioContext.destination)
+    filter.connect(this.audioContext.destination)
+
+    const mediaStreamSource = this.audioContext.createMediaStreamSource(stream)
+    mediaStreamSource.connect(filter)
   }
 }
