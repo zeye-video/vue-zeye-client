@@ -1,5 +1,5 @@
 /*!
- * vue-zeye-client v0.3.2 
+ * vue-zeye-client v0.5.10 
  * (c) 2020 stasoft91
  * Released under the ISC License.
  */
@@ -9160,6 +9160,23 @@
     mutations: mutations$7
   };
 
+  var state$8 = function state() {
+    return {
+      messages: []
+    };
+  };
+  var mutations$8 = {
+    pushMessage: function pushMessage(state, payload) {
+      var message = payload.message;
+      state.messages.push(message);
+    }
+  };
+  var module$8 = {
+    namespaced: true,
+    state: state$8,
+    mutations: mutations$8
+  };
+
   function registerFunctions(_ref) {
     var app = _ref.app,
         store = _ref.store;
@@ -9922,8 +9939,11 @@
 
   var regenerator = runtime_1;
 
-  var USER_COOKIE = 'mediasoup-demo.user';
-  var DEVICES_COOKIE = 'mediasoup-demo.devices';
+  var USER_COOKIE = 'zeye.user';
+  var DEVICES_COOKIE = 'zeye.devices';
+  function getUser() {
+    return jsCookie.getJSON(USER_COOKIE);
+  }
   function setUser(_ref) {
     var displayName = _ref.displayName;
     jsCookie.set(USER_COOKIE, {
@@ -12858,8 +12878,12 @@
 
       this._forceH264 = Boolean(forceH264); // Force VP9 codec for sending.
 
-      this._forceVP9 = Boolean(forceVP9);
-      this.$bus = new Vue();
+      this._forceVP9 = Boolean(forceVP9); // Inner signaling
+
+      this.$bus = new Vue(); // Microphone preprocessing
+
+      this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      this.deNoise = false;
     }
 
     _createClass(ZeyeClient, [{
@@ -12871,8 +12895,7 @@
         if (this._webcamProducer) this._webcamProducer.close();
         if (this._shareProducer) this._shareProducer.close(); // Close protoo Peer
 
-        this._protoo.close(); // Close mediasoup Transports.
-
+        if (this._protoo) this._protoo.close(); // Close mediasoup Transports.
 
         if (this._sendTransport) this._sendTransport.close();
         if (this._recvTransport) this._recvTransport.close();
@@ -12907,7 +12930,15 @@
                   protooPort = protooPort !== undefined ? protooPort : false;
                   wsAuthEndpoint = wsAuthEndpoint !== undefined ? wsAuthEndpoint : false;
                   wsAuthData = wsAuthData !== undefined ? wsAuthData : {};
-                  this._displayName = displayName !== undefined ? displayName : randomName();
+
+                  if (displayName !== undefined) {
+                    this._displayName = displayName;
+                  } else if (getUser() && getUser().displayName) {
+                    this._displayName = getUser().displayName;
+                  } else {
+                    this._displayName = randomName();
+                  }
+
                   authToken = false;
                   /*
                     wsAuthEndpoint is an authentication backend api POST endpoint which
@@ -12925,27 +12956,20 @@
                    */
 
                   if (!wsAuthEndpoint) {
-                    _context2.next = 17;
+                    _context2.next = 12;
                     break;
                   }
 
-                  _context2.prev = 8;
-                  _context2.next = 11;
+                  _context2.next = 10;
                   return axios.post(wsAuthEndpoint, wsAuthData, {
                     withCredentials: true
                   });
 
-                case 11:
+                case 10:
                   response = _context2.sent;
                   authToken = response.data;
-                  _context2.next = 17;
-                  break;
 
-                case 15:
-                  _context2.prev = 15;
-                  _context2.t0 = _context2["catch"](8);
-
-                case 17:
+                case 12:
                   this._protooUrl = getProtooUrl({
                     roomId: roomId,
                     peerId: peerId,
@@ -13278,6 +13302,15 @@
                     console.debug('proto "notification" event [method:%s, data:%o]', notification.method, notification.data);
 
                     switch (notification.method) {
+                      case 'chatMessage':
+                        {
+                          _this.store.commit('zeyeClient/chat/pushMessage', {
+                            message: notification.data
+                          });
+
+                          break;
+                        }
+
                       case 'producerScore':
                         {
                           var _notification$data = notification.data,
@@ -13473,12 +13506,12 @@
 
                   this.ready = true;
 
-                case 28:
+                case 23:
                 case "end":
                   return _context2.stop();
               }
             }
-          }, _callee2, this, [[8, 15]]);
+          }, _callee2, this);
         }));
 
         function join(_x) {
@@ -13490,7 +13523,7 @@
     }, {
       key: "enableMic",
       value: function () {
-        var _enableMic = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee3() {
+        var _enableMic = _asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee3(deNoise) {
           var _this2 = this;
 
           var track, stream, _stream;
@@ -13521,32 +13554,51 @@
                   _context3.prev = 6;
 
                   if (this._externalVideo) {
-                    _context3.next = 15;
+                    _context3.next = 21;
                     break;
                   }
 
                   console.debug('enableMic() | calling getUserMedia()');
-                  _context3.next = 11;
+
+                  if (!(deNoise === true)) {
+                    _context3.next = 15;
+                    break;
+                  }
+
+                  _context3.next = 12;
                   return navigator.mediaDevices.getUserMedia({
                     audio: true
-                  });
+                  }, this._initAudioFilters);
 
-                case 11:
+                case 12:
                   stream = _context3.sent;
-                  track = stream.getAudioTracks()[0];
-                  _context3.next = 19;
+                  _context3.next = 18;
                   break;
 
                 case 15:
                   _context3.next = 17;
-                  return this._getExternalVideoStream();
+                  return navigator.mediaDevices.getUserMedia({
+                    audio: true
+                  });
 
                 case 17:
+                  stream = _context3.sent;
+
+                case 18:
+                  track = stream.getAudioTracks()[0];
+                  _context3.next = 25;
+                  break;
+
+                case 21:
+                  _context3.next = 23;
+                  return this._getExternalVideoStream();
+
+                case 23:
                   _stream = _context3.sent;
                   track = _stream.getAudioTracks()[0].clone();
 
-                case 19:
-                  _context3.next = 21;
+                case 25:
+                  _context3.next = 27;
                   return this._sendTransport.produce({
                     track: track,
                     codecOptions: {
@@ -13558,7 +13610,7 @@
 
                   });
 
-                case 21:
+                case 27:
                   this._micProducer = _context3.sent;
                   this.store.commit('zeyeClient/producers/addProducer', {
                     producer: {
@@ -13583,11 +13635,11 @@
                     _this2.disableMic().catch(function () {});
                   });
 
-                  _context3.next = 32;
+                  _context3.next = 38;
                   break;
 
-                case 27:
-                  _context3.prev = 27;
+                case 33:
+                  _context3.prev = 33;
                   _context3.t0 = _context3["catch"](6);
                   console.error('enableMic() | failed:%o', _context3.t0);
                   this.store.dispatch('zeyeClient/notify', {
@@ -13596,15 +13648,15 @@
                   });
                   if (track) track.stop();
 
-                case 32:
+                case 38:
                 case "end":
                   return _context3.stop();
               }
             }
-          }, _callee3, this, [[6, 27]]);
+          }, _callee3, this, [[6, 33]]);
         }));
 
-        function enableMic() {
+        function enableMic(_x5) {
           return _enableMic.apply(this, arguments);
         }
 
@@ -14713,7 +14765,7 @@
           }, _callee14, this, [[1, 12]]);
         }));
 
-        function setMaxSendingSpatialLayer(_x5) {
+        function setMaxSendingSpatialLayer(_x6) {
           return _setMaxSendingSpatialLayer.apply(this, arguments);
         }
 
@@ -14762,7 +14814,7 @@
           }, _callee15, this, [[1, 7]]);
         }));
 
-        function setConsumerPreferredLayers(_x6, _x7, _x8) {
+        function setConsumerPreferredLayers(_x7, _x8, _x9) {
           return _setConsumerPreferredLayers.apply(this, arguments);
         }
 
@@ -14809,7 +14861,7 @@
           }, _callee16, this, [[1, 7]]);
         }));
 
-        function setConsumerPriority(_x9, _x10) {
+        function setConsumerPriority(_x10, _x11) {
           return _setConsumerPriority.apply(this, arguments);
         }
 
@@ -14854,7 +14906,7 @@
           }, _callee17, this, [[1, 7]]);
         }));
 
-        function requestConsumerKeyFrame(_x11) {
+        function requestConsumerKeyFrame(_x12) {
           return _requestConsumerKeyFrame.apply(this, arguments);
         }
 
@@ -15067,46 +15119,12 @@
       value: function sendChatMessage(text) {
         console.debug('sendChatMessage() [text:"%s]', text);
 
-        if (!this._chatDataProducer) {
-          this.store.dispatch('zeyeClient/notify', {
-            type: 'error',
-            text: 'No chat DataProducer'
-          });
-          return;
-        }
-
-        try {
-          this._chatDataProducer.send(text);
-        } catch (error) {
-          console.error('chat DataProducer.send() failed:%o', error);
-          this.store.dispatch('zeyeClient/notify', {
-            type: 'error',
-            text: "chat DataProducer.send() failed: ".concat(error)
-          });
-        }
-      }
-    }, {
-      key: "sendBotMessage",
-      value: function sendBotMessage(text) {
-        console.debug('sendBotMessage() [text:"%s]', text);
-
-        if (!this._botDataProducer) {
-          this.store.dispatch('zeyeClient/notify', {
-            type: 'error',
-            text: 'No bot DataProducer'
-          });
-          return;
-        }
-
-        try {
-          this._botDataProducer.send(text);
-        } catch (error) {
-          console.error('bot DataProducer.send() failed:%o', error);
-          this.store.dispatch('zeyeClient/notify', {
-            type: 'error',
-            text: "bot DataProducer.send() failed: ".concat(error)
-          });
-        }
+        this._protoo.request('chatMessage', {
+          id: randomString(10),
+          timestamp: new Date().getTime(),
+          author: this.store.state.zeyeClient.me.displayName,
+          text: text
+        });
       }
     }, {
       key: "changeDisplayName",
@@ -15160,7 +15178,7 @@
           }, _callee20, this, [[2, 10]]);
         }));
 
-        function changeDisplayName(_x12) {
+        function changeDisplayName(_x13) {
           return _changeDisplayName.apply(this, arguments);
         }
 
@@ -15325,7 +15343,7 @@
           }, _callee21, this, [[2, 7]]);
         }));
 
-        function applyNetworkThrottle(_x13) {
+        function applyNetworkThrottle(_x14) {
           return _applyNetworkThrottle.apply(this, arguments);
         }
 
@@ -15373,7 +15391,7 @@
           }, _callee22, this, [[2, 7]]);
         }));
 
-        function resetNetworkThrottle(_x14) {
+        function resetNetworkThrottle(_x15) {
           return _resetNetworkThrottle.apply(this, arguments);
         }
 
@@ -15496,7 +15514,7 @@
                       }, _callee23, null, [[1, 9]]);
                     }));
 
-                    return function (_x15, _x16, _x17) {
+                    return function (_x16, _x17, _x18) {
                       return _ref8.apply(this, arguments);
                     };
                   }());
@@ -15543,7 +15561,7 @@
                       }, _callee24, null, [[2, 10]]);
                     }));
 
-                    return function (_x18, _x19, _x20) {
+                    return function (_x19, _x20, _x21) {
                       return _ref10.apply(this, arguments);
                     };
                   }());
@@ -15635,11 +15653,6 @@
                     if (!devicesCookie || devicesCookie.webcamEnabled || this._externalVideo) this.enableWebcam();
 
                     this._sendTransport.on('connectionstatechange', function (connectionState) {
-                      if (connectionState === 'connected') {
-                        _this7.enableChatDataProducer();
-
-                        _this7.enableBotDataProducer();
-                      }
                     });
                   } // NOTE: For testing.
 
@@ -15802,7 +15815,7 @@
           }, _callee27, this, [[2, 9]]);
         }));
 
-        function _pauseConsumer(_x21) {
+        function _pauseConsumer(_x22) {
           return _pauseConsumer2.apply(this, arguments);
         }
 
@@ -15856,7 +15869,7 @@
           }, _callee28, this, [[2, 9]]);
         }));
 
-        function _resumeConsumer(_x22) {
+        function _resumeConsumer(_x23) {
           return _resumeConsumer2.apply(this, arguments);
         }
 
@@ -15930,6 +15943,34 @@
 
         return _getExternalVideoStream;
       }()
+    }, {
+      key: "toggleDeNoise",
+      value: function toggleDeNoise() {
+        this.deNoise = !this.deNoise;
+        this.disableMic();
+        this.enableMic(this.deNoise);
+      }
+    }, {
+      key: "_initAudioFilters",
+      value: function _initAudioFilters(stream) {
+        var compressor = this.audioContext.createDynamicsCompressor();
+        compressor.threshold.value = -50;
+        compressor.knee.value = 40;
+        compressor.ratio.value = 12;
+        compressor.reduction.value = -20;
+        compressor.attack.value = 0;
+        compressor.release.value = 0.25;
+        var filter = this.audioContext.createBiquadFilter();
+        filter.Q.value = 8.3;
+        filter.frequency.value = 355;
+        filter.gain.value = 3.0;
+        filter.type = 'bandpass';
+        filter.connect(compressor);
+        compressor.connect(this.audioContext.destination);
+        filter.connect(this.audioContext.destination);
+        var mediaStreamSource = this.audioContext.createMediaStreamSource(stream);
+        mediaStreamSource.connect(filter);
+      }
     }]);
 
     return ZeyeClient;
@@ -16219,7 +16260,7 @@
     /* style */
     const __vue_inject_styles__ = function (inject) {
       if (!inject) return
-      inject("data-v-2e1c075c_0", { source: ".volume-container{position:absolute;top:0;bottom:0;width:10px;display:flex;-webkit-box-orient:vertical;flex-direction:column;-webkit-box-pack:center;justify-content:center;-webkit-box-align:center;align-items:center;pointer-events:none}.volume-container .bar{width:6px;border-radius:6px;transition:.1s ease-in 0s}.zeye-peer-media{position:relative;flex:100 100 auto;display:flex}.zeye-peer-media.active-speaker{box-shadow:0 0 5px #adff2f}", map: undefined, media: undefined });
+      inject("data-v-6c0ca3c8_0", { source: ".volume-container{position:absolute;left:0;top:0;bottom:0;width:10px;display:flex;-webkit-box-orient:vertical;flex-direction:column;-webkit-box-pack:center;justify-content:center;-webkit-box-align:center;align-items:center;pointer-events:none}.volume-container .bar{width:6px;border-radius:6px;transition:.1s ease-in 0s}.zeye-peer-media{position:relative;flex:100 100 auto;display:flex}.zeye-peer-media.active-speaker{box-shadow:0 0 5px #adff2f}", map: undefined, media: undefined });
 
     };
     /* scoped */
@@ -16244,16 +16285,38 @@
     );
 
   var zeyeClient = {
-    install: function install(Vue, store) {
-      store.registerModule(['zeyeClient', 'consumers'], module);
-      store.registerModule(['zeyeClient', 'dataConsumers'], module$1);
-      store.registerModule(['zeyeClient', 'dataProducers'], module$2);
-      store.registerModule(['zeyeClient', 'index'], module$3);
-      store.registerModule(['zeyeClient', 'me'], module$4);
-      store.registerModule(['zeyeClient', 'notifications'], module$5);
-      store.registerModule(['zeyeClient', 'peers'], module$6);
-      store.registerModule(['zeyeClient', 'producers'], module$7);
-      store.registerModule(['zeyeClient', 'room'], room);
+    install: function install(Vue, store, preserveState) {
+      preserveState = preserveState === undefined ? false : preserveState;
+      store.registerModule(['zeyeClient', 'consumers'], module, {
+        preserveState: preserveState
+      });
+      store.registerModule(['zeyeClient', 'dataConsumers'], module$1, {
+        preserveState: preserveState
+      });
+      store.registerModule(['zeyeClient', 'dataProducers'], module$2, {
+        preserveState: preserveState
+      });
+      store.registerModule(['zeyeClient', 'index'], module$3, {
+        preserveState: preserveState
+      });
+      store.registerModule(['zeyeClient', 'me'], module$4, {
+        preserveState: preserveState
+      });
+      store.registerModule(['zeyeClient', 'notifications'], module$5, {
+        preserveState: preserveState
+      });
+      store.registerModule(['zeyeClient', 'peers'], module$6, {
+        preserveState: preserveState
+      });
+      store.registerModule(['zeyeClient', 'producers'], module$7, {
+        preserveState: preserveState
+      });
+      store.registerModule(['zeyeClient', 'room'], room, {
+        preserveState: preserveState
+      });
+      store.registerModule(['zeyeClient', 'chat'], module$8, {
+        preserveState: preserveState
+      });
       /**
        * @type {ZeyeClient}
        */
