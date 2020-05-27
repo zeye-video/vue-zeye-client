@@ -1,5 +1,5 @@
 /*!
- * vue-zeye-client v0.5.11 
+ * vue-zeye-client v0.5.25 
  * (c) 2020 stasoft91
  * Released under the ISC License.
  */
@@ -12889,10 +12889,7 @@ var ZeyeClient = /*#__PURE__*/function () {
 
     this._forceVP9 = Boolean(forceVP9); // Inner signaling
 
-    this.$bus = new Vue(); // Microphone preprocessing
-
-    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    this.deNoise = false;
+    this.$bus = new Vue();
   }
 
   _createClass(ZeyeClient, [{
@@ -13529,6 +13526,12 @@ var ZeyeClient = /*#__PURE__*/function () {
 
       return join;
     }()
+    /**
+     *
+     * @param {boolean} deNoise
+     * @return {Promise<void>}
+     */
+
   }, {
     key: "enableMic",
     value: function () {
@@ -13563,51 +13566,32 @@ var ZeyeClient = /*#__PURE__*/function () {
                 _context3.prev = 6;
 
                 if (this._externalVideo) {
-                  _context3.next = 21;
-                  break;
-                }
-
-                console.debug('enableMic() | calling getUserMedia()');
-
-                if (!(deNoise === true)) {
                   _context3.next = 15;
                   break;
                 }
 
-                _context3.next = 12;
-                return navigator.mediaDevices.getUserMedia({
-                  audio: true
-                }, this._initAudioFilters);
-
-              case 12:
-                stream = _context3.sent;
-                _context3.next = 18;
-                break;
-
-              case 15:
-                _context3.next = 17;
+                console.debug('enableMic() | calling getUserMedia()');
+                _context3.next = 11;
                 return navigator.mediaDevices.getUserMedia({
                   audio: true
                 });
 
-              case 17:
+              case 11:
                 stream = _context3.sent;
-
-              case 18:
                 track = stream.getAudioTracks()[0];
-                _context3.next = 25;
+                _context3.next = 19;
                 break;
 
-              case 21:
-                _context3.next = 23;
+              case 15:
+                _context3.next = 17;
                 return this._getExternalVideoStream();
 
-              case 23:
+              case 17:
                 _stream = _context3.sent;
                 track = _stream.getAudioTracks()[0].clone();
 
-              case 25:
-                _context3.next = 27;
+              case 19:
+                _context3.next = 21;
                 return this._sendTransport.produce({
                   track: track,
                   codecOptions: {
@@ -13619,7 +13603,7 @@ var ZeyeClient = /*#__PURE__*/function () {
 
                 });
 
-              case 27:
+              case 21:
                 this._micProducer = _context3.sent;
                 this.store.commit('zeyeClient/producers/addProducer', {
                   producer: {
@@ -13644,11 +13628,11 @@ var ZeyeClient = /*#__PURE__*/function () {
                   _this2.disableMic().catch(function () {});
                 });
 
-                _context3.next = 38;
+                _context3.next = 32;
                 break;
 
-              case 33:
-                _context3.prev = 33;
+              case 27:
+                _context3.prev = 27;
                 _context3.t0 = _context3["catch"](6);
                 console.error('enableMic() | failed:%o', _context3.t0);
                 this.store.dispatch('zeyeClient/notify', {
@@ -13657,12 +13641,12 @@ var ZeyeClient = /*#__PURE__*/function () {
                 });
                 if (track) track.stop();
 
-              case 38:
+              case 32:
               case "end":
                 return _context3.stop();
             }
           }
-        }, _callee3, this, [[6, 33]]);
+        }, _callee3, this, [[6, 27]]);
       }));
 
       function enableMic(_x5) {
@@ -15952,35 +15936,6 @@ var ZeyeClient = /*#__PURE__*/function () {
 
       return _getExternalVideoStream;
     }()
-  }, {
-    key: "toggleDeNoise",
-    value: function toggleDeNoise() {
-      this.deNoise = !this.deNoise;
-      this.disableMic();
-      this.enableMic(this.deNoise);
-      this.$bus.$emit('update-my-media');
-    }
-  }, {
-    key: "_initAudioFilters",
-    value: function _initAudioFilters(stream) {
-      var compressor = this.audioContext.createDynamicsCompressor();
-      compressor.threshold.value = -50;
-      compressor.knee.value = 40;
-      compressor.ratio.value = 12;
-      compressor.reduction.value = -20;
-      compressor.attack.value = 0;
-      compressor.release.value = 0.25;
-      var filter = this.audioContext.createBiquadFilter();
-      filter.Q.value = 8.3;
-      filter.frequency.value = 355;
-      filter.gain.value = 3.0;
-      filter.type = 'bandpass';
-      filter.connect(compressor);
-      compressor.connect(this.audioContext.destination);
-      filter.connect(this.audioContext.destination);
-      var mediaStreamSource = this.audioContext.createMediaStreamSource(stream);
-      mediaStreamSource.connect(filter);
-    }
   }]);
 
   return ZeyeClient;
