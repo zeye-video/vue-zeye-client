@@ -2279,10 +2279,10 @@ export default class ZeyeClient {
     return this._externalVideoStream
   }
 
-  toggleDeNoise() {
+  async toggleDeNoise() {
     this.deNoise = !this.deNoise
-    this.disableMic()
-    this.enableMic(this.deNoise)
+    await this.disableMic()
+    await this.enableMic(this.deNoise)
     this.$bus.$emit('update-my-media')
   }
 
