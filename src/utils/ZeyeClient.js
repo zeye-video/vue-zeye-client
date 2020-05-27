@@ -762,7 +762,7 @@ export default class ZeyeClient {
 
         let stream
         if (deNoise === true) {
-          await navigator.mediaDevices.getUserMedia(
+          await navigator.getUserMedia(
             {
               audio: true
             },
