@@ -2286,7 +2286,7 @@ export default class ZeyeClient {
     compressor.threshold.value = -50
     compressor.knee.value = 40
     compressor.ratio.value = 12
-    compressor.reduction.value = -20
+    compressor.reduction = -20
     compressor.attack.value = 0.0001
     compressor.release.value = 0.25
 
