@@ -2294,16 +2294,15 @@ export default class ZeyeClient {
     filter.frequency.value = 355
     filter.gain.value = 3.0
     filter.type = 'bandpass'
-    filter.connect(compressor)
-
-    compressor.connect(this.audioContext.destination)
-    filter.connect(this.audioContext.destination)
 
     const mediaStreamSource = this.audioContext.createMediaStreamSource(stream)
+    mediaStreamSource.connect(compressor)
     mediaStreamSource.connect(filter)
-    const mediaStreamDestination = this.audioContext.createMediaStreamDestination()
 
+    const mediaStreamDestination = this.audioContext.createMediaStreamDestination()
+    compressor.connect(mediaStreamDestination)
     filter.connect(mediaStreamDestination)
+
     return mediaStreamDestination.stream
   }
 }
