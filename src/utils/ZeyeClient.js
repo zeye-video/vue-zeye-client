@@ -2287,7 +2287,7 @@ export default class ZeyeClient {
     compressor.knee.value = 40
     compressor.ratio.value = 12
     compressor.reduction.value = -20
-    compressor.attack.value = 0
+    compressor.attack.value = 0.0001
     compressor.release.value = 0.25
 
     const filter = this.audioContext.createBiquadFilter()
