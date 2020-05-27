@@ -2283,18 +2283,29 @@ export default class ZeyeClient {
 
   _initAudioFilters(stream) {
     const compressor = this.audioContext.createDynamicsCompressor()
-    compressor.threshold.value = -10
+    compressor.threshold.value = -50
     compressor.knee.value = 40
     compressor.ratio.value = 12
     compressor.attack.value = 0.0001
     compressor.release.value = 0.25
 
+    const filter = this.audioContext.createBiquadFilter()
+    filter.Q.value = 8.3
+    filter.frequency.value = 355
+    filter.gain.value = 3.0
+    filter.type = 'bandpass'
+    filter.connect(compressor)
+
+    compressor.connect(this.audioContext.destination)
+    filter.connect(this.audioContext.destination)
+
     const mediaStreamSource = this.audioContext.createMediaStreamSource(stream)
     mediaStreamSource.connect(compressor)
-
+    mediaStreamSource.connect(filter)
     const mediaStreamDestination = this.audioContext.createMediaStreamDestination()
-    compressor.connect(mediaStreamDestination)
 
+    compressor.connect(mediaStreamDestination)
+    filter.connect(mediaStreamDestination)
     return mediaStreamDestination.stream
   }
 }
