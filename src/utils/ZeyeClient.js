@@ -140,6 +140,8 @@ export default class ZeyeClient {
     this.audioContext = new (window.AudioContext || window.webkitAudioContext)()
 
     this.deNoise = false
+
+    this.mediaStreamDestination = false
   }
 
   close() {
@@ -736,6 +738,11 @@ export default class ZeyeClient {
     this.ready = true
   }
 
+  /**
+   *
+   * @param {boolean} deNoise
+   * @return {Promise<void>}
+   */
   async enableMic(deNoise) {
     console.debug('enableMic()')
 
@@ -755,12 +762,13 @@ export default class ZeyeClient {
 
         let stream
         if (deNoise === true) {
-          stream = await navigator.mediaDevices.getUserMedia(
+          await navigator.mediaDevices.getUserMedia(
             {
               audio: true
             },
             this._initAudioFilters
           )
+          stream = this.mediaStreamDestination.stream
         } else {
           stream = await navigator.mediaDevices.getUserMedia({
             audio: true
@@ -2299,5 +2307,8 @@ export default class ZeyeClient {
 
     const mediaStreamSource = this.audioContext.createMediaStreamSource(stream)
     mediaStreamSource.connect(filter)
+    this.mediaStreamDestination = this.audioContext.createMediaStreamDestination()
+
+    filter.connect(this.mediaStreamDestination)
   }
 }
