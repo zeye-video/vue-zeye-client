@@ -29,7 +29,7 @@ export const mutations = {
       throw new Error('no Peer found')
     }
 
-    state.peer.displayName = displayName
+    peer.displayName = displayName
   },
 
   addConsumer(state, payload) {
