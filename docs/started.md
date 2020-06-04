@@ -73,9 +73,7 @@ export default {
         
         const roomId = 'example01'
         const peerId = 'example' + Math.random()
-        
-        this.$zeyeClient.setMe(peerId)
-        
+                
         this.$zeyeClient.join({
             roomId,
             peerId,

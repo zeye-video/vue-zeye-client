@@ -1,5 +1,5 @@
 /*!
- * vue-zeye-client v0.5.25 
+ * vue-zeye-client v0.5.27 
  * (c) 2020 stasoft91
  * Released under the ISC License.
  */
@@ -8986,7 +8986,7 @@ var mutations$5 = {
       throw new Error('no Peer found');
     }
 
-    state.peer.displayName = displayName;
+    peer.displayName = displayName;
   },
   addConsumer: function addConsumer(state, payload) {
     var consumer = payload.consumer,
@@ -12945,6 +12945,7 @@ var ZeyeClient = /*#__PURE__*/function () {
                   this._displayName = randomName();
                 }
 
+                this.setMe(peerId, this._displayName);
                 authToken = false;
                 /*
                   wsAuthEndpoint is an authentication backend api POST endpoint which
@@ -12962,20 +12963,20 @@ var ZeyeClient = /*#__PURE__*/function () {
                  */
 
                 if (!wsAuthEndpoint) {
-                  _context2.next = 12;
+                  _context2.next = 13;
                   break;
                 }
 
-                _context2.next = 10;
+                _context2.next = 11;
                 return axios.post(wsAuthEndpoint, wsAuthData, {
                   withCredentials: true
                 });
 
-              case 10:
+              case 11:
                 response = _context2.sent;
                 authToken = response.data;
 
-              case 12:
+              case 13:
                 this._protooUrl = getProtooUrl({
                   roomId: roomId,
                   peerId: peerId,
@@ -13512,7 +13513,7 @@ var ZeyeClient = /*#__PURE__*/function () {
 
                 this.ready = true;
 
-              case 23:
+              case 24:
               case "end":
                 return _context2.stop();
             }
