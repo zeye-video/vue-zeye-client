@@ -195,6 +195,8 @@ export default class ZeyeClient {
       this._displayName = randomName()
     }
 
+    this.setMe(peerId, this._displayName)
+
     let authToken = false
 
     /*
